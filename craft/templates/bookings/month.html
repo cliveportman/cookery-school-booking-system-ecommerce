@@ -1,0 +1,124 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% if year is not defined %}
+  {% set year = now | date('Y') %}
+{% endif %}
+
+{% if month is not defined %}
+  {% set month = now | date('m') %}
+{% endif %}
+
+{% set thisMonth = date(year ~ '-' ~ month ~ '-01') %}
+{% set lastMonth = date(year ~ '-' ~ month ~ '-01 - 1 month') %}
+{% set nextMonth = date(year ~ '-' ~ month ~ '-01 + 1 month') %}
+
+{% set calendarStartDate = date('01-' ~ month ~ '-' ~ year) %}
+
+{% set vars = {
+  'calendarStyle': 'calendar',
+  'calendarStartDate': calendarStartDate | date('j F Y'),
+  'calendarWeekBegins': 'Monday',
+  'calendarLength': 'month',  
+  'showDisabledProducts': currentUser
+} %}
+{% set dates = craft.productsCalendar.getProducts(vars) %}
+
+{% set metaTitle = thisMonth | date('F Y') %}
+
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+<div class="ui masthead vertical">
+<div class="ui container">
+        <h1 class="ui header">
+          <i class="table icon"></i>
+          {{ thisMonth | date('F Y') }}
+        </h1>
+</div>
+</div>
+
+<div class="ui container">
+
+    <div class="ui column grid">
+      <div class="four wide column">
+        <h3 class="ui header"><a href="{{ siteUrl }}month/{{ lastMonth | date('Y/m') }}" class="previous"><i class="caret left icon"></i>{{ lastMonth | date('F Y') }}</a></h3>
+      </div>
+      <div class="eight wide column">
+      </div>
+      <div class="four wide column">
+        <h3 class="ui header"><a href="{{ siteUrl }}month/{{ nextMonth | date('Y/m') }}" class="next">{{ nextMonth | date('F Y') }} <i class="caret right icon"></i></a></h3>
+      </div>
+    </div>
+
+    <div class="ui one column grid">
+      {#<div class="column">
+        <button class="ui button" id="full-courses-toggle">Hide full courses</button>
+      </div>#}
+      <div class="column">
+
+        <table class="ui celled fixed table">
+          <thead>
+            <tr>
+              <th>Monday</th>
+              <th>Tuesday</th>
+              <th>Wednesday</th>
+              <th>Thursday</th>
+              <th>Friday</th>
+              <th>Saturday</th>
+              <th>Sunday</th>
+            </tr>
+          </thead>
+          <tbody class="topaligned">
+
+            <tr>
+              {% for productDay in dates.productDays %}
+              <td>
+                <h2><a href="{{ siteUrl }}day/{{ productDay.date | date('Y/m/d') }}" class="month-day-link">{{ productDay.date | date('D j') }}</a></h2>
+                {% for product in productDay.products %}
+
+                  {% switch product.type %}
+
+                    {% case "class" %}
+                        {% set class = product.class.first %}
+                        {% set parent = class.getParent() %}
+                        {% set teacher = product.teacher.first %}
+                        {% set variant = product.defaultVariant %}
+                        <a data-url="{{ siteUrl }}modal/class/{{ product.id }}" class="showClassModal month class-link class-link--class {% if variant.stock == 0 %} full{% endif %}">
+                        <h5 class="">{{ parent.title }} / {{ class.title }}</h5>
+                        <ul>
+                          {% include "bookings/incs/_getNumberSold" %}                    
+                        </ul>
+                        </a>
+
+                    {% case "masterclass" %}
+                      {####### DISABLED PRODUCTS STILL SHOWING DESPITE PLUGIN REQUESTING ONLY ENABLED #}
+                        {% set masterclass = product.masterclass.first %}
+                        {% set teacher = product.teacher.first %}
+                        {% set variant = product.defaultVariant %}
+                        <a data-url="{{ siteUrl }}modal/class/{{ product.id }}" class="showClassModal month class-link class-link--masterclass {% if variant.stock == 0 %} full{% endif %}">
+                        <h5 class="">{{ masterclass.title }}</h5>
+                        <ul>
+                          {% include "bookings/incs/_getNumberSold" %}                    
+                        </ul>
+                        </a>
+
+                  {% endswitch %}
+                {% endfor %}
+              </td>
+              {% if loop.index is divisible by(7) and not loop.last %}</tr><tr>{% endif %}
+              {% endfor %}
+          </tbody>
+        </table>
+
+
+
+
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

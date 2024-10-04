@@ -1,0 +1,43 @@
+<form method="post" accept-charset="UTF-8" class="defaultform" id="loginform">
+
+    {{ getCsrfInput() }}
+    <input type="hidden" name="action" value="users/login">
+
+    {% if errorMessage is defined %}
+      <p class="error">{{ errorMessage }}</p>
+    {% endif %}
+
+
+    <li class="row">
+        <div class="col-md-4 col-sm-3">
+            <label for="user">Email</label>
+        </div>
+        <div class="col-md-8 col-sm-9">
+            <input type="text" id="user" name="loginName" value="{{ craft.session.rememberedUsername }}" placeholder="">
+        </div>
+    </li>
+
+
+    <li class="row">
+        <div class="col-md-4 col-sm-3">
+            <label for="password">Password</label>
+        </div>
+        <div class="col-md-8 col-sm-9">
+            <input type="password" id="password" name="password" value="" placeholder="">
+        </div>
+    </li>
+
+    <li class="checkbox">
+    <div class="row">
+        <div class="col-xs-6">
+            <input id="sameAddress" name="rememberMe" type="checkbox" checked="checked"/>
+            <label for="sameAddress"><span class="label-body">Remember me</span></label>
+        </div>
+        <div class="col-xs-6">
+            <button class="button caps">Login</button>
+        </div>
+    </div>
+    </li>
+    <p><a href="{{ siteUrl }}account/login/password">Forgot your password?</a></p>
+
+</form>

@@ -1,0 +1,18 @@
+
+<div class="col-lg-3 col-md-3 col-sm-4">
+    {% if entry.thumbnailImage | length %}
+        {% set image = entry.thumbnailImage.first %}
+        <img src="{{ image.getUrl(thumb) }}" alt="{{ image.altText}}">
+    {% elseif entry.svgThumbnail is defined and entry.svgThumbnail != "" %}
+		<div class="boxlink light single" id="box-{{ entry.slug }}">
+			<h3>{{ entry.title }}</h3>
+			{% include "_svgs/_" ~ entry.svgThumbnail %}
+		</div>
+    {% endif %}
+</div>
+<div class="col-lg-7 col-md-9 col-sm-8">
+	<h2>
+		{{ entry.title }}
+	</h2>
+	{% include "classes/_incs/_tabs" %}
+</div>

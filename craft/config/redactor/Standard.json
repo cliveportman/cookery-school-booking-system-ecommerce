@@ -1,0 +1,5 @@
+{
+	"formatting": ["h3", "h4", "p"],
+	"buttons": ["format","bold","italic","lists","link","file"],
+	"plugins": ["source","fullscreen"]
+}

@@ -1,0 +1,8 @@
+
+
+{% set product = craft.commerce.products.id(craft.request.getSegment(3)).first %}
+{% if product | length %}
+  {% set variant = product.defaultVariant %}
+{% endif %}
+
+{{ dump(product) }}

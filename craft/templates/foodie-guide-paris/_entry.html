@@ -1,0 +1,149 @@
+{% set breadcrumbEntries = [] %}
+{% set parentOverview = craft.entries.section('overviewFoodieGuideParis').first %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([parentOverview]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+
+{% if entry.metaTitle is defined and entry.metaTitle | length %}
+    {% set metaTitle = entry.metaTitle %}
+{% else %}
+    {% set metaTitle = "La Cuisine, Paris - cooking classes and food tours in the heart of Paris" %}
+{% endif %}
+{% if entry.metaDescription is defined and entry.metaDescription | length %}
+    {% set metaDescription = entry.metaDescription %}
+{% else %}
+    {% set metaDescription = "" %}
+{% endif %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+		{% set tabs = { 'overview': parentOverview, 'channel': 'foodieGuideParis' } %}
+		{% include "_incs/_subnav" with tabs %}
+	</header>
+	<div class="row">
+		{% switch entry.type %}
+
+			{% case "books" %}
+				{% if entry.foodGuideIntroduction | length %}
+					<div class="col-md-6">
+						{{ entry.foodGuideIntroduction }}
+					</div>
+				{% endif %}
+				{% if entry.books | length %}
+					{% set bookImage = { mode: 'fit', width: 200 } %}
+					<div class="col-md-12">
+						<div class="row">
+							{% for book in entry.books %}
+								<article class="bookarticle col-md-2 col-sm-3 col-xs-6">
+									<div class="matchheight">
+										{% set bookCover = book.bookCover.first %}
+										<img src="{{ bookCover.getUrl(bookImage) }}" alt="{{ book.bookTitle }}">
+									</div>
+									<ul>
+										<li>Author: {{ book.bookAuthor }}</li>
+										<li>Title: {{ book.bookTitle }}</li>
+										{% if book.publisher | length %}
+											<li>Publisher: {{ book.publisher }}</li>
+										{% endif %}
+										{% if book.linkUrl | length %}
+											<li><a href="{{ book.linkUrl }}">{% if book.linkText | length %}{{ book.linkText }}{% else %}Find out more{% endif %}</a></li>
+										{% endif %}
+									</ul>
+								</article>
+								{% if loop.index is divisible by(6) %}
+									<div class="col-md-12 hidden-sm"></div>
+								{% endif %}
+								{% if loop.index is divisible by(4) %}
+									<div class="hidden-lg hidden-md col-sm-12"></div>
+								{% endif %}
+							{% endfor %}
+						</div>
+					</div>
+				{% endif %}
+
+			{% case "blogs" %}
+				{% if entry.foodGuideIntroduction | length %}
+					<div class="col-md-6">
+						{{ entry.foodGuideIntroduction }}
+					</div>
+				{% endif %}
+				{% if entry.blogs | length %}
+				<div class="col-md-12">
+					{% for blog in entry.blogs %}
+						<article class="blogsnippet external">
+							<div class="row">
+								<div class="col-md-10 col-sm-12">
+									<h3><a href="{{ blog.blogUrl }}" target="_blank">{{ blog.blogTitle }}</a></h3>
+									<p class="excerpt">{{ blog.shortDescription | nl2br }}</p>
+									<a href="{{ blog.blogUrl }}" target="_blank" class="readmore">Visit site</a>
+								</div>
+							</div>
+						</article>
+					{% endfor %}
+				</div>
+				{% endif %}
+
+			{% case "terms" %}
+					<div class="col-md-8 col-sm-8">
+						{% if entry.foodGuideIntroduction | length %}
+							<div class="row">
+								<div class="col-md-9">
+									{{ entry.foodGuideIntroduction }}
+								</div>
+							</div>
+						{% endif %}
+						{% if entry.foodTerms | length %}
+							<div class="row">
+								<div class="col-md-9 col-md-push-3">
+									<dl id="foodterms">
+										{% for row in entry.foodTerms %}
+											<dt>{{ row.french }}</dt>
+											<dd>{{ row.english }}</dd>
+										{% endfor %}
+									</dl>
+								</div>
+							</div>
+						{% endif %}
+					</div>
+					{% if entry.furtherReading | length %}
+						<div class="col-md-4 col-sm-4" id="furtherreading">
+							<h3>Further reading</h3>
+							{% for row in entry.furtherReading %}
+							<a href="{{ row.linkUrl }}" target="_blank">{{ row.linkText }}</a>
+							{% endfor %}
+						</div>
+					{% endif %}
+
+			{% case "glossary" %}
+						{% if entry.foodGuideIntroduction | length %}
+							<div class="col-md-6">
+								{{ entry.foodGuideIntroduction }}
+							</div>
+						{% endif %}
+						{% if entry.glossary | length %}
+								<div class="col-md-8 col-md-push-2">
+									<dl id="glossary">
+										{% for block in entry.glossary %}
+											<dt>{{ block.phrase }}</dt>
+											<dd>{{ block.explanation }}</dd>
+										{% endfor %}
+									</dl>
+								</div>
+						{% endif %}
+					</div>
+
+			{% default %}
+				{% include "_incs/_commonContent/_index" %}
+
+
+		{% endswitch %}
+	</div>
+
+</div>
+
+{% endblock %}

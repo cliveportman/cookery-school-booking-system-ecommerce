@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% if metaTitle is defined %}{{ metaTitle }}{% endif %}</title>
+    <meta name="description" content="{% if metaDescription is defined %}{{ metaDescription }}{% endif %}">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <link href="/lacuisine-1.2.min.css?v=1.56" rel="stylesheet">
+    {% include "_incs/_headJs" %}
+    <link rel="canonical" href="{{ siteUrl }}{{ craft.request.path }}" />
+    <meta property="og:title" content="{% if metaTitle is defined %}{{ metaTitle }}{% endif %}">
+    <meta property="og:description" content="{% if metaDescription is defined %}{{ metaDescription }}{% endif %}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ craft.request.getUrl() }}">
+    {#<meta property="og:image" content="/img/logo-1200x630.png">#}
+
+</head>
+
+<body>
+{% spaceless %}
+{% if currentUser and currentUser.can('accessCp') %}
+
+	<pre class="hidden-sm hidden-xs">Only logged-in users with access to the control panel can see this | <a href="{{ siteUrl }}admin">Click here to access the Control Panel</a> | User: {{ currentUser.username }} | Server: 178.79.150.243</pre>
+
+{% endif %}
+
+{% set thumb = { mode: 'crop', width: 600, height: 600 } %}
+{% set blogThumb = { mode: 'crop', width: 480, height: 480 } %}
+{% set contactDetails = craft.entries.section('contact').first %}
+{% set cart = craft.commerce.cart %}
+
+{% endspaceless %}
+
+{% if globalNotice.showGlobalNotice == 1 %}
+    {% include "_incs/_globalNotice" %}
+<script>
+var initGlobalNoticeFunction = true;
+</script>
+{% endif %}
+
+
+<header class="sitewide">    
+<div class="container">
+
+    <div class="row hidden-lg hidden-md" id="toprow">
+        <div class="col-sm-11 col-xs-10">
+            <a id="headercartlink-xs" class="" href="{{ siteUrl }}cart">
+                {% include '_svgs/_cart' %}
+                Cart
+            </a>
+
+            {% if currentUser %}
+            <a href="{{ siteUrl }}account" id="headeruser-xs" class="user-loggedin">
+                <div class="usericon">
+                    {% include '_svgs/_userFill' %}
+                </div>
+                <span>{{ user.name }}</span> Logout
+            </a>
+            {% else %}
+            <a href="{{ siteUrl }}account" id="headeruser-xs" class="user-loggedout">
+                <div class="usericon">
+                    {% include '_svgs/_userOutline' %}
+                </div>
+                Login
+            </a>
+            {% endif %}
+        </div>
+        <div class="col-sm-1 col-xs-2">         
+            <a href="#" id="menubutton" class="btn-navbar collapsed hidden-lg hidden-md" data-toggle="collapse" data-target="#mainnav">
+                {% include '_svgs/_hamburger' %}
+            </a>
+        </div>
+    </div>
+
+    <nav id="mainnav" class="nav-collapse collapse row">
+
+        <div class="col-md-12 col-md-push-0 col-sm-8 col-sm-push-2 col-xs-12 col-xs-push-0">
+            <a href="{{ siteUrl }}paris-cooking-classes" class="{% if craft.request.getSegment(1) == "paris-cooking-classes" %}active{% endif %} hidden-lg hidden-md">Paris Cooking Classes</a>
+            <a href="{{ siteUrl }}paris-patisserie-baking-classes" class="{% if craft.request.getSegment(1) == "paris-cooking-classes" %}active{% endif %} hidden-lg hidden-md">Paris Patisserie &amp; Baking Classes</a>
+            <a href="{{ siteUrl }}paris-food-tours" class="{% if craft.request.getSegment(1) == "paris-cooking-classes" %}active{% endif %} hidden-lg hidden-md">Paris Food Tours</a>
+            <a href="{{ siteUrl }}calendar" class="{% if craft.request.getSegment(1) == "calendar" %}active{% endif %}">Calendar</a>
+            <a href="{{ siteUrl }}about-us/our-location" class="{% if craft.request.getSegment(1) == "about/our-location" %}active{% endif %}">Our Location</a>
+            <a href="{{ siteUrl }}about-us" class="{% if craft.request.getSegment(1) == "about-us" %}active{% endif %}">About Us</a>
+            <a href="{{ siteUrl }}blog" class="{% if craft.request.getSegment(1) == "blog" %}active{% endif %}">Blog</a>
+            <a href="{{ siteUrl }}shop" class="{% if craft.request.getSegment(1) == "shop" %}active{% endif %}">Online Store</a>
+            <a href="{{ siteUrl }}private-events" class="{% if craft.request.getSegment(1) == "private-events" %}active{% endif %}">Private Events</a>
+            <a href="{{ siteUrl }}contact" class="{% if craft.request.getSegment(1) == "contact" %}active{% endif %}">Contact</a>
+        </div>
+
+    </nav>
+
+    <div class="row">
+        <div class="col-md-3 hidden-sm hidden-xs">
+            <a href="{{ siteUrl }}calendar" id="headercalendarlink-md">
+                <p class="title">Calendar</p>
+                <p class="date">{{ now | date('j M') }}</p> 
+            </a>  
+            <section id="headersocial">
+                <a class="social facebook" href="{{ contactDetails.facebookUrl }}" target="_blank">{% include "_svgs/_facebook" %}</a>
+                <a class="social twitter" href="{{ contactDetails.twitterUrl }}" target="_blank">{% include "_svgs/_twitter" %}</a>
+                <a class="social instagram" href="{{ contactDetails.instagramUrl }}" target="_blank">{% include "_svgs/_instagram" %}</a>
+            </section>
+
+        </div>
+        <div class="col-md-4 col-md-push-1 col-sm-6 col-sm-push-3 col-xs-10 col-xs-push-1">
+            <h1 id="sitelogo"><a href="{{ siteUrl }}">{% include '_svgs/_logo' %}</a></h1>
+        </div>
+        <div class="col-md-4 col-md-push-1 col-xs-12">
+            <a href="{{ siteUrl }}cart" id="headercartlink-md" class="hidden-sm hidden-xs">
+                <div class="carticon">
+                    {% include '_svgs/_cart' %}
+                </div>
+                <p>
+                    <span class="caps">Your cart</span><br>
+                    (<span class="headercart-numitems">{{ cart.totalQty }}</span>) items</br>
+                    <span class="headercart-total">{{ ((cart.totalPrice - cart.totalTax) - cart.totalShippingCost) | currency(cart.currency) }}</span> <span class="underline">Checkout</span>
+                </p>
+            </a>
+
+            <p id="englishspeakingsticker" class="hidden-sm hidden-xs">Classes in English</p>
+
+            {% if currentUser %}
+            <a href="{{ siteUrl }}account" id="headeruser-md" class="user-loggedin hidden-sm hidden-xs">
+                <div class="usericon">
+                    {% include '_svgs/_userFill' %}
+                </div>
+                <p>{{ user.name }}<br><span class="underline">Account / Logout</span></p>
+            </a>
+            {% else %}
+            <a href="{{ siteUrl }}account" id="headeruser-md" class="user-loggedout hidden-sm hidden-xs">
+                <div class="usericon">
+                    {% include '_svgs/_userOutline' %}
+                </div>
+                <p><span class="underline">Login / Register</span></p>
+            </a>
+            {% endif %}
+
+            <div id="headercontactdetails">
+                <a href="tel:{{ contactDetails.tel }}">{{ contactDetails.tel }}</a>
+                <script type="text/javascript"><!--
+var nzabikl = ['t','c','@','o','l','.','/','t','>','e','p','=','s','c','a','m','c','s','a','i','"','t','e','r','r','@','a','e','o','a','l','s','t','c','=','t','c','e','m','o','a','s','n','u','i','i','h','o','"','l','"','<','u','f','a',' ','l','s','n','i','c','p',' ','c','m','a','c','i',':','<','i','a','c','.','n','>','i','i','a','a','"','a','l','n','r','s','o','m'];var vxdqifb = [19,26,65,14,66,80,85,64,87,74,75,49,71,81,53,52,44,79,46,70,42,13,5,35,77,23,62,51,17,34,45,47,22,16,7,61,39,32,9,82,25,37,18,69,78,36,3,59,8,55,50,0,27,6,10,2,24,29,60,54,58,33,43,21,83,76,63,28,15,84,30,20,68,38,31,57,11,72,1,67,56,86,12,73,4,48,40,41];var uytghtr= new Array();for(var i=0;i<vxdqifb.length;i++){uytghtr[vxdqifb[i]] = nzabikl[i]; }for(var i=0;i<uytghtr.length;i++){document.write(uytghtr[i]);}
+// --></script>
+<noscript>Please enable Javascript to see the email address</noscript>
+            </div>
+        </div>
+    </div>
+
+    {% include "_incs/_mainClassLinks" %}
+
+</div>
+</header>
+
+<section class="main">
+{% block content %}{% endblock %}
+</section>
+
+
+<div class="container">    
+
+
+
+    {% if craft.request.firstSegment != "cart" and craft.request.firstSegment != "checkout" and craft.request.firstSegment != "orders" and craft.request.firstSegment != "account" %}
+        {% include "_incs/_boxes" %}
+    {% endif %}
+
+    {% if craft.request.firstSegment == "" or craft.request.firstSegment == "paris-cooking-classes" or craft.request.firstSegment == "paris-baking-patisserie-classes" or craft.request.firstSegment == "paris-food-tours" %}
+        {% include "_incs/_lastMinutePlaces" %}
+    {% endif %}
+
+
+
+{% cache globally for 1 day %}
+
+        {% set articles = craft.entries.section('blog').limit(1) %}
+        {% set vars = { 'context': 'sitewide' } %}        
+        {% include "blog/_incs/_blogSnippet" with vars %}
+        {% if craft.request.firstSegment != 'newsletter' %}
+            {% include "_incs/_subscribe" %}
+        {% endif %}
+
+    {% set vars = { 'tel': contactDetails.tel, 'email': contactDetails.email } %}
+    {% include "_incs/_getInTouch" with vars %}
+
+    {% if craft.request.firstSegment != "cart" and craft.request.firstSegment != "checkout" %} 
+        {% include "_incs/_instagramFeed" %}
+    {% endif %}       
+
+    <footer class="sitewide">
+        <div class="row">
+            <div class="col-md-4 col-sm-5 col-xs-12" id="tripadvisorwidgets">
+                {% include "_incs/_tripAdvisorWidgets" %}
+            </div>
+            <div class="col-md-5 col-sm-7 col-xs-12">
+                <p>{#<a href="{{ siteUrl }}about/sitemap">Sitemap</a> / #}<a href="{{ siteUrl }}about-us/faqs">FAQs</a> / <a href="{{ siteUrl }}about-us/cancellation-policy">Cancellation Policy</a> / <a href="{{ siteUrl }}about-us/terms">Terms</a> / <a href="{{ siteUrl }}about-us/how-handle-your-privacy">Privacy</a></p>
+                <p>&copy; La Cuisine Paris</p>
+                <p>La Cuisine Paris, {{ contactDetails.address }}</p>
+                <p><a href="http://specialdesignstudio.co.uk" target="_blank">Site by Special Design Studio</a></p>
+            </div>
+
+            <div class="col-md-3 col-xs-12">     
+                <section id="footersocial">
+                    <a class="social facebook" href="{{ contactDetails.facebookUrl }}" target="_blank">{% include "_svgs/_facebook" %}</a>
+                    <a class="social twitter" href="{{ contactDetails.twitterUrl }}" target="_blank">{% include "_svgs/_twitter" %}</a>
+                    <a class="social instagram" href="{{ contactDetails.instagramUrl }}" target="_blank">{% include "_svgs/_instagram" %}</a>
+                </section>
+            </div>
+        </div>
+    </footer>
+{% endcache %}
+
+</div>
+
+<div id="fb-root"></div>
+<script>head.js("{{ siteUrl }}js/lacuisine.js?v=1.54.1");</script>
+
+</body>
+</html>

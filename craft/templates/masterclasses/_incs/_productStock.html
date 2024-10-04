@@ -1,0 +1,9 @@
+{% if product.defaultVariant.stock == 0 %}
+	Fully booked
+{% elseif product.defaultVariant.stock == 1 %}
+	1 place left
+{% elseif product.defaultVariant.stock < 5 %}
+	{{ product.defaultVariant.stock }} places left
+{% else %}
+	5+ places left
+{% endif %}

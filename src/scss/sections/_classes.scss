@@ -1,0 +1,139 @@
+#classheader {
+	margin-bottom: 2rem;
+}
+#classheader img {
+	margin-bottom: 1rem;
+}
+@media (min-width: $sm) {
+#classheader img {
+	margin-bottom: 0;
+}
+}
+
+.classsnippet {
+	padding-bottom: 1rem; margin-bottom: 1rem;
+	border-bottom: 1px solid #ccc;
+}
+
+.productsnippet {
+	padding-bottom: 1rem; margin-bottom: 1rem;
+	border-bottom: 1px solid #ccc;
+}
+	.productsnippet h2 {
+		margin: 0; padding: 0;
+		@include font('serif', 'heading', $highlightColor); line-height: 1.4em;
+	}
+		.productsnippet h2 a {
+			color: inherit; text-decoration: underline;
+		}
+		.productsnippet h2 a:focus, .productsnippet h2 a:hover, .productsnippet h2 a:active {
+			color: $highlightColorActive;
+		}
+	.productsnippet ul {
+		margin: 0 0 1rem; padding: 0;
+		@include font('serif', 18, $highlightColor);
+	}
+		.productsnippet li, .productsnippet li p {
+			margin: 0; padding: 0; list-style-type: none;
+			@include font('serif', 18, $textColor); line-height: 1.4em;
+		}
+		.productsnippet .time, .productsnippet .stock {
+			display: block;
+		}
+		.productsnippet .cat-title {
+			font-style: italic;
+		}
+			.productsnippet .cat-title .class-title {
+				font-style: normal;
+			}
+@media (min-width: $sm) {
+	.productsnippet ul {
+		@include font('serif', 'heading', $highlightColor);
+	}
+		.productsnippet li {
+			@include font('serif', 16, $textColor);
+		}
+}
+@media (min-width: $md) {
+.productsnippet {
+}
+	.productsnippet h2 {
+		margin: 0; padding: 0;
+		@include font('serif', 'heading', $highlightColor); line-height: 1.4em;
+	}
+		.productsnippet h2 a {
+			color: inherit; text-decoration: underline;
+		}
+		.productsnippet h2 a:focus, .productsnippet h2 a:hover, .productsnippet h2 a:active {
+			color: $highlightColorActive;
+		}
+	.productsnippet ul {
+		margin: 0; padding: 0;
+		@include font('serif', 'heading', $highlightColor);
+	}
+		.productsnippet li {
+			margin: 0; padding: 0; list-style-type: none;
+			@include font('serif', 18, $textColor); line-height: 1.4em;
+		}
+		.productsnippet li.location {
+			margin: 10px 0 0;
+		}
+		.productsnippet li:first-of-type {
+			@include font('serif', 24, $textColor);
+		}
+		.productsnippet .time, .productsnippet .stock {
+			display: inline;
+		}
+		.productsnippet .stock {
+			padding-left: 1rem;
+		}
+}
+
+.viewmoredates {
+	display: block;
+	padding-top: 1rem;
+	@include font('sans', 16, $textColor);
+}
+.viewmoredates:focus, .viewmoredates:hover, .viewmoredates:active {
+	color: $highlightColor;
+}
+
+#lastminuteplaces {
+	margin-bottom: 2rem;
+}
+	#lastminuteplaces h2 {
+	    margin-bottom: 1rem; padding-bottom: 0.5rem;
+	    @include font('serif', 'heading', $textColor, 'italic'); text-align: center; line-height: 1.2em;
+		border-bottom: 10px solid $tintColor;
+	}
+		#lastminuteplaces .productsnippet h3 {
+			margin: 0; padding: 0;
+			@include font('serif', 'heading', $highlightColor); line-height: 1.4em;			
+		}
+		#lastminuteplaces .productsnippet li.cat-title {
+			@include font('serif', 'heading', $textColor, 'italic'); line-height: 1.4em;			
+		}
+		#lastminuteplaces .productsnippet li.class-title {
+			@include font('serif', 'heading', $textColor); line-height: 1.4em;			
+		}
+@media (min-width: $md) {
+	#lastminuteplaces .productsnippet h3 {
+		@include font('serif', 'big', $highlightColor);		
+	}
+	#lastminuteplaces .productsnippet li.cat-title {
+		@include font('serif', 'heading', $textColor, 'italic');			
+	}
+	#lastminuteplaces .productsnippet li.class-title {
+		@include font('serif', 'big', $textColor);		
+	}
+}
+
+#product img {
+	margin-bottom: 1rem;
+}
+
+
+
+.recipientname {
+	line-height: 2.5rem;
+}

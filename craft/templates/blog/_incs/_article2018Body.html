@@ -1,0 +1,69 @@
+
+{% if entry.mainArticle2018 | length %}
+<div id="articlebody">
+{% set fullImage = { mode: 'fit', width: 1000 } %}
+{% set halfImage = { mode: 'fit', width: 600 } %}
+
+{% for block in entry.mainArticle2018 %}
+{% if not (loop.first and block.type == 'textOnly') %}
+{% switch block.type %}
+
+	{% case "textOnly" %}
+		<div class="row">
+			<div class="col-md-12">
+				{{ block.text }}
+			</div>
+		</div>
+
+	{% case "imageOnly" %}
+		<div class="row">
+			<div class="col-md-12">
+				{% for image in block.images %}
+				  <img src="{{ image.getUrl(fullImage) }}" alt="{{ image.altText }}">
+				  {% if image.caption | length %}<p class="caption">{{ image.caption }}</p>{% endif %}
+        {% endfor %}
+			</div>
+		</div>
+
+  {% case "imageLeftTextRight" %}
+    <div class="row">
+      <div class="col-md-6 col-sm-6">
+        {% set image = block.image.first %}
+        <img src="{{ image.getUrl(fullImage) }}" alt="{{ image.altText }}">
+        {% if image.caption | length %}<p class="caption">{{ image.caption }}</p>{% endif %}
+      </div>
+      <div class="col-md-6 col-sm-6">
+        {{ block.text }}
+      </div>
+    </div>
+
+  {% case "textLeftImageRight" %}
+    <div class="row">
+      <div class="col-md-6 col-sm-6">
+        {{ block.text }}
+      </div>
+      <div class="col-md-6 col-sm-6">
+        {% set image = block.image.first %}
+        <img src="{{ image.getUrl(fullImage) }}" alt="{{ image.altText }}">
+        {% if image.caption | length %}<p class="caption">{{ image.caption }}</p>{% endif %}
+      </div>
+    </div>
+
+	{% case "video" %}
+		<div class="row">
+			<div class="col-md-8 col-md-push-2">
+				<figure class="videoWrapper {% if block.caption | length %}withcaption{% endif %}">
+					<iframe width="1180" height="664" src="https://www.youtube.com/embed/{{ block.youtubeVideoHash }}?rel=0" frameborder="0" allowfullscreen></iframe>
+				</figure>
+				{% if block.caption | length %}<p class="caption">{{ block.caption }}</p>{% endif %}
+			</div>
+		</div>
+
+{% endswitch %}
+{% endif %}
+{% endfor %}
+</div>
+
+{% endif %}
+
+      

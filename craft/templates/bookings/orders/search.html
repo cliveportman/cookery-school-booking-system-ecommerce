@@ -1,0 +1,98 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% if day is not defined and month is defined %}
+  {% set day = '01' %}
+{% elseif day is not defined %}
+  {% set day = now | date('d') %}
+{% endif %}
+
+{% if month is not defined %}
+  {% set month = now | date('m') %}
+{% endif %}
+
+{% if year is not defined %}
+  {% set year = now | date('Y') %}
+{% endif %}
+
+{% set metaTitle =  'Orders' %}
+
+{% extends "bookings/_layout" %}
+
+{% set query = craft.request.getParam('q') %}
+
+
+{% block content %}
+
+
+<div class="ui masthead vertical">
+<div class="ui container">
+  <h1 class="ui header">
+    <i class="bullseye icon"></i>          
+            Orders
+  </h1>
+</div>
+</div>
+
+<div class="ui container">
+    <div class="ui column grid">
+      <div class=" four wide column">
+      </div>
+      <div class="eight wide column">
+      </div>
+      <div class=" four wide column">
+        <form action="{{ siteUrl }}bookings/orders/search" method="post">
+          <input type="search" name="q" placeholder="Search by name or email">
+          <input type="submit" value="Go">
+        </form>
+      </div>
+    </div>
+
+    <div class="ui one column grid">
+      <div class="column">
+
+        <table class="ui selectable very basic table">
+          <thead>
+            <tr>
+              <th><i class="bullseye icon"></i> Order number </th>
+              <th>Customer</th>
+              <th>Order value</th>
+              <th>Quantity</th>
+              <th>Links</th>
+              <th>Order date/time</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% set orders = craft.commerce.orders.search(query).order('score').limit(100) %}
+
+          {% if orders | length %}
+            {% for order in orders %}
+              {% set address = order.shippingAddress %}
+              <tr id="{{ order.shortNumber }}" class="{% if order.orderStatus.id == 3 %}cancelled{% endif %}">
+                <td><p><strong><i class="bullseye icon"></i> #{{ order.shortNumber }} </strong></p></td>
+                <td>{{ address.firstName }} {{ address.lastName }}
+                {% if order.orderMessage | length %}<br><em>{{ order.orderMessage }}</em>{% endif %}
+                </td>
+                <td id="{{ order.shortNumber }}">{{ order.totalPrice | currency(order.currency) }} &nbsp;&nbsp;&nbsp; {% if order.isPaid %}<span class="green">PAID</span>{% else %}<span class="red">UNPAID</span>{% endif %}</td>
+                <td class="qty">{{ order.totalQty }}</td>
+                <td><a class="showOrderModal" data-url="{{ siteUrl }}modal/order-expanded/{{ order.number }}"> View order </a></td>
+                <td>{{ order.dateOrdered | date('j F Y') }} / {{ order.dateOrdered | date('g.ia') }}</td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr><td><p><strong>No results.</strong></p></td></tr>
+          {% endif %}
+          </tbody>
+        </table>
+
+
+
+
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

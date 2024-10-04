@@ -1,0 +1,234 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set metaTitle = 'Products' %}
+
+
+
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+
+{% set overviews = craft.entries.section('classes').type('overview') %}
+{% if year is not defined %}
+  {% set year = now | date('Y') %}
+{% endif %}
+
+{% if craft.request.getSegment(4) | length and month is defined %}
+  {% set firstDayOfMonth = (year ~ '-' ~ month ~ '-01') | date('Y-m-d') %}
+  {% set lastDayOfMonth = firstDayOfMonth | date('t') %}
+  {% set startDate = year ~ '-' ~ month ~ '-01' ~ ' 00:00:00' %}
+  {% set endDate = year ~ '-' ~ month ~ '-' ~ lastDayOfMonth ~ ' 23:59:59' %}
+{% else %}
+  {% set startDate = year ~ '-01-01' %}
+  {% set endDate = year ~ '-12-31' %}
+{% endif %}
+
+{% set vars = {
+  "startDate": startDate,
+  "endDate": endDate,
+} %}
+{% set totalSales = craft.salesFigures.getTotalSales(vars) %}
+
+
+
+<div class="ui masthead vertical">
+<div class="ui container">
+      <h1 class="ui header">
+        <i class="line chart icon"></i>Reports / Sales in {{ craft.request.getSegment(4) | length and month is defined ? date(year ~ '-' ~ month ~ '-01') | date('F') }} {{ year }}
+      </h1>
+</div>
+</div>
+
+<div class="ui container">
+
+  <div class="ui column grid">
+    <div class="ten wide column">
+      <h2>Total sales: &nbsp;&nbsp;&nbsp;&nbsp;{{ totalSales | commerceCurrency('EUR') }}</h2>
+
+      {% cache for 1 hour %}
+      {% for overview in overviews %}
+        {% if overview.id == 24 or overview.id == 41 %}
+          <h3 class="ui header">{{ overview.title }}</h3>
+          {% set categories = craft.entries.section('classes').type('category').descendantOf(overview.id).limit(NULL) %}
+          {% for category in categories %}
+          <div class="ui segment">
+          <table class="ui selectable very basic table">
+            <thead>
+              <tr>
+                <th class="ten wide">{{ category.title }}</th>
+                <th class="three wide">Sales (n)</th>
+                <th class="three wide">Sales (&euro;)</th>
+              </tr>
+            </thead>
+            <tbody>                
+              {% set classes = craft.entries.section('classes').descendantOf(category.id).limit(NULL) %}
+              {% for class in classes %}
+                <tr id="row{{ class.id }}" class="salesreport row" data-url="{{ siteUrl }}reports/fetch/{{ class.id }}/{{ startDate | date('Y-m-d') }}/{{ endDate | date('Y-m-d') }}">
+                  <td class="title">{{ class.title }}</td>
+                  <td class="sales-number loader"><div class="ui mini active loader"></div></td>
+                  <td class="sales-value"><div class="ui mini active loader"></div></td>
+                  <style>
+                  td.loader {
+                    text-align: left;
+                  }
+                  td .ui.loader {
+                    position: relative;
+                    margin: 0; left: 0.5rem; top: 0.6rem;
+                  }
+                </style>
+                </tr>
+              {% endfor %}
+              {########
+              <tr>
+                <td></td>
+                <td><strong>Total number</strong></td>
+                <td><strong>Total value</strong></td>
+              </tr>
+              ########}
+            </tbody>
+          </table>
+          </div>
+          {% endfor %}
+        {% endif %}
+
+        
+        
+        {% if overview.id == 45 %}
+          <h3 class="ui header">{{ overview.title }}</h3>
+          {% set classes = craft.entries.section('classes').descendantOf(overview.id).limit(NULL) %}
+          <div class="ui segment">
+          <table class="ui selectable very basic table">
+            <thead>
+              <tr>
+                <th class="ten wide"></th>
+                <th class="three wide">Sales (n)</th>
+                <th class="three wide">Sales (&euro;)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for class in classes %}
+                <tr id="row{{ class.id }}" class="salesreport row" data-url="{{ siteUrl }}reports/fetch/{{ class.id }}/{{ startDate | date('Y-m-d') }}/{{ endDate | date('Y-m-d') }}">
+                  <td class="title">{{ class.title }}</td>
+                  <td class="sales-number loader"><div class="ui mini active loader"></div></td>
+                  <td class="sales-value"><div class="ui mini active loader"></div></td>
+                  <style>
+                  td.loader {
+                    text-align: left;
+                  }
+                  td .ui.loader {
+                    position: relative;
+                    margin: 0; left: 0.5rem; top: 0.6rem;
+                  }
+                </style>
+                </tr>
+              {% endfor %}
+              {########
+              <tr>
+                <td></td>
+                <td><strong>Total number</strong></td>
+                <td><strong>Total value</strong></td>
+              </tr>
+              ########}
+            </tbody>
+          </table>
+          </div>
+        {% endif %}
+        
+        {% if overview.id == 1988 %}
+
+          {% set classes = craft.entries.section('classes').descendantOf(overview.id).limit(NULL) %}
+          {% set privateSalesNumber = 0 %}
+          {% set privateSalesValue = 0 %}
+              {% for class in classes %}
+                  {% cache for 10 minutes %}
+                  {% set productIds = craft.commerce.products.relatedTo(class).date('and', '>= ' ~ startDate | date('Y-m-d'), '<= ' ~ endDate | date('Y-m-d')).limit(NULL).ids %}
+                  {% set vars = {
+                    "startDate": startDate | date('Y-m-d'),
+                    "endDate": endDate | date('Y-m-d'),
+                    "productIds": productIds
+                  } %}
+                  {% set sales = craft.salesFigures.getSalesByProduct(vars) %}
+                  {% set privateSalesNumber = privateSalesNumber + sales.totalSalesNumber %}
+                  {% set privateSalesValue = privateSalesValue + sales.totalSalesValue %}
+                  {% endcache %}
+              {% endfor %}
+          <h3 class="ui header">{{ overview.title }} classes</h3>
+          <div class="ui segment">
+          <table class="ui selectable very basic table">
+            <thead>
+              <tr>
+                <th class="ten wide"></th>
+                <th class="three wide">Sales (n)</th>
+                <th class="three wide">Sales (&euro;)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Private classes</td>
+                <td>{{ privateSalesValue | commerceCurrency('EUR') }}</td>
+                <td>{{ privateSalesNumber }}</td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% endcache %}
+    </div>
+
+
+
+
+
+
+    <div class="one wide column">
+    </div>
+
+    <div class="five wide column">
+      <h2 class="ui header">
+        View by year
+      </h2>
+      <div class="ui relaxed divided list">
+          <div class="item">
+            <div class="content">
+              <a href="{{ siteUrl }}reports/sales/2018" class="header">2018</a>
+            </div>
+          </div>
+          <div class="item">
+            <div class="content">
+              <a href="{{ siteUrl }}reports/sales/2017" class="header">2017</a>
+            </div>
+          </div>
+      </div>
+
+      {% set currentYear = now | date('Y') %}      
+      {% if currentYear == year %}
+        {% set lastMonth = now | date('m') %}
+      {% else %}
+        {% set lastMonth = 12 %}
+      {% endif %}
+      <h2 class="ui header">
+        View by month
+      </h2>
+      <div class="ui relaxed divided list">
+      {% for i in 1..lastMonth %}
+        {% set thisMonthWord = (year ~ '-' ~ i ~ '-01') | date('F') %}
+        {% set thisMonthNum = (year ~ '-' ~ i ~ '-01') | date('m') %}
+          <div class="item">
+            <div class="content">
+              <a href="{{ siteUrl }}reports/sales/{{ year }}/{{ thisMonthNum }}" class="header">{{ thisMonthWord }} {{ year }}</a>
+            </div>
+          </div>
+      {% endfor %}
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}

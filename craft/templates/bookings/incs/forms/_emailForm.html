@@ -1,0 +1,68 @@
+  <form method="post" accept-charset="UTF-8" class="ui form sendemailform">
+    <input type="hidden" name="action" value="emails/send/SendAll">
+    <input type="hidden" name="redirect" value="bookings/success">
+    {% for customer in customers %}
+      <input type="hidden" name="customers[{{ loop.index0 }}][name]" value="{{ customer.name }}">
+      <input type="hidden" name="customers[{{ loop.index0 }}][email]" value="{{ customer.email }}">
+    {% endfor %}
+    {% if purpose == 'waitingList' %}
+      <input type="hidden" name="entryIds" value="{{ craft.request.lastSegment }}">
+    {% endif %}
+
+    <div class="ui success message">
+      <div class="header">Email sent</div>
+      <p>The email has been sent successfully.</p>
+    </div>
+
+
+    <div class="ui error message">
+      <div class="header">Email not sent</div>
+      <p>There was a problem sending the email.</p>
+    </div>
+
+    <div class="fields">
+      <div class=" ten wide field">
+        <label>Subject</label>
+        <input type="text" name="subject" value="{{ purpose == 'waitingList' ? bookingsArea.waitingListEmailSubject : bookingsArea.defaultSubject }}">
+      </div>
+      <div class="six wide field">
+        <label style="color: white;">.</label>
+        <button class="ui pink right floated button">
+          Send email
+        </button>
+
+        {#<button class="ui cancel right floated button">
+          Cancel
+        </button>#}
+        </div>
+      </div>
+
+    {################
+    <div class="field">
+      <label>Greeting</label>
+      <input type="text" name="greeting" value="{{ bookingsArea.defaultGreeting }}">
+    </div>
+    #################}
+
+    <div class="field">
+      <label>Message</label>
+      <textarea rows="5" name="message" class="emailmessageredactor">{{ purpose == 'waitingList' ? bookingsArea.waitingListEmailMessage : bookingsArea.defaultMessage }}</textarea>
+    </div>
+
+    {##############
+    <div class="field">
+      <label>Signature</label>
+      <textarea rows="2" name="signature">{{ bookingsArea.defaultSignature }}</textarea>
+    </div>
+    ###############}
+
+    {################
+    <div class="inline field">
+      <div class="ui checked checkbox">
+        <input type="checkbox" checked tabindex="0" class="hidden">
+        <label>Include link to macaron recipe?</label>
+      </div>
+    </div>
+    ################}
+    
+  </form>

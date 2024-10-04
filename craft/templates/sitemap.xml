@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<url>
+    <loc>{{ siteUrl }}</loc>
+</url>
+<url>
+    <loc>{{ siteUrl }}calendar</loc>
+</url>
+<url>
+    <loc>{{ siteUrl }}calendar/list</loc>
+</url>
+
+{% cache for 1 day %}
+{% set classes = craft.entries.section('classes').id('not 1988').limit(NULL) %}
+{% for class in classes %}
+	{% set parentOverview = craft.entries.section('classes').ancestorOf(class).type('overview').first %}
+	{% if not (parentOverview | length and parentOverview.id == 1988) %}
+		<url>
+		    <loc>{{ class.url }}</loc>
+		</url>
+	{% endif %}
+{% endfor %}
+{% endcache %}
+
+{% cache for 1 day %}
+{% set products = craft.commerce.products.limit(NULL) %}
+{% for product in products %}
+	{% set class = craft.entries.section('classes').relatedTo(product).first %}
+	{% set parentOverview = craft.entries.section('classes').ancestorOf(class).type('overview').first %}
+	{% if not (parentOverview | length and parentOverview.id == 1988) %}
+		<url>
+		    <loc>{{ product.url }}</loc>
+		</url>
+	{% endif %}
+{% endfor %}
+{% endcache %}
+
+{% cache for 1 day %}
+{% set aboutPages = craft.entries.section('aboutUs').limit(NULL) %}
+{% for page in aboutPages %}
+	<url>
+	    <loc>{{ page.url }}</loc>
+	</url>
+{% endfor %}
+
+{% set blogPages = craft.entries.section('blog').limit(NULL) %}
+{% for page in blogPages %}
+	<url>
+	    <loc>{{ page.url }}</loc>
+	</url>
+{% endfor %}
+{% set cats = craft.categories.group('blogCategories') %}
+{% for cat in cats %}
+	<url>
+	    <loc>{{ cat.url }}</loc>
+	</url>
+{% endfor %}
+{% set allArticles = craft.entries.section('blog') %}
+{% set articlesByYear = allArticles | group("postDate | date('Y')") %}
+{% for year, articles in articlesByYear %}
+	<url>
+	    <loc>{{ siteUrl }}blog/archive/{{ year }}</loc>
+	</url>
+{% endfor %}
+
+{% set foodieGuideParisPages = craft.entries.section('foodieGuideParis').limit(NULL) %}
+{% for page in foodieGuideParisPages %}
+	<url>
+	    <loc>{{ page.url }}</loc>
+	</url>
+{% endfor %}
+{% endcache %}
+
+<url>
+    <loc>{{ siteUrl }}private-events</loc>
+</url>
+<url>
+    <loc>{{ siteUrl }}contact</loc>
+</url>
+</urlset>

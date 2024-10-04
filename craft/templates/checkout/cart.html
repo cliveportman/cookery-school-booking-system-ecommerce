@@ -1,0 +1,37 @@
+{% set metaTitle = "Cart / La Cuisine, Paris" %}
+
+{% set breadcrumbEntries = [] %}
+{% set item = {'title': 'Cart', 'url': siteUrl ~ '/cart'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+
+{% extends "_layout" %}
+
+{% block content %}
+<div class="container">
+
+    <section class="row" id="cart">
+    	
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+        <div class="col-md-12">
+            {% set vars = { 'updatable' : TRUE, 'cartPage' : TRUE } %}
+            {% include "checkout/_incs/_cartTable" with vars %}
+        </div>
+
+    </section>
+
+    <div class="row" style="padding-top: 40px;">
+    	<div class="col-md-12">
+
+    	{% set product = '' %}
+        {% for item in cart.lineItems %}
+            {% set product = item.purchasable.product %}
+        {% endfor %}
+        {% if product.date > now %}
+			{% include "classes/_incs/_similarClasses" %}
+		{% endif %}
+	</div>
+	</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,68 @@
+<section class="checkoutsection">
+    <h3>Save your details?</h3>
+    <form method="post" accept-charset="UTF-8" class="defaultform">
+    <div class="row">
+        <div class="col-md-7">
+                {{ getCsrfInput() }}
+                <input type="hidden" name="action" value="users/saveUser">
+                <input type="hidden" name="redirect" value="orders/thank-you/account/{{ order.number }}">
+
+                <input type="hidden" name="email" value="{{ order.email }}">
+
+                <p>Save your details with a password, here:</p>
+                {% macro errorList(errors) %}
+                    {% if errors %}
+                        <ul class="errors">
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endmacro %}
+
+                {% from _self import errorList %}
+
+                <li class="row">
+                    <div class="col-md-4 col-sm-3">
+                        <label for="firstName">First name</label>
+                    </div>
+                    <div class="col-md-8 col-sm-9">
+                        <input type="text" id="firstName" class="u-full-width" name="firstName" value="{{ order.shippingAddress.firstName }}" placeholder="Enter first name...">
+                    </div>
+                </li>
+                {% if account is defined %}
+                    {{ errorList(account.getErrors('firstName')) }}
+                {% endif %}
+
+                <li class="row">
+                    <div class="col-md-4 col-sm-3">
+                        <label for="lastName">Last name</label>
+                    </div>
+                    <div class="col-md-8 col-sm-9">
+                        <input type="text" id="lastName" class="u-full-width" name="lastName" value="{{ order.shippingAddress.lastName }}" placeholder="Enter first name...">
+                    </div>
+                </li>
+                {% if account is defined %}
+                    {{ errorList(account.getErrors('lastName')) }}
+                {% endif %}
+
+                <li class="row">
+                    <div class="col-md-4 col-sm-3">
+                        <label for="password1">Password</label>
+                    </div>
+                    <div class="col-md-8 col-sm-9">
+                        <input type="password" id="password1" class="u-full-width" name="password" value="" placeholder="Enter password...">
+                    </div>
+                </li>
+                {% if account is defined %}
+                    {{ errorList(account.getErrors('password')) }}
+                {% endif %}
+
+
+        </div>
+        <div class="col-md-5">
+            <button class="button caps">Save details</button>
+        </div>
+    </div>
+    </form>
+</section>

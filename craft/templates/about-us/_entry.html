@@ -1,0 +1,80 @@
+{% set breadcrumbEntries = [] %}
+{% set parentOverview = craft.entries.section('overviewAboutUs').first %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([parentOverview]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+
+{% if entry.metaTitle is defined and entry.metaTitle | length %}
+    {% set metaTitle = entry.metaTitle %}
+{% else %}
+    {% set metaTitle = "La Cuisine, Paris - cooking classes and food tours in the heart of Paris" %}
+{% endif %}
+{% if entry.metaDescription is defined and entry.metaDescription | length %}
+    {% set metaDescription = entry.metaDescription %}
+{% else %}
+    {% set metaDescription = "" %}
+{% endif %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+		{% set tabs = { 'overview': parentOverview, 'channel': 'aboutUs' } %}
+		{% include "_incs/_subnav" with tabs %}
+	</header>
+	<div class="row">
+		{% switch entry.type %}
+
+			{% case "testimonials" %}
+				<div class="col-md-12">
+					<div id="testimonials" class="clearfix">
+					{% if entry.leadTestimonials | length %}
+					{% for testimonial in entry.leadTestimonials %}
+						<blockquote>
+							<p>{{ testimonial.quote }}</p>
+							<cite>{{ testimonial.source }}</cite>
+							{% if testimonial.class | length %}
+								<a href="{{ testimonial.class.first.url }}">{{ testimonial.class.first.title }}</a>
+							{% endif %}
+						</blockquote>
+					{% endfor %}
+					{% endif %}
+					</div>
+				</div>
+				<div class="col-md-12">
+					<a href="{{ siteUrl }}about-us/testimonials/all" id="viewmoretestimonials">View more testimonials</a>
+				</div>
+				<div class="col-sm-7">
+					<h2 class="withline small">Trip Advisor</h2>
+					{{ entry.tripadvisorReviewsWidget | raw }}
+				</div>
+				<div class="col-sm-5">
+					<h2 class="withline small">Facebook</h2>
+					<div id="facebookpagefeed">
+						{{ entry.facebookPageWidget | raw }}
+					</div>
+				</div>
+
+			{% case "faqs" %}
+				<div class="col-md-8">
+					{% for faq in entry.faqs %}
+						<article class="faq">
+							<h3>{{ faq.question }}</h3>
+							{{ faq.answer }}
+						</article>
+					{% endfor %}
+				</div>
+
+
+			{% default %}
+			{% include "_incs/_commonContent/_index" %}
+
+		{% endswitch %}
+	</div>
+
+</div>
+
+{% endblock %}

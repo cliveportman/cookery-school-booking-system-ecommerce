@@ -1,0 +1,55 @@
+
+
+        <form class="defaultform participantsform clearfix" method="post">
+
+            <input type="hidden" name="action" value="registration/participants/UpdateParticipants">
+            <input type="hidden" name="orderId" value="{{ order.id }}">
+            {% if craft.request.lastSegment == 'account' %}
+                <input type="hidden" name="redirect" value="account/participants-updated">
+            {% else %}
+                <input type="hidden" name="redirect" value="orders/thank-you/participants/{{ order.number }}">
+            {% endif %}
+
+            <div class="col-md-12">
+                <h3>Name participants</h3>
+            </div>
+
+            <div class="col-md-4 col-sm-4">
+                <p>Please enter the names of all those attending the courses in this order.</p>
+                <p>If you're unsure, you can always return to this later and update the names again. To do that, click on the link within the order email.</p>
+            </div>
+
+            <div class="col-md-5 col-sm-8">
+                {% if order.registers | length %}
+                {% for register in order.registers %}
+                    {% set product = register.product.first %}
+                    <input type="hidden" name="products[{{ loop.index }}][register]" value="{{ register.id }}">
+                    <p><strong>{{ product.title }}</strong></p>
+                    <ul>
+                        {% for row in register.participants %}
+                            <input type="hidden" name="products[{{ loop.parent.loop.index }}][participants][{{ loop.index }}][present]" value="{{ row.present }}">
+                            <li class="row">
+                                <div class="col-md-4 col-sm-4">
+                                    <label for="participantName">Participant {{ loop.index }}</label>
+                                </div>
+                                <div class="col-md-8 col-sm-8">
+                                    <input type="text" id="participantName" class="u-full-width" name="products[{{ loop.parent.loop.index }}][participants][{{ loop.index }}][name]" value="{{ row.name }}">
+                                </div>
+                            </li>
+                        {% endfor %}
+                        <li class="row">
+                            <div class="col-md-4 col-sm-4">
+                                <label for="notes">Notes</label>
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <input type="text" id="notes" class="u-full-width" name="products[{{ loop.index }}][notes]" value="{{ register.notes }}">
+                            </div>
+                        </li>
+                    </ul>
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-md-3 col-md-push-0 col-sm-4 col-sm-push-4">
+                <button type="submit" class="button orange checkout">Save these names</button>
+            </div>
+            </form>

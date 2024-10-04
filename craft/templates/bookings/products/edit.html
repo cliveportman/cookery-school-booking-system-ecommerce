@@ -1,0 +1,32 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set metaTitle = 'Edit product' %}
+
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+<div class="ui masthead vertical">
+<div class="ui container">
+  <h1 class="ui header">
+    <i class="tag icon"></i>Edit list
+  </h1>
+</div>
+</div>
+
+<div class="ui container">
+
+    {% if craft.request.getSegment(4) %}
+  	  {% set product = craft.commerce.products.id(craft.request.getSegment(4)).first %}
+  	  {% if product | length %}
+  	    {% set variant = product.defaultVariant %}
+  	  {% endif %}
+  	{% endif %}
+    {% include "bookings/incs/forms/_productForm" %}
+
+</div>
+
+
+{% endblock %}

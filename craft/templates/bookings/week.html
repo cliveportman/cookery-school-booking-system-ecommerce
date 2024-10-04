@@ -1,0 +1,237 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% if day is not defined and month is defined %}
+  {% set day = '01' %}
+{% elseif day is not defined %}
+  {% set day = now | date('d') %}
+{% endif %}
+
+{% if month is not defined %}
+  {% set month = now | date('m') %}
+{% endif %}
+
+{% if year is not defined %}
+  {% set year = now | date('Y') %}
+{% endif %}
+
+{% set weekStartDate = date(year ~ '-' ~ month ~ '-' ~ day) %}
+
+{% set vars = {
+  'calendarStyle': 'calendar',
+  'calendarStartDate': weekStartDate | date('j F Y'),
+  'calendarWeekBegins': 'Monday',
+  'calendarLength': 'week'
+} %}
+{% set dates = craft.productsCalendar.getProducts(vars) %}
+
+{% set productIds = [] %}
+
+{% set metaTitle =  'w/b ' ~ dates.firstDay | date('j F Y') %}
+
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+<div class="ui masthead vertical">
+  <div class="ui container">
+    <h1 class="ui header">
+      <i class="columns layout icon"></i>          
+        {{ 'w/b ' ~ dates.firstDay | date('j F Y') }}          
+    </h1>
+  </div>
+</div>
+
+<div class="ui container">
+    <div class="ui column grid">
+      <div class=" four wide column">
+        <h3 class="ui header"><a href="{{ siteUrl }}week/{{ dates.firstDay | date_modify('-1 week') | date('Y/m/d') }}" class="previous pink"><i class="caret left icon"></i> w/b {{ dates.firstDay | date_modify('-1 week') | date('j F Y') }}</a></h3>
+      </div>
+      <div class="eight wide column">
+      </div>
+      <div class=" four wide column">
+        <h3 class="ui header"><a href="{{ siteUrl }}week/{{ dates.firstDay | date_modify('+1 week') | date('Y/m/d') }}" class="next pink">w/b {{ dates.firstDay | date_modify('+1 week') | date('j F Y') }} <i class="caret right icon"></i></a></h3>
+      </div>
+    </div>
+
+    <div class="ui one column grid">
+      <div class="column">
+
+        <table class="ui celled fixed table">
+          <thead>
+            <tr>
+              {% for productDay in dates.productDays %}
+                <th><a class="pink" href="{{ siteUrl }}day/{{ productDay.date | date('Y/m/d') }}">{{ productDay.date | date('D j F') }}</a>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody class="">
+
+            <tr>
+              {% for productDay in dates.productDays %}
+              <td>
+                {% for product in productDay.products %}
+
+                {% set productIds = productIds | merge([product.id]) %}
+
+                {% if product.startTime | date('Gi') < 1200 %}
+
+                  {% switch product.type %}
+
+                    {% case "class" %}
+                        {% set class = product.class.first %}
+                        {% set parent = class.getParent() %}
+                        {% set teacher = product.teacher.first %}
+                        {% set variant = product.defaultVariant %}
+                        {% set craftProduct = craft.commerce.products.type('class').id(product.id).first %}
+                        {% set waiting = craft.entries.section('waitingList').relatedTo(craftProduct) %}
+                        <a data-url="{{ siteUrl }}modal/class/{{ product.id }}" class="showClassModal month class-link class-link--class {% if variant.stock == 0 %} full{% endif %}">
+                        <h5 class="">{{ parent.title }} / {{ class.title }}</h5>
+                        <ul>
+                          <li>{{ product.startTime | date('g.ia') }}-{{ product.finishTime | date('g.ia') }}</li>
+                          <li>{% if teacher | length %}{{ teacher.name }}, {% endif %}{% if product.room != 'nA' %}{{ product.room.label }}{% endif %}</li>
+                          {% include "bookings/incs/_getNumberSold" %}                    
+                        </ul>
+                        </a>
+
+                    {% case "masterclass" %}
+                        {% set masterclass = product.masterclass.first %}
+                        {% set teacher = product.teacher.first %}
+                        {% set variant = product.defaultVariant %}
+                        {% set craftProduct = craft.commerce.products.type('class').id(product.id).first %}
+                        {% set waiting = craft.entries.section('waitingList').relatedTo(craftProduct) %}
+                        <a data-url="{{ siteUrl }}modal/class/{{ product.id }}" class="showClassModal month class-link class-link--masterclass {% if variant.stock == 0 %} full{% endif %}">
+                        <h5 class="">{{ masterclass.title }}</h5>
+                        <ul>
+                          <li>{{ product.startTime | date('g.ia') }}-{{ product.finishTime | date('g.ia') }}</li>
+                          <li>{% if teacher | length %}{{ teacher.name }}, {% endif %}{% if product.room != 'nA' %}{{ product.room.label }}{% endif %}</li>
+                          {% include "bookings/incs/_getNumberSold" %}                    
+                        </ul>
+                        </a>
+
+                  {% endswitch %}
+                  
+                {% endif %}
+                {% endfor %}
+              </td>
+              {% endfor %}
+            </tr>
+
+
+            <tr>
+              <td colspan="7" class="lunch">
+              </td>
+            </tr>
+
+            <tr>
+              {% for productDay in dates.productDays %}
+              <td>
+                {% for product in productDay.products %}
+                {% if product.startTime | date('Gi') >= 1200 %}
+
+                  {% switch product.type %}
+
+                    {% case "class" %}
+                      {% set class = product.class.first %}
+                      {% set parent = class.getParent() %}
+                      {% set teacher = product.teacher.first %}
+                      {% set variant = product.defaultVariant %}
+                      {% set craftProduct = craft.commerce.products.type('class').id(product.id).first %}
+                      {% set waiting = craft.entries.section('waitingList').relatedTo(craftProduct) %}
+                      <a data-url="{{ siteUrl }}modal/class/{{ product.id }}" class="showClassModal month class-link class-link--class {% if variant.stock == 0 %} full{% endif %}">
+                      <h5 class="">{{ parent.title }} / {{ class.title }}</h5>
+                      <ul>
+                        <li>{{ product.startTime | date('g.ia') }}-{{ product.finishTime | date('g.ia') }}</li>
+                        <li>{% if teacher | length %}{{ teacher.name }}, {% endif %}{% if product.room != 'nA' %}{{ product.room.label }}{% endif %}</li>
+                        {% include "bookings/incs/_getNumberSold" %}                    
+                      </ul>
+                      </a>
+
+                    {% case "masterclass" %}
+                      {% set masterclass = product.masterclass.first %}
+                      {% set teacher = product.teacher.first %}
+                      {% set variant = product.defaultVariant %}
+                      {% set craftProduct = craft.commerce.products.type('class').id(product.id).first %}
+                      {% set waiting = craft.entries.section('waitingList').relatedTo(craftProduct) %}
+                      <a data-url="{{ siteUrl }}modal/class/{{ product.id }}" class="showClassModal month class-link class-link--masterclass {% if variant.stock == 0 %} full{% endif %}">
+                      <h5 class="">{{ masterclass.title }}</h5>
+                      <ul>
+                        <li>{{ product.startTime | date('g.ia') }}-{{ product.finishTime | date('g.ia') }}</li>
+                        <li>{% if teacher | length %}{{ teacher.name }}, {% endif %}{% if product.room != 'nA' %}{{ product.room.label }}{% endif %}</li>
+                        {% include "bookings/incs/_getNumberSold" %}                    
+                      </ul>
+                      </a>
+
+                  {% endswitch %}
+                {% endif %}
+                {% endfor %}
+              </td>
+              {% endfor %}
+            </tr>
+
+          </tbody>
+        </table>
+    </div>
+  </div>
+
+</div>
+
+
+<section class="ui container" id="waitinglists-section">
+  <div class="ui column grid">
+    <div class="sixteen wide column">
+      <h3 class="ui header">Waiting lists</h3>
+
+      {% set products = craft.commerce.products.id(productIds) %}      
+      {# FETCH THE WAITING LIST ENTRIES TIED TO THE PRODUCTS #}
+      {% set entries = craft.entries.section('waitingList').relatedTo(products) %}
+
+      <form id="waitinglist-emailform">
+
+      <table class="ui celled table">
+        <thead>
+          <tr>
+            <th class="three wide" id="waitinglist-emailth">
+              <div class="ui master checkbox">
+                <input type="checkbox" tabindex="0" class="hidden">
+                <label>Select all</label>
+              </div>                         
+              <a id="waitinglist-emailbutton" class="right floated ui button disabled" data-url="{{ siteUrl }}modal/waitinglist-email/">
+                <i class="mail  outline icon"></i>
+                Email
+              </a>
+            </th>
+            <th class="two wide"></th>
+            <th class="six wide">Classes</th>
+            <th class="one wide">Emails</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {# GROUP THEM BY EMAIL ADDRESS #}
+          {# STORE ID THE FIRST ENTRY AND WE'LL UPDATE THAT TO SAY ONE EMAIL HAS BEEN SENT #}
+          {% for email, entries in entries|group('email') %}
+            {% set firstEntry = entries[0] %}       
+            <tr>
+              <td>
+                <div class="ui child checkbox">
+                  <input type="hidden" class="entryid" value="{{ firstEntry.id }}">
+                  <input type="checkbox" tabindex="0" class="hidden" name="" value="1">
+                  <label>{{ firstEntry.personName }}</label>
+                </div>
+              </td>
+              <td>{{ email }}</td>
+              <td>{% for entry in entries %}- {{ entry.title }}
+                <i class="user icon"></i>{{ entry.tel }}{% if not loop.last %}<br>{% endif %}{% endfor %}</td>
+              <td class="waitinglist-emailssent">{{ firstEntry.emailsSent }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </form>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

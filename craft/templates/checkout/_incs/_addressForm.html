@@ -1,0 +1,280 @@
+{% set countries = craft.commerce.countriesList %}
+
+{% set modelName = modelName is defined ? modelName : 'address' %}
+{% set model = address is defined ? address : null %}
+
+<li class="row">
+    <div class="col-md-3 col-sm-4">
+        <label for="{{ modelName }}-firstName">First Name {% if modelName == 'shippingAddress' %}*{% endif %}</label>
+    </div>
+    <div class="col-md-9 col-sm-8">
+        <input type="text" id="{{ modelName }}-firstName" class="u-full-width" name="{{ modelName }}[firstName]" value="{{ model ? model.firstName : '' }}">
+    </div>
+</li>
+{% if model and model.getErrors('firstName') %}
+    <span class="flash">{{ model.getErrors('firstName')|join }}</span>
+{% endif %}
+
+<li class="row">
+    <div class="col-md-3 col-sm-4">
+        <label for="{{ modelName }}-lastName">Last Name {% if modelName == 'shippingAddress' %}*{% endif %}</label>
+    </div>
+    <div class="col-md-9 col-sm-8">
+        <input type="text" id="{{ modelName }}-lastName" class="u-full-width" name="{{ modelName }}[lastName]" value="{{ model ? model.lastName : '' }}">
+    </div>
+</li>
+{% if model and model.getErrors('lastName') %}
+    <span class="flash">{{ model.getErrors('lastName')|join }}</span>
+{% endif %}
+
+{#
+<li class="row">
+    <div class="col-md-3 col-sm-4">
+        <label for="{{ modelName }}-businessName">Business Name</label>
+    </div>
+    <div class="col-md-9 col-sm-8">
+            <input type="text" id="{{ modelName }}-businessName" class="u-full-width" name="{{ modelName }}[businessName]" value="{{ model ? model.businessName : '' }}">
+    </div>
+</li>
+{% if model and model.getErrors('businessName') %}
+    <span class="flash">{{ model.getErrors('businessName')|join }}</span>
+{% endif %}
+#}
+
+<li class="row">
+    <div class="col-md-3 col-sm-4">
+        <label for="{{ modelName }}-address1">Address 1 {% if modelName == 'shippingAddress' %}*{% endif %}</label>
+    </div>
+    <div class="col-md-9 col-sm-8">
+            <input type="text" id="{{ modelName }}-address1" class="u-full-width" name="{{ modelName }}[address1]" value="{{ model ? model.address1 : '' }}" {% if modelName == 'shippingAddress' %}required{% endif %}>
+    </div>
+</li>          
+{% if model and model.getErrors('address1') %}
+    <span class="flash">{{ model.getErrors('address1')|join }}</span>
+{% endif %}
+
+<li class="row">
+    <div class="col-md-3 col-sm-4">
+        <label for="{{ modelName }}-address2">Address 2</label>
+    </div>
+    <div class="col-md-9 col-sm-8">
+            <input type="text" id="{{ modelName }}-address2" class="u-full-width" name="{{ modelName }}[address2]" value="{{ model ? model.address2 : '' }}">
+    </div>
+</li>
+{% if model and model.getErrors('address2') %}
+    <span class="flash">{{ model.getErrors('address2')|join }}</span>
+{% endif %}
+
+<li class="row">
+    <div class="col-md-3 col-sm-4">
+        <label for="{{ modelName }}-city">City {% if modelName == 'shippingAddress' %}*{% endif %}</label>
+    </div>
+    <div class="col-md-9 col-sm-8">
+            <input type="text" id="{{ modelName }}-city" class="u-full-width" name="{{ modelName }}[city]" value="{{ model ? model.city : '' }}" {% if modelName == 'shippingAddress' %}required{% endif %}>
+    </div>
+</li>
+{% if model and model.getErrors('city') %}
+    <span class="flash">{{ model.getErrors('city')|join }}</span>
+{% endif %}
+
+<li class="row">
+    <div class="col-md-3 col-sm-4">
+        <label for="{{ modelName }}-zipCode">Postcode {% if modelName == 'shippingAddress' %}*{% endif %}</label>
+    </div>
+    <div class="col-md-9 col-sm-8">
+            <input type="text" id="{{ modelName }}-zipCode" class="u-full-width" name="{{ modelName }}[zipCode]" value="{{ model ? model.zipCode : '' }}" {% if modelName == 'shippingAddress' %}required{% endif %}>
+    </div>
+</li>
+{% if model and model.getErrors('zipCode') %}
+    <span class="flash">{{ model.getErrors('zipCode')|join }}</span>
+{% endif %}
+
+<li class="row">
+    <div class="col-md-3 col-sm-4">
+        <label for="{{ modelName }}-phone">Phone {% if modelName == 'shippingAddress' %}*{% endif %}</label>
+    </div>
+    <div class="col-md-9 col-sm-8">
+            <input type="text" id="{{ modelName }}-phone" class="u-full-width" name="{{ modelName }}[phone]" value="{{ model ? model.phone : '' }}" {% if modelName == 'shippingAddress' %}required{% endif %}>
+    </div>
+</li>          
+{% if model and model.getErrors('phone') %}
+    <span class="flash">{{ model.getErrors('phone')|join }}</span>
+{% endif %}
+
+{% if hasWine and modelName == 'shippingAddress' %}
+
+    <li class="row">
+        <div class="col-md-3 col-sm-4">
+            <label for="{{ modelName }}-countryId">Country {% if modelName == 'shippingAddress' %}*{% endif %}</label>
+        </div>
+        <div class="col-md-9 col-sm-8">         
+            <select id="{{ modelName }}-countryId" class="address-country u-full-width" name="{{ modelName }}[countryId]"{% if modelName == 'shippingAddress' %}required{% endif %}>
+                <option value="233">United States</option>
+            </select>
+        </div>
+    </li>
+    {% if model and model.getErrors('countryId') %}
+        <span class="flash">{{ model.getErrors('countryId')|join }}</span>
+    {% endif %}
+
+    <li class="row">
+        <div class="col-md-3 col-sm-4">
+            <label for="{{ modelName }}-stateValue">State {% if modelName == 'shippingAddress' %}*{% endif %}</label>
+        </div>
+        <div class="col-md-9 col-sm-8">       
+            <select id="{{ modelName }}-stateValue" class="address-state u-full-width" name="{{ modelName }}[stateValue]">
+                {% set states = craft.commerce.statesArray["233"] %}
+                {% set optionValue = (model ? model.stateValue : '') %}
+                <option>Please select...</option>
+                <option {{ model.stateId == '23' ? 'selected' }} value="23">Alaska</option>
+                <option {{ model.stateId == '24' ? 'selected' }} value="24">Arizona</option>
+                <option {{ model.stateId == '26' ? 'selected' }} value="26">California</option>
+                <option {{ model.stateId == '27' ? 'selected' }} value="27">Colorado</option>
+                <option {{ model.stateId == '28' ? 'selected' }} value="28">Connecticut</option>
+                <option {{ model.stateId == '30' ? 'selected' }} value="30">District of Columbia</option>
+                <option {{ model.stateId == '31' ? 'selected' }} value="31">Florida</option>
+                <option {{ model.stateId == '32' ? 'selected' }} value="32">Georgia</option>
+                <option {{ model.stateId == '33' ? 'selected' }} value="33">Hawaii</option>
+                <option {{ model.stateId == '34' ? 'selected' }} value="34">Idaho</option>
+                <option {{ model.stateId == '36' ? 'selected' }} value="36">Indiana</option>
+                <option {{ model.stateId == '37' ? 'selected' }} value="37">Iowa</option>
+                <option {{ model.stateId == '38' ? 'selected' }} value="38">Kansas</option>
+                <option {{ model.stateId == '40' ? 'selected' }} value="40">Louisiana</option>
+                <option {{ model.stateId == '41' ? 'selected' }} value="41">Maine</option>
+                <option {{ model.stateId == '42' ? 'selected' }} value="42">Maryland</option>
+                <option {{ model.stateId == '43' ? 'selected' }} value="43">Massachusetts</option>
+                <option {{ model.stateId == '44' ? 'selected' }} value="44">Michigan</option>
+                <option {{ model.stateId == '45' ? 'selected' }} value="45">Minnesota</option>
+                <option {{ model.stateId == '47' ? 'selected' }} value="47">Missouri</option>
+                <option {{ model.stateId == '48' ? 'selected' }} value="48">Montana</option>
+                <option {{ model.stateId == '49' ? 'selected' }} value="49">Nebraska</option>
+                <option {{ model.stateId == '50' ? 'selected' }} value="50">Nevada</option>
+                <option {{ model.stateId == '52' ? 'selected' }} value="52">New Jersey</option>
+                <option {{ model.stateId == '53' ? 'selected' }} value="53">New Mexico</option>
+                <option {{ model.stateId == '54' ? 'selected' }} value="54">New York</option>
+                <option {{ model.stateId == '55' ? 'selected' }} value="55">North Carolina</option>
+                <option {{ model.stateId == '56' ? 'selected' }} value="56">North Dakota</option>
+                <option {{ model.stateId == '57' ? 'selected' }} value="57">Ohio</option>
+                <option {{ model.stateId == '59' ? 'selected' }} value="59">Oregon</option>
+                <option {{ model.stateId == '60' ? 'selected' }} value="60">Pennsylvania</option>
+                <option {{ model.stateId == '61' ? 'selected' }} value="61">Rhode Island</option>
+                <option {{ model.stateId == '63' ? 'selected' }} value="63">South Dakota</option>
+                <option {{ model.stateId == '65' ? 'selected' }} value="65">Texas</option>
+                <option {{ model.stateId == '67' ? 'selected' }} value="67">Vermont</option>
+                <option {{ model.stateId == '69' ? 'selected' }} value="69">Washington</option>
+                <option {{ model.stateId == '72' ? 'selected' }} value="72">Wyoming</option>
+            </select>
+        </div>
+    </li>
+    {% if model and model.getErrors('countryId') %}
+        <span class="flash">{{ model.getErrors('countryId')|join }}</span>
+    {% endif %}
+
+{% elseif hasDeliverable and modelName == 'shippingAddress' %}
+
+    <li class="row">
+        <div class="col-md-3 col-sm-4">
+            <label for="{{ modelName }}-countryId">Country {% if modelName == 'shippingAddress' %}*{% endif %}</label>
+        </div>
+        <div class="col-md-9 col-sm-8">         
+            <select id="{{ modelName }}-countryId" class="address-country u-full-width" name="{{ modelName }}[countryId]">
+                <option value="233">United States</option>
+            </select>
+        </div>
+    </li>
+    {% if model and model.getErrors('countryId') %}
+        <span class="flash">{{ model.getErrors('countryId')|join }}</span>
+    {% endif %}
+
+    <li class="row">
+        <div class="col-md-3 col-sm-4">
+            <label for="{{ modelName }}-stateValue">State {% if modelName == 'shippingAddress' %}*{% endif %}</label>
+        </div>
+        <div class="col-md-9 col-sm-8">         
+            <select id="{{ modelName }}-stateValue" class="address-state u-full-width" name="{{ modelName }}[stateValue]">
+                {% set states = craft.commerce.statesArray["233"] %}
+                <option>Please select...</option>
+                <option {{ model.stateId == '22' ? 'selected' }} value="22">Alabama</option>
+                <option {{ model.stateId == '23' ? 'selected' }} value="23">Alaska</option>
+                <option {{ model.stateId == '24' ? 'selected' }} value="24">Arizona</option>
+                <option {{ model.stateId == '25' ? 'selected' }} value="25">Arkansas</option>
+                <option {{ model.stateId == '26' ? 'selected' }} value="26">California</option>
+                <option {{ model.stateId == '27' ? 'selected' }} value="27">Colorado</option>
+                <option {{ model.stateId == '28' ? 'selected' }} value="28">Connecticut</option>
+                <option {{ model.stateId == '29' ? 'selected' }} value="29">Delaware</option>
+                <option {{ model.stateId == '30' ? 'selected' }} value="30">District of Columbia</option>
+                <option {{ model.stateId == '31' ? 'selected' }} value="31">Florida</option>
+                <option {{ model.stateId == '32' ? 'selected' }} value="32">Georgia</option>
+                <option {{ model.stateId == '33' ? 'selected' }} value="33">Hawaii</option>
+                <option {{ model.stateId == '34' ? 'selected' }} value="34">Idaho</option>
+                <option {{ model.stateId == '35' ? 'selected' }} value="35">Illinois</option>
+                <option {{ model.stateId == '36' ? 'selected' }} value="36">Indiana</option>
+                <option {{ model.stateId == '37' ? 'selected' }} value="37">Iowa</option>
+                <option {{ model.stateId == '38' ? 'selected' }} value="38">Kansas</option>
+                <option {{ model.stateId == '39' ? 'selected' }} value="39">Kentucky</option>
+                <option {{ model.stateId == '40' ? 'selected' }} value="40">Louisiana</option>
+                <option {{ model.stateId == '41' ? 'selected' }} value="41">Maine</option>
+                <option {{ model.stateId == '42' ? 'selected' }} value="42">Maryland</option>
+                <option {{ model.stateId == '43' ? 'selected' }} value="43">Massachusetts</option>
+                <option {{ model.stateId == '44' ? 'selected' }} value="44">Michigan</option>
+                <option {{ model.stateId == '45' ? 'selected' }} value="45">Minnesota</option>
+                <option {{ model.stateId == '46' ? 'selected' }} value="46">Mississippi</option>
+                <option {{ model.stateId == '47' ? 'selected' }} value="47">Missouri</option>
+                <option {{ model.stateId == '48' ? 'selected' }} value="48">Montana</option>
+                <option {{ model.stateId == '49' ? 'selected' }} value="49">Nebraska</option>
+                <option {{ model.stateId == '50' ? 'selected' }} value="50">Nevada</option>
+                <option {{ model.stateId == '51' ? 'selected' }} value="51">New Hampshire</option>
+                <option {{ model.stateId == '52' ? 'selected' }} value="52">New Jersey</option>
+                <option {{ model.stateId == '53' ? 'selected' }} value="53">New Mexico</option>
+                <option {{ model.stateId == '54' ? 'selected' }} value="54">New York</option>
+                <option {{ model.stateId == '55' ? 'selected' }} value="55">North Carolina</option>
+                <option {{ model.stateId == '56' ? 'selected' }} value="56">North Dakota</option>
+                <option {{ model.stateId == '57' ? 'selected' }} value="57">Ohio</option>
+                <option {{ model.stateId == '58' ? 'selected' }} value="58">Oklahoma</option>
+                <option {{ model.stateId == '59' ? 'selected' }} value="59">Oregon</option>
+                <option {{ model.stateId == '60' ? 'selected' }} value="60">Pennsylvania</option>
+                <option {{ model.stateId == '61' ? 'selected' }} value="61">Rhode Island</option>
+                <option {{ model.stateId == '62' ? 'selected' }} value="62">South Carolina</option>
+                <option {{ model.stateId == '63' ? 'selected' }} value="63">South Dakota</option>
+                <option {{ model.stateId == '64' ? 'selected' }} value="64">Tennessee</option>
+                <option {{ model.stateId == '65' ? 'selected' }} value="65">Texas</option>
+                <option {{ model.stateId == '66' ? 'selected' }} value="66">Utah</option>
+                <option {{ model.stateId == '67' ? 'selected' }} value="67">Vermont</option>
+                <option {{ model.stateId == '68' ? 'selected' }} value="68">Virginia</option>
+                <option {{ model.stateId == '69' ? 'selected' }} value="69">Washington</option>
+                <option {{ model.stateId == '70' ? 'selected' }} value="70">West Virginia</option>
+                <option {{ model.stateId == '71' ? 'selected' }} value="71">Wisconsin</option>
+                <option {{ model.stateId == '72' ? 'selected' }} value="72">Wyoming</option>
+            </select>
+        </div>
+    </li>
+    {% if model and model.getErrors('countryId') %}
+        <span class="flash">{{ model.getErrors('countryId')|join }}</span>
+    {% endif %}
+
+{% else %}
+
+    <li class="row">
+        <div class="col-md-3 col-sm-4">
+            <label for="{{ modelName }}-countryId">Country {% if modelName == 'shippingAddress' %}*{% endif %}</label>
+        </div>
+        <div class="col-md-9 col-sm-8">         
+            <select id="{{ modelName }}-countryId" class="address-country u-full-width" name="{{ modelName }}[countryId]">
+                <option value="75">France</option>
+                <option value="233">United States</option>
+                <option value="38">Canada</option>
+                <option value="77">United Kingdom</option>
+                {% for key, option in countries %}
+                    {% set optionValue = (model ? model.countryId : '') %}
+                    <option value="{{ key }}"  {% if (optionValue | length and key == optionValue) or key == 77 %} selected{% endif %}>{{ option }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </li>
+    {% if model and model.getErrors('countryId') %}
+        <span class="flash">{{ model.getErrors('countryId')|join }}</span>
+    {% endif %}
+
+    <input type="hidden" name="sameAddress" value="1">
+
+{% endif %}

@@ -1,0 +1,64 @@
+{% set entry = craft.entries.section('newsletter').first %}
+
+{% set breadcrumbEntries = [] %}
+{% if craft.request.lastSegment == "thank-you" %}
+	{% set page = { 'title': 'Thank you for signing up for Le Chou Chou', 'url': siteUrl ~ 'newsletter' } %}
+{% else %}
+	{% set page = { 'title': 'Sign up for Le Chou Chou', 'url': siteUrl ~ 'newsletter' } %}
+{% endif %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([page]) %}
+
+{% set metaTitle = "Newsletter / La Cuisine, Paris" %}
+{% set metaDescription = '' %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header class="row">	
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+	</header>
+
+	{% if craft.request.lastSegment == "thank-you" %}
+		<div class="row">
+			<div class="col-sm-6">
+				<p>Expect an email every month, direct from Paris!</p>
+
+				<br><br><br><br>
+				<br><br><br><br>
+			</div>
+		</div>
+	{% else %}
+
+		<div class="row">
+			<div class="col-sm-6">
+				<p>Every month direct from Paris, our Newsletter about the best things happening in and around Paris - join us!!</p>
+				<br>
+			</div>
+		</div>
+
+		<div class="row" id="subscribeform-container">
+		  	<div class="col-md-12">		    
+			    <form id="subscribeform" action="https://special.createsend.com/t/r/s/kukrurh/" class="newslettersignup">
+			      <div class="row">
+			        <div class="col-md-9 col-sm-9">
+			          <input type="email" name="cm-kukrurh-kukrurh" placeholder="Enter your email">
+			        </div>
+			        <div class="col-md-3 col-sm-3">
+			          <button type="submit">Submit</button>
+			        </div>
+			      </div>
+			    </form>
+		  	</div>
+		</div>
+
+		<br><br><br><br>
+		<br><br><br><br>
+
+	{% endif %}
+
+</div>
+
+{% endblock %}

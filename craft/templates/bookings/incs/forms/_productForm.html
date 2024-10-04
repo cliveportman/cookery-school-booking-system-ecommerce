@@ -1,0 +1,383 @@
+<form method="post" accept-charset="UTF-8" class="ui form" id="addproductform">
+    {% macro errorList(errors) %}
+          {% if errors %}
+              <ul class="errors">
+                  {% for error in errors %}
+                      <li>{{ error }}</li>
+                  {% endfor %}
+              </ul>
+          {% endif %}
+      {% endmacro %}
+    {% from _self import errorList %}
+
+{##########
+{% if product is defined %}
+<pre>
+
+  {{ dump(product)}}
+  {{ product.title }}
+  {{ product.startTime }}
+  {{ product.getErrors | length }}
+    {% for error in product.getErrors %}
+      {{ error }}
+    {% endfor %}
+    {% if variant is defined %}
+      Variant:
+      <{{ variant.price | number_format(0) }} name="variants[{{ variant.id }}][price]" id="priceinput">
+    {% endif %}
+</pre>
+{% endif %}
+###########}
+
+{% if craft.request.getSegment(2) == 'class' %}
+  {% set type = "class" %}
+  <script> var type = "class"; </script>
+{% elseif craft.request.getSegment(2) == 'masterclass' %}
+  {% set type = "masterclass" %}
+  <script> var type = "masterclass"; </script>
+{% endif %}
+
+
+  <div class="ui column grid">
+    <div class="twelve wide column centered">
+            
+        <input type="hidden" name="action" value="commerce/products/saveProduct">
+        {% if craft.request.getSegment(3) == 'add' %}
+          <input type="hidden" id="redirectinput" name="redirect" value="products/added/{id}">
+        {% else %}
+          {% if type == "class" %}
+            <input type="hidden" id="redirectinput" name="redirect" value="products/class/{{ product.class.first.id }}/edited">
+          {% elseif type == "masterclass" %}
+            <input type="hidden" id="redirectinput" name="redirect" value="products/masterclass/{{ product.masterclass.first.id }}/edited">
+          {% endif %}
+
+        {% endif %}
+
+        {% if type == 'class' %}
+          <input type="hidden" name="typeId" value="3">
+        {% elseif type == 'masterclass' %}
+          <input type="hidden" name="typeId" value="6">
+        {% endif %}
+
+        <input type="hidden" name="enabled" value="1">
+        <input type="hidden" name="postDate[date]" value="{{ now | date('d/m/Y') }}">
+        <input type="hidden" name="expiryDate[date]" value="">
+        <input type="hidden" name="slug" value="">
+        <input type="hidden" name="shippingCategoryId" value="1">
+
+        {% if product is defined and product | length %}
+          <input type="hidden" name="productId" value="{{ product.id }}">
+        {% endif %}
+
+        {% if variant is defined %}
+          <input type="hidden" name="variants[{{ variant.id }}][unlimitedStock]" value="">
+          {#<input type="hidden" name="variants[{{ variant.id }}][sku]" value="{{ now | date('U') }}">#}
+          <input type="hidden" name="variants[{{ variant.id }}][minQty]" value="">
+          <input type="hidden" name="variants[{{ variant.id }}][maxQty]" value="">
+        {% else %}
+          <input type="hidden" name="variants[new1][unlimitedStock]" value="">
+          <input type="hidden" name="variants[new1][sku]" value="">
+          <input type="hidden" name="variants[new1][minQty]" value="1">
+          <input type="hidden" name="variants[new1][maxQty]" value="5">
+        {% endif %}
+
+        {% if type == 'class' %}
+        <div class="field disabled">
+          <label>Product title</label>
+          <input type="text" name="title" value="{% if product is defined and  product | length %}{{ product.title }}{% endif %}" id="producttitle" placeholder="This will be created automatically">
+        </div>
+        {% endif %}
+
+        {% if type == 'class' %}
+        <div class="fields">
+          <div class="required sixteen wide field">
+              <label>Class / Tour</label>
+              {% set classes = craft.entries.section('classes').type('class').limit(NULL) %}
+              {% set classes = classes | merge(craft.entries.section('classes').type('tour').limit(NULL)) %}
+              <select class="ui search dropdown" name="fields[class][]" id="blcp-productform__classselect">
+                <option value=""></option>
+                {% for class in classes %}
+                  {% set parentOverview = craft.entries.section('classes').ancestorOf(class).type('overview').first %}
+                  <option value="{{ class.id }}" {% if product is defined and  product | length and product.class.first.id == class.id %}selected{% endif %}>{% if parentOverview.id == 1988 %}Private / {% endif %} {{ class.title }}</option>
+                {% endfor %}
+              </select>
+          </div>
+        </div>
+        {% elseif type == 'masterclass' %}
+        <div class="fields">
+          <div class="required sixteen wide field">
+              <label>Masterclass</label>
+              {% set classes = craft.entries.section('masterclasses').limit(NULL) %}
+              <select class="ui search dropdown" name="fields[masterclass][]" id="blcp-productform__masterclassselect">
+                <option value=""></option>
+                {% for class in classes %}
+                  <option value="{{ class.id }}" {% if product is defined and product | length and product.masterclass.first.id == class.id %}selected{% endif %}>{{ class.title }}</option>
+                {% endfor %}
+              </select>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if type == 'masterclass' %}
+        <div class="field">
+          <label>Product title</label>
+          <input type="text" name="title" value="{% if product is defined and  product | length %}{{ product.title }}{% endif %}" id="producttitle" placeholder="Should include name of masterclass and dates">
+        </div>
+        {% endif %}
+
+        <div class="fields">
+          {% if product is defined %}
+            {{ errorList(product.getErrors('date')) }}
+          {% endif %}
+
+          {% if type == 'class' %}
+          <div class="required four wide field">
+            <label>Date</label>
+            <div class="ui calendar" id="date">
+              <div class="ui input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" id="dateinput-text" value="{% if product is defined and  product | length and product.date | length %}{{ product.date | date('m/d/Y') }}{% endif %}">
+              </div>
+            </div>
+          </div>
+          <input type="hidden" name="fields[date][date]" id="dateinput" value="{% if product is defined and product.date | length %}{{ product.date | date('d/m/Y') }}{% endif %}">
+
+          {% elseif type == 'masterclass' %}
+            <div class="required four wide field">
+              <label>Start date</label>
+              <div class="ui calendar" id="startdate">
+                <div class="ui input left icon">
+                  <i class="calendar icon"></i>
+                  <input type="text" id="dateinput-text" value="{% if product is defined and  product | length and product.startDate | length %}{{ product.startDate | date('m/d/Y') }}{% endif %}">
+                </div>
+              </div>
+            </div>
+            <input type="hidden" name="fields[startDate][date]" id="startdateinput" value="{% if product is defined and product.startDate | length %}{{ product.startDate | date('d/m/Y') }}{% endif %}">
+
+            <div class="required four wide field">
+              <label>End date</label>
+              <div class="ui calendar" id="enddate">
+                <div class="ui input left icon">
+                  <i class="calendar icon"></i>
+                  <input type="text" id="dateinput-text" value="{% if product is defined and  product | length and product.endDate | length %}{{ product.endDate | date('m/d/Y') }}{% endif %}">
+                </div>
+              </div>
+            </div>
+            <input type="hidden" name="fields[endDate][date]" id="enddateinput" value="{% if product is defined and product.endDate | length %}{{ product.endDate | date('d/m/Y') }}{% endif %}">
+          {% endif %}
+
+          <div class="required three wide field">
+            <label>Start time</label>
+            <select id="starttime" name="fields[startTime][time]">
+              <option value=""></option>
+              <option value="09:00" {% if product.startTime is defined and product.startTime | date('H:i') == '09:00' %}selected{% endif %}>09.00</option>
+              <option value="09:30" {% if product.startTime is defined and product.startTime | date('H:i') == '09:30' %}selected{% endif %}>09.30</option>
+              <option value="10:00" {% if product.startTime is defined and product.startTime | date('H:i') == '10:00' %}selected{% endif %}>10.00</option>
+              <option value="10:00" {% if product.startTime is defined and product.startTime | date('H:i') == '10:00' %}selected{% endif %}>10.00</option>
+              <option value="10:30" {% if product.startTime is defined and product.startTime | date('H:i') == '10:30' %}selected{% endif %}>10.30</option>
+              <option value="11:00" {% if product.startTime is defined and product.startTime | date('H:i') == '11:00' %}selected{% endif %}>11.00</option>
+              <option value="11:30" {% if product.startTime is defined and product.startTime | date('H:i') == '11:30' %}selected{% endif %}>11.30</option>
+              <option value="12:00" {% if product.startTime is defined and product.startTime | date('H:i') == '12:00' %}selected{% endif %}>12.00</option>
+              <option value="12:30" {% if product.startTime is defined and product.startTime | date('H:i') == '12:30' %}selected{% endif %}>12.30</option>
+              <option value="13:00" {% if product.startTime is defined and product.startTime | date('H:i') == '13:00' %}selected{% endif %}>13.00</option>
+              <option value="13:30" {% if product.startTime is defined and product.startTime | date('H:i') == '13:30' %}selected{% endif %}>13.30</option>
+              <option value="14:00" {% if product.startTime is defined and product.startTime | date('H:i') == '14:00' %}selected{% endif %}>14.00</option>
+              <option value="14:30" {% if product.startTime is defined and product.startTime | date('H:i') == '14:30' %}selected{% endif %}>14.30</option>
+              <option value="15:00" {% if product.startTime is defined and product.startTime | date('H:i') == '15:00' %}selected{% endif %}>15.00</option>
+              <option value="15:30" {% if product.startTime is defined and product.startTime | date('H:i') == '15:30' %}selected{% endif %}>15.30</option>
+              <option value="16:00" {% if product.startTime is defined and product.startTime | date('H:i') == '16:00' %}selected{% endif %}>16.00</option>
+              <option value="16:30" {% if product.startTime is defined and product.startTime | date('H:i') == '16:30' %}selected{% endif %}>16.30</option>
+              <option value="17:00" {% if product.startTime is defined and product.startTime | date('H:i') == '17:00' %}selected{% endif %}>17.00</option>
+              <option value="17:30" {% if product.startTime is defined and product.startTime | date('H:i') == '17:30' %}selected{% endif %}>17.30</option>
+              <option value="18:00" {% if product.startTime is defined and product.startTime | date('H:i') == '18:00' %}selected{% endif %}>18.00</option>
+              <option value="18:30" {% if product.startTime is defined and product.startTime | date('H:i') == '18:30' %}selected{% endif %}>18.30</option>
+              <option value="19:00" {% if product.startTime is defined and product.startTime | date('H:i') == '19:00' %}selected{% endif %}>19.00</option>
+              <option value="19:30" {% if product.startTime is defined and product.startTime | date('H:i') == '19:30' %}selected{% endif %}>19.30</option>
+            </select>
+          </div>
+          <div class="required three wide field">
+            <label>Finish time</label>
+            <select id="finishtime" name="fields[finishTime][time]" >
+              <option value=""></option>
+              <option value="11:00" {% if product.finishTime is defined and product.finishTime | date('H:i') == '11.00' %}selected{% endif %}>11.00</option>
+              <option value="11:30" {% if product.finishTime is defined and product.finishTime | date('H:i') == '11:30' %}selected{% endif %}>11.30</option>
+              <option value="12:00" {% if product.finishTime is defined and product.finishTime | date('H:i') == '12:00' %}selected{% endif %}>12.00</option>
+              <option value="12:30" {% if product.finishTime is defined and product.finishTime | date('H:i') == '12:30' %}selected{% endif %}>12.30</option>
+              <option value="13:00" {% if product.finishTime is defined and product.finishTime | date('H:i') == '13:00' %}selected{% endif %}>13.00</option>
+              <option value="13:30" {% if product.finishTime is defined and product.finishTime | date('H:i') == '13:30' %}selected{% endif %}>13.30</option>
+              <option value="14:00" {% if product.finishTime is defined and product.finishTime | date('H:i') == '14:00' %}selected{% endif %}>14.00</option>
+              <option value="14:30" {% if product.finishTime is defined and product.finishTime | date('H:i') == '14:30' %}selected{% endif %}>14.30</option>
+              <option value="15:00" {% if product.finishTime is defined and product.finishTime | date('H:i') == '15:00' %}selected{% endif %}>15.00</option>
+              <option value="15:30" {% if product.finishTime is defined and product.finishTime | date('H:i') == '15:30' %}selected{% endif %}>15.30</option>
+              <option value="16:00" {% if product.finishTime is defined and product.finishTime | date('H:i') == '16:00' %}selected{% endif %}>16.00</option>
+              <option value="16:30" {% if product.finishTime is defined and product.finishTime | date('H:i') == '16:30' %}selected{% endif %}>16.30</option>
+              <option value="17:00" {% if product.finishTime is defined and product.finishTime | date('H:i') == '17:00' %}selected{% endif %}>17.00</option>
+              <option value="17:30" {% if product.finishTime is defined and product.finishTime | date('H:i') == '17:30' %}selected{% endif %}>17.30</option>
+              <option value="18:00" {% if product.finishTime is defined and product.finishTime | date('H:i') == '18:00' %}selected{% endif %}>18.00</option>
+              <option value="18:30" {% if product.finishTime is defined and product.finishTime | date('H:i') == '18:30' %}selected{% endif %}>18.30</option>
+              <option value="19:00" {% if product.finishTime is defined and product.finishTime | date('H:i') == '19:00' %}selected{% endif %}>19.00</option>
+              <option value="19:30" {% if product.finishTime is defined and product.finishTime | date('H:i') == '19:30' %}selected{% endif %}>19.30</option>
+              <option value="20:00" {% if product.finishTime is defined and product.finishTime | date('H:i') == '20:00' %}selected{% endif %}>20.00</option>
+              <option value="20:30" {% if product.finishTime is defined and product.finishTime | date('H:i') == '20:30' %}selected{% endif %}>20.30</option>
+              <option value="21:00" {% if product.finishTime is defined and product.finishTime | date('H:i') == '21:00' %}selected{% endif %}>21.00</option>
+              <option value="21:30" {% if product.finishTime is defined and product.finishTime | date('H:i') == '21:30' %}selected{% endif %}>21.30</option>
+              <option value="22:00" {% if product.finishTime is defined and product.finishTime | date('H:i') == '22:00' %}selected{% endif %}>22.00</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fields">
+          <div class="five wide field">
+            <label>Room</label>
+            <select class="ui search dropdown" id="room" name="fields[room]">
+              <option value="nA">n/a</option>
+                <option value="room1" {% if product.room is defined and product.room == 'room1' %} selected{% endif %}>Room 1</option>
+                <option value="room2" {% if product.room is defined and product.room == 'room2' %} selected{% endif %}>Room 2</option>
+                <option value="room3" {% if product.room is defined and product.room == 'room3' %} selected{% endif %}>Room 3</option>
+            </select>
+          </div>
+
+          <div class="five wide field">
+              <label>Teacher</label>
+              {% set teachers = craft.users.group('teachers') %}
+              <select class="ui search dropdown" name="fields[teacher]{% if product.teacher is defined and product.teacher | length %}[]{% endif %}" id="teacherselect">
+                <option value="nA">n/a</option>
+                {% for teacher in teachers %}
+                  <option value="{{ teacher.id }}" {% if product.teacher is defined and product.teacher | length and product.teacher.first.id == teacher.id %}selected{% endif %}>{{ teacher.name }}</option>
+                {% endfor %}
+              </select>
+          </div>
+        </div>
+
+        <div class="fields">
+          <div class="required four wide field">
+            <label>Price</label>
+            <div class="ui right labeled input">
+              <div class="ui label">&euro;</div>
+                {% if variant is defined %}
+                  <input type="text" placeholder="" value="{{ variant.price | number_format(0) }}" name="variants[{{ variant.id }}][price]" id="priceinput">
+                {% else %}
+                  <input type="text" placeholder="" value="" name="variants[new1][price]" id="priceinput">
+                {% endif %}
+              <div class="ui basic label">.00</div>
+            </div>
+          </div>
+          <div class="required two wide field">
+            <label>Places</label>
+            {% if variant is defined %}
+              <input type="text" placeholder="" value="{{ variant.stock }}" name="variants[{{ variant.id }}][stock]" id="placesinput">
+            {% else %}
+              <input type="text" placeholder="" value="" name="variants[new1][stock]" id="placesinput">
+            {% endif %}
+          </div>
+
+          <div class="three wide field">
+            <label>Tax category</label>
+            <select id="taxcategory" name="taxCategoryId">
+              <option value="1" {% if product is defined and product.taxCategoryId == 1 %}selected{% endif %}>Classes</option>
+              <option value="2" {% if product is defined and product.taxCategoryId == 2 %}selected{% endif %}>Tours</option>
+              <option value="3" {% if product is defined and product.taxCategoryId == 2 %}selected{% endif %}>Tax-free</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fields">
+          <div class="three wide inline field">
+            <div class="ui checkbox">
+              <input type="hidden" name="freeShipping" value="">
+              <input type="checkbox" tabindex="0" class="hidden" name="freeShipping" value="1" checked="checked">
+              <label>Free shipping</label>
+            </div>
+          </div>
+
+          <div class="three wide inline field">
+            <div class="ui checkbox">
+              <input type="hidden" name="promotable" value="">
+              <input type="checkbox" tabindex="0" class="hidden" name="promotable" value="1" {% if product is defined and product | length and product.promotable == 1 %}checked{% endif %}{% if product is not defined %}checked{% endif %}>
+              <label>Promotable</label>
+            </div>
+          </div>
+
+          <div class="three wide inline field">
+            <div class="ui checkbox">
+              <input type="hidden" name="fields[privateClass]" value="">
+              <input type="checkbox" tabindex="0" class="hidden" name="fields[privateClass][]" value="private" {% if product is defined and product | length and product.privateClass | length %}checked{% endif %}>
+              <label>Private</label>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="field">
+          <label>Additional description</label>
+          <textarea rows="2" name="fields[additionalDescription]" id="additionaldescription">{% if product.additionalDescription is defined %}{{ product.additionalDescription }}{% endif %}</textarea>
+        </div>
+
+        <div class="field">
+            <label>Location</label>
+            {% set locations = craft.entries.section('locations') %}
+            <select class="ui search dropdown" id="locationselect" name="fields[location]{% if product.location is defined and product.location | length %}[]{% endif %}">
+              <option value="nA">n/a</option>
+              {% for location in locations %}
+                <option data-value="{{ location.id }}" value="{{ location.id }}" {% if product.location is defined and product.location | length and product.location.first.id == location.id %}selected{% endif %}>{{ location.title }}</option>
+              {% endfor %}
+            </select>
+        </div>
+
+        <div class="fields">
+
+          <div class="thirteen wide field">
+          </div>
+
+
+{#
+          <div class="three wide inline field">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" tabindex="0" class="hidden" name="enabled" value="1" checked="checked">
+              <label>Enabled</label>
+            </div>
+          </div>
+#}
+        </div>
+
+      {% if craft.request.getSegment(3) == 'add' %}
+        <div class="fields">
+          <div class="nine wide field">
+          </div>
+          <div class="three wide field">
+              <button class="fluid  ui pink button" id="addproductbutton">
+                <i class="save icon"></i>
+                Save
+              </button>
+          </div>
+          <div class="four wide field">
+              <button class="fluid  ui cancel button" id="addproductbutton-another">
+                <i class="save icon"></i>
+                Save + add another
+              </button>
+          </div>
+        </div>
+      {% else %}
+        <div class="fields">
+          <div class="nine wide field">
+          </div>
+          <div class="four wide field">
+            <a href="{{ siteUrl }}products/{{ type == 'class' ? 'class' : 'masterclass' }}/remove/{{ product.id }}" class="fluid ui button" id="">
+              <i class="remove circle icon"></i>
+              Delete this class
+            </a>
+          </div>
+          <div class="three wide field">
+              <button class="fluid ui pink button" id="addproductbutton">
+                <i class="save icon"></i>
+                Save
+              </button>
+          </div>
+        </div>
+      {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+</form>

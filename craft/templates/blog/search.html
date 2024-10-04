@@ -1,0 +1,42 @@
+{% if entry.metaTitle is defined and entry.metaTitle | length %}
+    {% set metaTitle = entry.metaTitle %}
+{% else %}
+    {% set metaTitle = "Search results / Blog / La Cuisine Paris" %}
+{% endif %}
+{% if entry.metaDescription is defined and entry.metaDescription | length %}
+    {% set metaDescription = entry.metaDescription %}
+{% else %}
+    {% set metaDescription = "" %}
+{% endif %}
+
+{% set breadcrumbEntries = [] %}
+{% set blogOverview = { 'url': siteUrl ~ 'blog', 'title': 'la Cuisine Paris Blog' } %}
+{% set thisCategoryPage = { 'url': siteUrl ~ 'blog/' ~ category.slug, 'title': category.title } %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([blogOverview]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([thisCategoryPage]) %}
+
+{% extends "_layout" %}
+
+{% block content %}
+<div class="container">
+	<section class="row" id="blog">
+
+    <div class="col-md-12">
+      <a href="{{ siteUrl }}blog" style="text-decoration: none;"><h1 class="blog-mainheading" style="text-decoration: none;">La Cuisine Paris Blog</h1></a>
+    </div>
+
+    <div class="col-sm-9">
+      {% set articlesToShow = 12 %}
+      {% paginate craft.entries.search(craft.request.getParam('q')).section('blog').order('score').limit(articlesToShow) as articles %}
+      {% set vars = { 'style': 'masonry' } %}        
+      {% include "blog/_incs/_blogSnippet" with vars %}
+      {% include "blog/_incs/_pagination" %}
+    </div>
+
+    <div class="col-sm-3">
+      {% include "blog/_incs/_blogSidebar" %}
+    </div>
+
+	</section>
+</div>
+{% endblock %}

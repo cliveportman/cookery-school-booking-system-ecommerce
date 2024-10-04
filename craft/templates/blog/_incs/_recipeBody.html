@@ -1,0 +1,92 @@
+
+<div id="articlebody">
+{% set fullImage = { mode: 'fit', width: 800 } %}
+{% set halfImage = { mode: 'fit', width: 400 } %}
+
+{% if entry.introduction | length %}
+<div class="row">
+	<div class="col-md-8 col-md-push-2">
+		{{ entry.introduction }}
+	</div>
+</div>
+{% endif %}
+
+{% if entry.leadImage | length %}
+<div class="row">
+	<div class="col-md-8 col-md-push-2">
+		{% set image = entry.leadImage.first %}
+		<img src="{{ image.getUrl(fullImage) }}" alt="{{ entry.title }}">
+	</div>
+</div>
+{% endif %}
+
+{% if entry.recipe | length %}
+<div class="row">
+	<div class="col-md-8 col-md-push-2">
+	{% for block in entry.recipe %}
+
+		<h2>{{ block.recipeName }}</h2>
+
+		{% if block.recipeIntroductoryParagraph | length %}{{ block.recipeIntroductoryParagraph}}{% endif %}
+
+		{% if block.serves | length %}
+			<h3>Serving</h3>
+			<p>{{ block.serves }}</p>
+		{% endif %}
+
+		{% if block.ingredients %}
+			<h3>Ingredients</h3>
+			<p>		
+			{% for row in block.ingredients %}
+				<span itemprop="recipeIngredient">{{ row.ingredient }}</span>{% if not loop.last %}<br>{% endif %}
+			{% endfor %}
+			</p>
+		{% endif %}
+
+		{% if block.method | length %}
+			<h3>Method</h3>
+			{{ block.method }}
+		{% endif %}
+
+	{% endfor %}
+	</div>
+</div>
+{% endif %}
+
+{% if entry.pullquote | length %}
+	<div class="row">
+		<div class="col-md-12">
+			<blockquote>&ldquo;{{ entry.pullquote }}&rdquo;</blockquote>
+		</div>
+	</div>
+{% endif %}
+
+{% if entry.stepByStep | length %}
+<div id="stepbystep">
+	<div class="row">
+		<div class="col-md-8 col-md-push-2">
+			<h2>Step-by-step</h2>
+			<div class="row">
+	
+				{% for block in entry.stepByStep %}
+					{% if block.width == "left" %}
+						<div class="col-md-6 col-sm-6">
+					{% else %}
+						<div class="col-md-12">
+					{% endif %}
+					{% set image = block.image.first %}
+					<img src="{{ image.getUrl(fullImage) }}" alt="{{ entry.title }}">
+					{% if block.stepDescription | length %}
+						<p class="caption"><strong>{{ loop.index }}</strong> {{ block.stepDescription }}</p>
+					{% endif %}
+
+					{{ block.width }}
+				</div>
+				{% endfor %}
+
+			</div>
+		</div>
+	</div>
+{% endif %}
+
+</div>

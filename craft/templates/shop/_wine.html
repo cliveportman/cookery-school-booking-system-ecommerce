@@ -1,0 +1,132 @@
+{% set shop = craft.entries.section('shop').first %}
+{% set category = craft.entries.section('shopWines').first %}
+
+{% set breadcrumbEntries = [] %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([shop]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([category]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([product]) %}
+
+{% if entry.metaTitle is defined and entry.metaTitle | length %}
+    {% set metaTitle = entry.metaTitle %}
+{% else %}
+    {% set metaTitle = "Wines / Online Store / La Cuisine, Paris - cooking classes and food tours in the heart of Paris" %}
+{% endif %}
+{% if entry.metaDescription is defined and entry.metaDescription | length %}
+    {% set metaDescription = entry.metaDescription %}
+{% else %}
+    {% set metaDescription = "" %}
+{% endif %}
+
+{% set wines = craft.commerce.products.type('wines').find %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+	</header>
+	<div class="row">
+		<div class="col-xs-12">
+			
+			<div class="shop-productdetail">
+
+				<img src="{{ product.shopThumbnailImage.first.getUrl() }}" alt="{{ wine.title }}" class="shop-productdetail__thumb">
+
+				<div class="shop-productdetail__description">
+
+					<div class="shop-productdetail__text">
+						<h2>{{ product.title }}</h2>
+						{{ product.productDetail }}
+					</div>
+
+					<form method="POST" class="shop-productdetail__addtocartform">
+					    <input type="hidden" name="action" value="commerce/cart/updateCart">
+					    <input type="hidden" name="redirect" value="cart">
+					    <input type="hidden" name="purchasableId" value="{{ product.defaultVariant.purchasableId }}">
+
+					    <div class="important"><img src="/img/flags/us.svg" alt="US"><p><a href="#" id="shop-productdetail__modalbutton">U.S. CUSTOMERS ONLY<br> - PLEASE READ</a></p></div>
+
+						{######## HAS STOCK ########}
+						{% if product.defaultVariant.hasStock %}
+							<div class="shop-productdetail__quantity">
+								<label for="shop-productdetail__quantityinput">Quantity</label>
+								<input id="shop-productdetail__quantityinput" name="qty" type="number" value="1">
+							</div>
+							<div class="shop-productdetail__addtocart">
+								<p>Price: {{ product.defaultVariant.price | currency(cart.currency) }} {#<span>per bottle</span>#}</p>
+								<button type="submit" class="button">Add to cart</button>
+							</div>
+						{% endif %}
+
+						{########## NO STOCK ########}
+						{% if not product.defaultVariant.hasStock %}
+							<div class="button disabled">Sold Out</div>
+						{% endif %}
+
+					</form>
+
+				</div><!-- /.shop-productdetail__description -->
+			</div><!-- /.shop-productdetail -->
+			
+		</div>
+
+	</div>
+	<div class="row">
+
+		<div class="col-sm-12">
+			<hr class="pink">
+		</div>
+
+	</div>
+
+</div>
+
+<div id="shop-productdetail__modal" class="modal">
+
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Important! </h2>
+    <p>Before you order...</p>
+    <p><strong>We are only shipping to the United States</strong> at the moment. There are restrictions on shipping wine and, sadly, as much as we would love to <strong>we are NOT allowed to ship to the following states: <br>Alabama, Arkansas, Delaware, Illinois, Kentucky, Mississippi, New Hampshire, Oklahoma, South Carolina, Tennessee, Utah, Virginia, West Virginia, Wisoncsin.</strong>
+    </p>
+
+    <p><strong>Your delivery address is important.</strong> Please make sure it is 100% correct when you send us your information. <strong>The delivery address needs to be a location where your wine can be signed-for by an adult</strong>. Please note that your wine delivery cannot be left on the doorstep.</p>
+	<p>When you completed order has been shipped, you will receive an email notification from FedEx containing a tracking number. You will be able to use that to update your shipping preferences if necessary.</p>
+  </div>
+
+</div>
+
+<script>
+var modal = document.getElementById("shop-productdetail__modal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("shop-productdetail__modalbutton");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+btn.onclick = function(e) {
+	e.preventDefault();
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+
+
+
+{% endblock %}

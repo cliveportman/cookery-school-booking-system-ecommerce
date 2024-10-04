@@ -1,0 +1,4 @@
+{
+	"formatting": ["h3", "p"],
+	"buttons": ["format","bold","italic","lists","link"]
+}

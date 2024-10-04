@@ -1,0 +1,31 @@
+{% set entry = craft.entries.section('newsletter').first %}
+
+{% set breadcrumbEntries = [] %}
+{% set page = { 'title': 'There was a problem with your submission', 'url': siteUrl ~ 'newsletter' } %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([page]) %}
+
+{% set metaTitle = "La Cuisine, Paris" %}
+{% set metaDescription = '' %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header class="row">	
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+	</header>
+
+	<div class="row">
+		<div class="col-sm-6">
+			<p>But there's no need to panic!</p>
+			<p>We use something to deter spammers in some of our forms and it looks like you didn't pass that step.</p>
+			<p>Please use your browser's back button to return to the page you were on and try again. You must complete the reCAPTCHA in the form.</p>
+			<br>
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}

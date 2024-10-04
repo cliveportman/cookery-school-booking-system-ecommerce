@@ -1,0 +1,506 @@
+/*
+#####################################
+HEADER
+#####################################
+*/
+header.sitewide {
+    padding-top: 0.5rem;
+}
+/*
+#####################################
+SITE LOGO
+#####################################
+*/
+#sitelogo {
+	margin-top: 0.5rem;
+}
+@media (min-width: $sm) {
+header.sitewide .container {
+    position: relative;
+}
+    #toprow {
+        position: absolute; top: 0.5rem; left: 0.5rem;
+        width: 100%;
+    }
+    #sitelogo {
+        position: relative; z-index: 2;
+        margin-top: 0;
+    }
+}
+@media (min-width: $md) {
+#sitelogo {
+    margin-top: 1.9rem;
+}
+}
+@media (min-width: $lg) {
+#sitelogo {
+    margin-top: 1.75rem;
+}
+}
+
+
+/*
+#####################################
+MENU BUTTON
+#####################################
+*/
+#menubutton {
+    float: right;
+	display: block; width: 100%; max-width: 3.5rem;
+	padding: 0; margin: 0;
+	border: none;
+	background: none;
+	transition: none;
+}
+    #menubutton path, #menubutton polygon, #menubutton rect {
+        fill: $highlightColor;
+    }
+    #menubutton.collapsed path, #menubutton.collapsed polygon, #menubutton.collapsed rect {
+        fill: $black;
+    }
+@media (min-width: $sm) {
+#menubutton {
+    position: relative; z-index: 2;
+}
+}
+
+
+/*
+#####################################
+COLLAPSING NAV
+#####################################
+*/
+@media (max-width: 1023px) {
+  .nav-collapse, .nav-collapse.collapse { height: 0; overflow: hidden;}
+  .nav-collapse.in { height: auto;}
+}
+.nav-collapse.dropdown, .nav-collapse.dropdown.collapse { height: 0; overflow: hidden;}
+.nav-collapse.dropdown.in { height: auto;}
+
+/*
+#####################################
+MAIN NAV
+#####################################
+*/
+#mainnav {
+    clear: both;
+	margin: 0 -10px 0; padding: 0;
+	text-align: center;
+}
+	#mainnav a {
+  		display: block;
+  		padding: 0.65rem 0.5rem 0.5rem;
+        @include font('sans', 18);
+		text-decoration: none; text-align: center;
+	}
+	#mainnav a:focus, #mainnav a:hover, #mainnav a:active, #mainnav a.active {
+		text-decoration: none;
+        background: $tintColor;
+	}
+.open a { outline: 0; }
+
+@media (min-width: $sm) {
+#mainnav {
+    position: relative;
+    margin-top: 1rem;
+}
+    #mainnav a {
+        text-align: center;
+        border-bottom: 1px solid #eee;
+    }
+    #mainnav a:focus, #mainnav a:hover, #mainnav a:active, #mainnav a.active {
+        color: $highlightColor;
+        background: none;
+    }
+    #mainnav a:last-of-type {
+        margin-bottom: 2rem;
+        border-bottom: none;
+    }
+}
+
+@media (min-width: $md) {
+#mainnav {}    
+    #mainnav a {
+        display: inline-block; height: 1.8rem; width: auto;
+        padding: 0.2rem 2.1rem 0.1rem; margin: 0 -4px 0 0;
+        @include font('sans', 16); text-align: center; text-decoration: none;
+        border: none; border-right: 1px solid $textColor;
+    }
+    #mainnav a:nth-of-type(4) {
+        padding-left: 0;
+    }
+    #mainnav a:last-of-type {
+        padding-right: 0; margin-bottom: 1rem;
+        border: none;
+    }
+}
+@media (min-width: $lg) {    
+    #mainnav a {
+        padding: 0.2rem 2.75rem 0.1rem;
+        @include font('sans', 18);
+    }
+}
+
+/*
+#####################################
+HEADER CONTACT DETAILS
+#####################################
+*/
+#headercontactdetails {
+    margin: 1rem 0 0.75rem;
+    text-align: center;
+}
+    #headercontactdetails a {
+        display: block;
+        @include font('sans', 18); text-align: center; text-decoration: none;
+    }
+    #headercontactdetails a:focus, #headercontactdetails a:hover,#headercontactdetails a:active {
+        text-decoration: underline; color: $highlightColor;
+    }
+@media (min-width: $sm) {
+    #headercontactdetails a {
+        display: inline;
+        padding: 0 0.75rem;
+    }
+}
+@media (min-width: $md) {
+#headercontactdetails {
+    clear: both;
+    padding-top: 0.1rem;
+}
+    #headercontactdetails a {
+        display: block;
+        text-align: right;
+    }
+}
+@media (min-width: $lg) {
+#headercontactdetails {
+    padding-top: 0.7rem;
+}
+}
+
+
+
+#mainclasslinks {
+    margin-bottom: 1.5rem;
+}
+@media (min-width: $md) {
+#mainclasslinks {
+    //margin-bottom: $vMargin;
+}
+}
+    @media (min-width: $sm) {
+    #mainclasslink-holder {
+        width: 100%; height: 100%;
+    }
+        #mainclasslinks div.imagelink {
+            display: block;
+            width: 100%; height: 0;
+            padding: 0 0 100%; margin-top: 10px;
+            content: "";
+            background-size: cover;
+            opacity: 0.9;
+        }
+        #mainclasslinks a:focus div.imagelink, #mainclasslinks a:hover div.imagelink,#mainclasslinks a:active div.imagelink {
+            opacity: 1;
+        }
+    }
+    #mainclasslinks a {
+        text-decoration: none;
+    }
+        #mainclasslinks a p {
+            display: block;
+            padding: 1rem 0 0.85rem; margin-top: 10px;
+            @include font('serif', 19, 'textColor', 'italic'); text-decoration: none; text-align: center;
+            background: $tintColor;
+        }
+        #mainclasslinks a:focus p, #mainclasslinks a:hover p, #mainclasslinks a:active p, #mainclasslinks a.active p {
+            background: $tintColorActive;
+        }
+
+/*
+#####################################
+HEADER SOCIAL AREA - ONLY VISIBLE -LG -MD
+#####################################
+*/
+a.social {
+    display: inline-block; width: 48px; height: 48px;
+    margin: 0 0.5rem;
+}
+@media (min-width: $md) {
+#headersocial {
+    margin: 1rem 0;
+    text-align: left;
+}
+    a.social {
+        display: inline-block; width: 42px; height: 42px;
+        margin: 0 1.05rem;
+    }
+    #headersocial a.social:first-of-type {
+        margin-left: 0;
+    }
+    #headersocial a.social:last-of-type {
+        margin-right: 0;
+    }
+    a.social:focus svg, a.social:hover svg, a.social:active svg {
+        opacity: 0.5;
+    }
+}
+@media (min-width: $lg) {
+#headersocial {
+    margin: 1rem 0;
+}
+    a.social {
+        width: 48px; height: 48px;
+        margin: 0 1.05rem;
+    }
+}
+
+/*
+#####################################
+CALENDAR LINK - ONLY VISIBLE -LG -MD
+#####################################
+*/
+@media (min-width: $md) {
+#headercalendarlink-md {
+    display: block; width: 90%;
+    padding: 0.25rem 0.75rem 0.5rem;
+    background: $logoPink;
+    text-decoration: none;
+}
+#headercalendarlink-md:focus, #headercalendarlink-md:hover, #headercalendarlink-md:active {
+    background: $logoPinkActive;
+}
+    #headercalendarlink-md p {
+        @include font('serif', 36, white, 'italic');  text-align: center;
+    }
+    #headercalendarlink-md p.title {
+        text-decoration: none; line-height: 1em;
+    }
+    #headercalendarlink-md p.date {
+        @include font('serif', 20, white, ''); line-height: 1em;
+    }
+}
+
+@media (min-width: $lg) {
+#headercalendarlink-md {
+    width: 80%;
+    text-decoration: none;
+}
+    #headercalendarlink-md p.title {
+        @include font('serif', 40, white, 'italic');
+    }
+    #headercalendarlink-md p.date {
+        @include font('serif', 22, white, ''); line-height: 1em;
+    }
+}
+
+/*
+#####################################
+CART LINK -XS -SM
+#####################################
+*/
+#headercartlink-xs {
+    float: left;
+    display: block; width: 40px;
+    margin-bottom: 0.75rem;
+    @include font('sans', 10, 'black'); font-weight: bold;
+    text-decoration: none; text-align: center; text-transform: uppercase;
+}
+    #headercartlink-xs .svg-fg {
+        fill: $black;
+    }
+#headercartlink-xs:focus, #headercartlink-xs:hover, #headercartlink-xs:active,
+#headercartlink-xs.active,
+#headercartlink-xs:focus .svg-fg, #headercartlink-xs:hover .svg-fg, #headercartlink-xs:active .svg-fg,
+#headercartlink-xs.active .svg-fg {
+    color: $highlightColor; fill: $highlightColor;
+}
+@media (min-width: $sm) {
+#headercartlink-xs {
+    position: relative; z-index: 2;
+}
+}
+
+
+/*
+#####################################
+CART LINK -MD -LG
+#####################################
+*/
+@media (min-width: $md) {
+#headercartlink-md {
+    float: right;
+    display: block; width: 55%;
+    background: $black;
+}
+#headercartlink-md:focus, #headercartlink-md:hover, #headercartlink-md:active {
+    background: $textColor;
+}
+    #headercartlink-md .carticon {
+        float: left;
+        width: 40px; height: 32px;
+        margin: 0.75rem 0.5rem 1.25rem;
+    }
+        #headercartlink-md .svg-fg {
+            fill: white;
+        }
+    #headercartlink-md p {
+        float: right;
+        width: auto;
+        margin-top: 0.5rem; margin-right: 0.5rem;
+        @include font('sans', 12, white); text-align: right;
+    }
+}
+@media (min-width: $lg) {
+#headercartlink-md {
+    width: 50%;
+}
+    #headercartlink-md .carticon {
+        width: 40px; height: 32px;
+        margin: 0.75rem 0.5rem 1.25rem;
+    }
+        #headercartlink-md .svg-fg {
+            fill: white;
+        }
+    #headercartlink-md p {
+        width: auto;
+        margin-top: 0.5rem;
+        @include font('sans', 13, white);
+    }
+}
+
+
+
+
+/*
+#####################################
+ENGLISH SPEAKING STICKER
+#####################################
+*/
+@media (min-width: $md) {
+#englishspeakingsticker {
+    float: right;
+    width: 98px; height: 98px;
+    padding-top: 1.6rem; margin-right: 1rem;
+    @include font('serif', 17, white, 'italic'); text-align: center;
+    border-radius: 49px;
+    background: $highlightColor;
+}
+}
+@media (min-width: $lg) {
+#englishspeakingsticker {
+    width: 106px; height: 106px;
+    padding-top: 1.75rem;
+    @include font('serif', 18, white, 'italic'); text-align: center;
+    border-radius: 53px;
+    background: $highlightColor;
+}
+}
+
+
+/*
+#####################################
+USER LOGIN SECTION -XS -SM
+#####################################
+*/
+#headeruser-xs {
+    float: left;
+    display: block; width: 40px;
+    margin-bottom: 0.75rem; margin-left: 0.5rem;
+    @include font('sans', 10, 'black'); font-weight: bold;
+    text-decoration: none; text-align: center; text-transform: uppercase;
+}
+    #headeruser-xs svg  {
+        position: relative;
+        height: 37px; top: 5px;
+    }
+    #headeruser-xs span {
+        position: absolute; left: 50px; top: 13px;
+        display: block;
+        padding-left: 40px;
+        font-size: 10px; text-transform: none;
+    }
+#headeruser-xs:focus, #headeruser-xs:hover, #headeruser-xs:active,
+#headeruser-xs.active,
+#headeruser-xs:focus .svg-fg, #headeruser-xs:hover .svg-fg, #headeruser-xs:active .svg-fg,
+#headeruser-xs.active .svg-fg {
+    color: $highlightColor; fill: $highlightColor;
+}
+@media (min-width: $sm) {
+#headeruser-xs {
+    position: relative; z-index: 2;
+}
+}
+
+/*
+#####################################
+USER LOGIN SECTION -MD -LG
+#####################################
+*/
+@media (min-width: $md) {
+#headeruser-md {
+    float: right;
+    display: block; width: 55%;
+    margin-top: -2.1rem; margin-bottom: 0.75rem;
+    background: $tintColor;
+    &:focus, &:hover, &:active {
+        background: $tintColorActive;
+    }
+}
+    #headeruser-md .usericon {
+        float: left;
+        width: 40px; height: 32px;
+        margin: 0.75rem 0.5rem 0.75rem;
+    }
+        #headeruser-md svg {
+            width: 30px; height: 30px;
+        }
+            #headeruser-md svg path {
+                fill: $highlightColor;
+            }
+    #headeruser-md p {
+        float: right;
+        width: auto;
+        margin-top: 0.5rem; margin-bottom: 0; margin-right: 1rem;
+        @include font('sans', 13, $highlightColor); text-align: right;
+    }
+    #headeruser-md.user-loggedout p {
+        line-height: 2.5rem;
+    }
+}
+@media (min-width: $lg) {
+#headeruser-md {
+    width: 50%;
+    margin-top: -2.6rem;
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+#####################################
+BREADCRUMB
+#####################################
+*/
+#breadcrumb {
+    display: block;
+    margin: 1rem 0 2rem;
+    //@include sansBold(); color: $teColor4; font-size: 1.375rem; line-height: 1em;
+}
+
+@media (min-width: $md) {
+    #breadcrumb {
+        margin: 1rem 0 3rem;
+    }
+}

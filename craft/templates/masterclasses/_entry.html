@@ -1,0 +1,35 @@
+{% set breadcrumbEntries = [] %}
+
+{% set overview = craft.entries.section('masterclassesOverview').first %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([overview]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+
+{% set products = craft.commerce.products().relatedTo(entry).type('masterclass').startDate('> ' ~ now).order('startDate').limit(NULL) %}
+
+{% set metaTitle = entry.metaTitle | length ? entry.metaTitle : entry.title %}
+{% set metaDescription = entry.metaDescription | length ? entry.metaDescription : "" %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header id="classheader" class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+		{% include "masterclasses/_incs/_classSummary" %}
+	</header>
+
+	{% if products is defined and products | length %}
+		<div class="row">
+			<div class="col-md-12" id="productslist">
+				{% for product in products %}
+					{% include "masterclasses/_incs/_productSnippet" %}
+				{% endfor %}
+			</div>
+		</div>
+	{% endif %}
+
+</div>
+
+{% endblock %}

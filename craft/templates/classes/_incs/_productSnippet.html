@@ -1,0 +1,101 @@
+{% if product.defaultVariant.maxQty | length %}
+	{% set maxQty = product.defaultVariant.maxQty %}
+{% else %}
+	{% set maxQty = 10 %}
+{% endif %}
+{% if product.defaultVariant.minQty | length %}
+	{% set minQty = product.defaultVariant.minQty %}
+{% else %}
+	{% set minQty = 1 %}
+{% endif %}
+
+{% if addToCart is defined %}
+	<form method="POST" class="addtocartform">
+    <input type="hidden" name="action" value="commerce/cart/updateCart">
+    <input type="hidden" name="redirect" value="cart">
+    <input type="hidden" name="purchasableId" value="{{ product.defaultVariant.purchasableId }}">
+{% endif %}
+<div class="productsnippet">
+<div class="row">
+	<div class="col-md-12">
+		<h2>{{ product.date | date('l j M Y') }}</h2>
+	</div>
+	<div class="col-lg-7 col-md-8 {% if addToCart is defined %}col-sm-7{% else %}col-sm-7{% endif %}">
+		<ul>
+			<li>{% if parentCategory | length %}<span class="cat-title">{{ parentCategory.title }}</span> / {% endif %}{{ entry.title }}</li>
+			{% if product.additionalDescription | length %}
+				<li class="additionaldescription">{{ product.additionalDescription }}</li>
+			{% endif %}							
+			{% if product.location | length %}
+				{% set location = product.location.first %}
+			{% else %}
+				{% set location = entry.location.first %}
+			{% endif %}
+			{% if location | length %}<li class="location"><span class="location">Location: {{ location.title }}</span></li>{% endif %}
+			<li><span class="time">Time: {{ product.startTime | date('G:i') }} - {{ product.finishTime | date('G:i') }}</span></li>
+			<li><span class="price">Price: {{ product.defaultVariant.price | currency(cart.currency) }}</span> <span class="stock">Availability: 
+			<span class="highlight">
+				{% include "classes/_incs/_productStock" %}
+			</span>
+			</span></li>
+		</ul>
+	</div>
+	{% if addToCart is defined and product.defaultVariant.stock > 0 %}
+
+		<div class="col-lg-4 col-lg-push-1 col-md-4 col-sm-5 col-xs-12">
+			<div class="row">
+				<div class="col-lg-3 col-md-4 col-sm-5 col-xs-3">
+				{% if product.date >= now | date_modify("-1 day") %}
+					<label for="addtocart-qty">Quantity</label>
+					<select id="addtocart-qty" name="qty">
+						{#################
+						{% if maxQty < product.defaultVariant.stock %}
+						{% for i in minQty..maxQty %}
+							<option val="{{ i }}">{{ i }}</option>
+						{% endfor %}
+						##################}
+						{% if product.defaultVariant.stock > 5 %}
+						{% for i in minQty..5 %}
+							<option val="{{ i }}">{{ i }}</option>
+						{% endfor %}
+						{% else %}
+						{% for i in minQty..product.defaultVariant.stock %}
+							<option val="{{ i }}">{{ i }}</option>
+						{% endfor %}
+						{% endif %}
+					</select>
+				{% endif %}
+				</div>	
+				<div class="col-lg-9 col-md-8 col-sm-7 col-xs-9">
+					{% if product.date <= now | date_modify("-1 day") %}
+						<div class="button disabled">Unavailable</div>
+					{% elseif product.defaultVariant.stock == 0 %}
+						<div class="button disabled">Sold Out</div>
+					{% else %}
+						<button type="submit" class="button">Add to cart</button>
+					{% endif %}
+					{% if craft.request.getIpAddress() == "82.153.168.188" %}
+						{% if product.defaultVariant.stock == 0 %}
+						<div class="button disabled">Sold Out</div>
+						{% else %}
+							<button type="submit" class="button">Add to cart</button>
+						{% endif %}
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% else %}
+	<div class="col-lg-4 col-lg-push-1 col-md-4 col-sm-5">
+		{% if product.defaultVariant.stock == 0 %}
+			{% include "classes/_incs/_soldOut" %}
+		{% else %}
+			<a href="{{ product.url }}" class="button">Book now</a>
+		{% endif %}
+	</div>
+	{% endif %}
+</div>
+</div>
+{% if addToCart is defined %}
+	</form>
+{% endif %}
+

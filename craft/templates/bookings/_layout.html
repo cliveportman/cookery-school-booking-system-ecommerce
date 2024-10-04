@@ -1,0 +1,81 @@
+{% spaceless %}
+{% if day is not defined and month is defined %}
+  {% set day = '01' %}
+{% elseif day is not defined %}
+  {% set day = now | date('d') %}
+{% endif %}
+
+{% if month is not defined %}
+  {% set month = now | date('m') %}
+{% endif %}
+
+{% if year is not defined %}
+  {% set year = now | date('Y') %}
+{% endif %}
+{% endspaceless %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{% if metaTitle is defined %}{{ metaTitle }}{% endif %}</title>
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <link href="{{ siteUrl }}bookings.min.css?v=1.13" rel="stylesheet">
+    <script src="{{ siteUrl }}lacuisine-bookings.js?v=1.14"></script>
+    {% includeJsResource "lib/redactor/redactor.js" %}
+    {% includeCssResource "lib/redactor/redactor.css" %}
+</head>
+
+<body>
+
+{% if currentUser %}
+<div class="sidebar-holder">
+<nav class="ui visible very-thin left vertical inverted sidebar labeled icon menu" id="mainnav">
+
+  <a href="{{ siteUrl }}" class="item">
+    <img src="{{ siteUrl }}img/logo.png">
+  </a>
+
+  <a href="{{ siteUrl }}day/{{ year }}/{{ month }}/{{ day }}" class="item {% if craft.request.firstSegment == 'day' %}pink{% endif %}">
+    <i class="calendar outline icon {% if craft.request.firstSegment == 'day' %}pink{% endif %}"></i>
+    Day
+  </a>
+  <a href="{{ siteUrl }}week/{{ year }}/{{ month }}/{{ day }}" class="item {% if craft.request.firstSegment == 'week' %}pink{% endif %}">
+    <i class="columns layout icon {% if craft.request.firstSegment == 'week' %}pink{% endif %}"></i>
+     Week
+  </a>
+  <a href="{{ siteUrl }}month/{{ year }}/{{ month }}" class="item {% if craft.request.firstSegment == 'month' %}pink{% endif %}">
+    <i class="table icon {% if craft.request.firstSegment == 'month' %}pink{% endif %}"></i>
+    Month
+  </a>
+  <a href="{{ siteUrl }}products" class="item {% if craft.request.firstSegment == 'products' %}pink{% endif %}">
+    <i class="tags icon {% if craft.request.firstSegment == 'products' %}pink{% endif %}"></i>
+    Products
+  </a>
+  <a href="{{ siteUrl }}orders" class="item {% if craft.request.firstSegment == 'orders' %}pink{% endif %}">
+    <i class="bullseye icon {% if craft.request.firstSegment == 'orders' %}pink{% endif %}"></i>
+    Orders
+  </a>
+  <a href="{{ siteUrl }}reports" class="item {% if craft.request.firstSegment == 'reports' %}pink{% endif %}">
+    <i class="line chart icon {% if craft.request.firstSegment == 'reports' %}pink{% endif %}"></i>
+    Reports
+  </a>
+  <a href="{{ craft.config.publicSiteUrl }}" class="item">
+    <i class="world icon"></i>
+    Visit site
+  </a>
+  {% if currentUser %}
+    <a href="{{ logoutUrl }}" class="item">
+      <i class="moon icon"></i>
+      Logout {{ user.firstName }}
+    </a>
+  {% endif %}
+</nav>
+</div>
+{% endif %}
+
+<div class="content-holder">
+  {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

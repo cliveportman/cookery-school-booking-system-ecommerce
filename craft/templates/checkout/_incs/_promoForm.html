@@ -1,0 +1,26 @@
+{% if cart.getError('couponCode') %}<span class="flash">{{ cart.getError('couponCode') }}</span>{% endif %}
+<form class="defaultform notopborder" id="promoform" method="POST">
+    <div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-7">
+        <input type="hidden" name="action" value="commerce/cart/updateCart">
+        <input type="hidden" name="redirect" value="cart">
+        {{ getCsrfInput() }}
+        <ul>
+            <li>
+                <div class="row">
+                    <div class="col-lg-4 col-md-5 col-sm-5 col-xs-4">
+                        <label for="promocode">Discount?</label>
+                    </div>
+                    <div class="col-lg-8 col-md-7 col-sm-7 col-xs-8">
+                        <input type="text" id="promocode" name="couponCode" class="{% if cart.getError('couponCode') %}has-error{% endif %}" value="{{ cart.couponCode }}" placeholder="{{ "Enter code" }}">
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-3">
+        <button type="submit" class="button sub">{% if cart.couponCode %}Change{% else %}Apply{% endif %}</button>
+    </div>
+    </div>
+    <br class="visible-xs">
+</form>

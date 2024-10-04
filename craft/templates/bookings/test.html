@@ -1,0 +1,22 @@
+{########################
+REPLENISH A WHOLE ORDER
+USE bookings/test/{{ order.id }}
+REPLENISH A SINGLE LINE ITEM WITHIN AN ORDER
+USE bookings/test/{{ order.id }}/{{ lineItem.id}}
+USE bookings/test/{{ order.id }}/{{ lineItem.id}}/{{ newQuantity }}
+########################}
+{{ craft.request.getSegment(5) }}
+
+{% if craft.request.getSegment(5) %}
+	{% set cancellation = craft.stockReplenisher.replenishLineItem(craft.request.getSegment(3), craft.request.getSegment(4), craft.request.getSegment(5)) %}
+{% elseif craft.request.getSegment(4) %}
+	{% set cancellation = craft.stockReplenisher.replenishLineItem(craft.request.getSegment(3), craft.request.getSegment(4)) %}
+{% else %}
+	{% set cancellation = craft.stockReplenisher.replenishWholeOrder(craft.request.getSegment(3)) %}
+{% endif %}
+
+
+
+
+
+{{ dump(cancellation) }}

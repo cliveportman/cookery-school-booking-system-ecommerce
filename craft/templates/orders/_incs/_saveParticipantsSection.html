@@ -1,0 +1,24 @@
+{% if order.lineItems | length %}
+{% set showParticipants = FALSE %}
+{% for item in order.lineItems %}
+    {% set product = item.purchasable.product %}
+    {% if product.type == 'class' %}
+        {% set showParticipants = TRUE %}
+    {% endif %}
+{% endfor %}
+{% endif %}
+
+{% if showParticipants %}
+<section class="checkoutsection">
+    <h3>Participants*</h3>
+    <div class="row">
+        <div class="col-md-7">
+            <p>To speed things up on arrival and help us give you the best possible experience, you can provide us with the names of everyone attending.</p>
+            <p>* This is only optional and can be completed later.</p>
+        </div>
+        <div class="col-md-5">
+            <a class="button caps" href="{{ siteUrl }}orders/{{ order.number }}/participants/receipt">Name participants</a>
+        </div>
+    </div>
+</section>
+{% endif %}

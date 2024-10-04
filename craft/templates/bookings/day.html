@@ -1,0 +1,214 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% if year is not defined %}
+  {% set year = now | date('Y') %}
+{% endif %}
+
+{% if month is not defined %}
+  {% set month = now | date('m') %}
+{% endif %}
+
+{% if day is not defined %}
+  {% set day = now | date('d') %}
+{% endif %}
+
+{% set today = date(year ~ '-' ~ month ~ '-' ~ day) %}
+{% set yesterday = date(year ~ '-' ~ month ~ '-' ~ day ~ ' - 1 day') %}
+{% set tomorrow = date(year ~ '-' ~ month ~ '-' ~ day ~ ' + 1 day') %}
+
+{% set calendarStartDate = date('01-' ~ month ~ '-' ~ year) %}
+{% set previousStartDate = date('01-' ~ month ~ '-' ~ year ~ ' - 1 month') %}
+{% set nextStartDate = date('01-' ~ month ~ '-' ~ year ~ ' + 1 month') %}
+
+{% set vars = {
+  'calendarStyle': 'calendar',
+  'calendarStartDate': today | date('j F Y'),
+  'calendarWeekBegins': 'Monday',
+  'calendarLength': 'day',
+  'weekdaysToExclude': 'Sunday',  
+  'showDisabledProducts': currentUser
+} %}
+
+{% set classesAndMasterclasses = craft.productsCalendar.getProducts(vars) %}
+{% set products = [] %}
+{% for class in classesAndMasterclasses.classes %}
+  {% set products = products | merge([class]) %}
+{% endfor %}
+{% for masterclass in classesAndMasterclasses.masterclasses %}
+  {% set products = products | merge([masterclass]) %}
+{% endfor %}
+
+{% set metaTitle = today | date('l j F Y') %}
+
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+<div class="ui masthead vertical">
+<div class="ui container">
+        <h1 class="ui header">
+          {% if craft.request.firstSegment == "" %}
+            <i class="home icon"></i>
+            Today
+          {% else %}
+            <i class="calendar outline icon"></i>
+            {{ today | date('l j F Y') }}
+          {% endif %}
+        </h1>
+</div>
+</div>
+
+<div class="ui container">
+
+    <div class="ui column grid">
+      <div class=" four wide column">
+        <h3 class="ui header"><a href="{{ siteUrl }}day/{{ yesterday | date('Y/m/d') }}" class="previous"><i class="caret left icon"></i> {{ yesterday | date('D j F Y') }}</a></h3>
+      </div>
+      <div class="eight wide column">
+      </div>
+      <div class=" four wide column">
+        <h3 class="ui header"><a href="{{ siteUrl }}day/{{ tomorrow | date('Y/m/d') }}" class="next">{{ tomorrow | date('D j F Y') }} <i class="caret right icon"></i></a></h3>
+      </div>
+    </div>
+
+
+    <div class="ui one column grid">
+      <div class="column">
+
+      {% for product in products %}
+
+          {% switch product.type %}
+
+            {% case "class" %}          
+              {% set class = product.class.status(null).first %}
+              {% set parent = class.getParent() %}
+              {% set teacher = product.teacher.first %}
+              {% set variant = product.defaultVariant %}
+              {% set waiting = craft.entries.section('waitingList').relatedTo(product) %}
+            
+            {% case "masterclass" %}          
+              {% set class = product.masterclass.first %}
+              {% set teacher = product.teacher.first %}
+              {% set variant = product.defaultVariant %}
+              {% set waiting = craft.entries.section('waitingList').relatedTo(product) %}
+
+          {% endswitch %}
+          
+        <form class="ui styled accordion attendenceform attendenceform-{{ product.type }}" method="post">
+
+          <input type="hidden" name="action" value="registration/participants/UpdateAttendance">
+          <input type="hidden" name="redirect" value="{{ siteUrl }}bookings/success">
+          <input type="hidden" name="product[productId]" value="{{ product.id }}">
+
+          <div class="title">
+            <div class="ui three column grid">
+              <div class="six wide column"><h5><i class="dropdown icon"></i> {% if product.type == "class" %}{{ parent.title }} / {% endif %}{{ class.title }}</h5></div>
+              <div class="four wide column">{{ product.startTime | date('g.ia') }}-{{ product.finishTime | date('g.ia') }}, {% if teacher | length %}{{ teacher.name }}, {% endif %}{% if product.room != 'nA' %}{{ product.room.label }}{% endif %}</div>
+              <div class="three wide column">{{ variant.stock }} spaces {% if waiting | length %}({{ waiting | length }} waiting){% endif %}</div>
+            </div>
+          </div>
+
+          <div class="content">
+            {% set orders = craft.commerce.orders.hasPurchasables([variant]).orderStatus('not 3') %}
+            {% if orders | length %}
+            <table class="ui celled table">
+              <thead>
+                <tr>
+                  <th class="four wide" id="registerth">
+                    <div class="ui master checkbox">
+                      <input type="checkbox" tabindex="0" class="hidden">
+                      <label>Participants</label>
+                    </div>                     
+                      <button class="ui icon button disabled updateregisterbutton">
+                        <i class="save icon"></i>                        
+                      </button>
+                  </th>
+                  <th class="three wide">Order</th>
+                  <th class="two wide">Other courses?</th>
+                  <th class="four wide">Notes</th>
+                  <th class="two wide">                         
+                    <a class="showEmailModal fluid ui button" data-url="{{ siteUrl }}modal/email/{{ product.id }}">
+                      <i class="mail outline icon"></i>
+                      Send all
+                    </a>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="">
+                {% for order in orders %}
+                  {% for register in order.registers %}
+                    {% if register.product | length and register.product.first.id == product.id %}
+                    <input type="hidden" name="product[registers][{{ loop.parent.loop.index }}][registerId]" value="{{ register.id }}">            
+                    <input type="hidden" name="product[registers][{{ loop.parent.loop.index }}][orderId]" value="{{ order.id }}">
+            
+                    <tr class="top aligned" id="p{{ product.id }}-{{ order.shortNumber }}">
+                      <td class="names">    
+                      {% for participant in register.participants %}
+
+                        <div class="ui child checkbox">
+                          <input type="hidden" name="product[registers][{{ loop.parent.loop.parent.loop.index }}][participants][{{ loop.index }}][name]" value="{{ participant.name }}">
+                          <input type="hidden" name="product[registers][{{ loop.parent.loop.parent.loop.index }}][participants][{{ loop.index }}][present]" value="0">
+                          <input type="checkbox" tabindex="0" class="hidden" name="product[registers][{{ loop.parent.loop.parent.loop.index }}][participants][{{ loop.index }}][present]" value="1" {% if participant.present == 1 %}checked{% endif %}>
+                          <label>
+                            {% if participant.name | length %}
+                              {{ participant.name }}
+
+                            {#
+                            {% elseif participant.isCustomer is defined and loop.first %}
+                              {{ order.billingAddress.firstName }} {{ order.billingAddress.lastName }}
+                            {% else %}
+                            #}
+
+
+                            {% endif %}
+
+                            {% if loop.length > 1 %}
+                              {#({{ loop.index }} of {{ loop.length }})#}
+                            {% endif %}
+                          </label>
+                        </div><br>
+                      {% endfor %}
+                      </td>
+
+                      <td id="{{ order.shortNumber }}">
+                          <a class="showOrderModal" data-url="{{ siteUrl }}modal/order/{{ order.number }}/p{{ product.id }}-{{ order.shortNumber }}">#{{ order.shortNumber }} &nbsp;&nbsp;&nbsp;{% if order.isPaid %}<span class="green">PAID</span>{% else %}<span class="red">UNPAID</span>{% endif %}</a>
+                      </td>
+                        <td>{% if order.registers | length > 1 %}Yes{% endif %}</td>
+                        <td class="notes">
+                          {% if order.orderMessage | length %}<em>{{ order.orderMessage }}</em><br>{% endif %}{% if register.notes | length %}{{ register.notes }}{% endif %}</td>
+                        <td>                         
+                          <a class="showEmailModal fluid ui button"  data-url="{{ siteUrl }}modal/email/{{ product.id }}/{{ order.number }}">
+                            <i class="mail outline icon"></i>
+                            Send
+                          </a>
+                        </td>
+                      </tr>
+                    {% endif %}
+                  {% endfor %}
+                {% endfor %}
+              </tbody>
+            </table>
+            {% endif %}
+
+            {% if waiting | length %}
+              <h4>Waiting list</h4>
+              <ul>
+              {% for waitee in waiting %}
+                <li>{{ waitee.personName }}, {{ waitee.email }}, {{ waitee.tel }}</li>
+              {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+
+        </form>
+        {% endfor %}
+       
+
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

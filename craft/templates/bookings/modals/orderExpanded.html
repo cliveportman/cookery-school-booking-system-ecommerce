@@ -1,0 +1,174 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set order = craft.commerce.orders.number(craft.request.getSegment(3)).first %}
+
+<div class="ui modal small order">
+
+  <i class="close icon"></i>
+
+  <div class="header">
+    <h2>
+      {% if order.isPaid %}
+          Order #{{ order.shortNumber }} &nbsp;&nbsp;&nbsp; 
+            <button class="ui toggle active button">PAID</button>        
+      {% else %}
+        {% for transaction in order.transactions %}
+          {% if loop.last %}
+          <form class="transactionupdateform" data-shortnumber="{{ order.shortNumber }}">
+            <input type="hidden" name="action" value="commerce/orders/transactionCapture">
+            <input type="hidden" name="redirect" value="{{ siteUrl }}bookings/success">
+            <input type="hidden" name="hash" value="{{ transaction.hash }}">
+            <input type="hidden" name="id" value="{{ transaction.id }}">
+            Order #{{ order.shortNumber }} &nbsp;&nbsp;&nbsp; 
+                <button class="ui toggle button">UNPAID</button>
+          </form>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </h2>
+  </div>
+
+  <div class="content">
+
+    <div class="ui column grid">
+      <div class="eight wide column">
+        <h3>Customer details</h3>
+        {% set address = order.shippingAddress %}
+        <ul>
+          <li>{{ address.firstName }} {{ address.lastName }}</li>
+          <li>{{ order.email }} {#&nbsp;&nbsp;&nbsp;&nbsp; <a href=""><i class="mail icon"></i> Send email</a>#}</li>
+          <li>{{ address.phone }}</li>
+        </ul>
+        {% if order.orderMessage | length %}<h3>Order note</h3><p><em>{{ order.orderMessage }}</em></p>{% endif %}
+      </div>
+      <div class="eight wide column actionsarea">
+
+        {% if order.orderStatus.id !=3 %}
+        <form class="ordercancellationform" data-shortnumber="{{ order.shortNumber }}" style="float: right;">
+          <input type="hidden" name="action" value="commerce/orders/updateStatus">
+          <input type="hidden" name="orderStatusId" value="3">
+          <input type="hidden" name="orderId" value="{{ order.id }}">
+              <button class="ui circular icon button"><i class="ban icon"></i> </button>
+        </form>
+        {% endif %}
+        {###############
+        HIDDEN FOR NOW - I'D LIKE TO HIDE THE UPDATE LINE ITEM FORMS
+        AND OPEN THEM UP USING THIS BUTTON
+        <a class="ui circular icon button"><i class="edit icon"></i></a>
+        ################}
+
+      </div>
+
+    </div>
+
+    
+
+        {% if order.orderStatus.id != 3 %}
+        <div class="ui hidden success message ordercancellationmessage">
+          <div class="header">Order cancelled</div>
+          <p>All valid classes within the order have had their stock updated.</p>
+        </div>
+        {% endif %}
+
+
+
+    {% for lineItem in order.lineItems %}
+    {% if lineItem.purchasable | length %}
+    <form class="lineitemquantityform" data-shortnumber="{{ order.shortNumber }}" method="post" class="ui form">
+      <input type="hidden" name="action" value="stockReplenisher/adjustLineItemQuantity">
+      <input type="hidden" name="redirect" value="{{ siteUrl }}bookings/success">
+      <input type="hidden" name="lineItemId" value="{{ lineItem.id }}">
+      <input type="hidden" name="orderId" value="{{ order.id }}">
+      {{ lineItem.purchasable.title }}
+      &nbsp;&nbsp;&nbsp;
+      <select name="newQuantity">        
+        {% for i in 0..lineItem.qty %}
+        {#{% for i in 0..9 %}#}
+          <option val="{{ i }}" {% if loop.index0 == lineItem.qty %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+      </select>
+      &nbsp;&nbsp;&nbsp;
+      <button class="ui toggle icon button"><i class="save icon"></i> Update</button>
+      <div class="ui hidden error message ">
+        <div class="header">Error</div>
+        <p>There was a problem updating this line item's quantity and it has not been saved.</p>
+      </div>
+      <div class="ui hidden success message ">
+        <div class="header">Quantity updated</div>
+        <p>The line item quantity has been updated and the stock added back.</p>
+      </div>
+    </form>
+    {% else %}
+      <p class="error">Invalid line item not shown</p>
+    {% endif %}
+
+    {% endfor %}
+
+    <form method="post" class="ui form mini order updateorderform" data-lineid="{{ craft.request.lastSegment }}">
+
+      <input type="hidden" name="action" value="registration/participants/UpdateParticipants">
+      <input type="hidden" name="redirect" value="{{ siteUrl }}bookings/success">
+      <input type="hidden" name="orderId" value="{{ order.id }}">
+
+      {% if order.registers | length %}
+      <h3>Classes</h3>
+      {% for register in order.registers %}
+        {% set product = register.product.first %}
+        {% if product | length %}
+          <input type="hidden" name="products[{{ loop.index }}][register]" value="{{ register.id }}">
+          <article>
+
+            {% if product.type == "masterclass" %}
+              <h5><i class="calendar outline icon"></i> {{ product.startDate | date('D j F Y') }} to {{ product.endDate | date('D j F Y') }} / {{ product.masterclass.first.title }},</h5>
+
+            {% else %}
+              {% set class = product.class.first %}
+              {% set parent = class.getParent() %}
+              <h5><i class="calendar outline icon"></i> {{ product.date | date('D j F Y') }}, {{ parent.title }} / {{ class.title }},</h5>
+
+            {% endif %}
+            
+            <div class="fields">
+              {% for row in register.participants %}
+                <input type="hidden" name="products[{{ loop.parent.loop.index }}][participants][{{ loop.index }}][present]" value="{{ row.present }}">
+                <div class="four wide field">
+                <input type="text" class="names-p{{ product.id }}-{{ order.shortNumber }}" u-full-width" name="products[{{ loop.parent.loop.index }}][participants][{{ loop.index }}][name]" value="{{ row.name }}" {% if row.name | length == 0 %}placeholder=""{% endif %}>
+                </div>
+                {% if loop.index is divisible by(4) and not loop.last %}</div><div class="fields">{% endif %}
+              {% endfor %}
+
+            </div>
+            <div class="field">
+              <label>Class notes</label>
+                <input type="text" class="notes-p{{ product.id }}-{{ order.shortNumber }}" name="products[{{ loop.index }}][notes]" value="{{ register.notes }}">
+            </div><br>
+          </article>
+        {% endif %}
+      {% endfor %}
+      {% endif %} 
+
+      <div class="fields">
+        <div class="thirteen wide field">
+      
+          <div class="ui success compact message">
+            <div class="header">Class participants updated</div>
+          </div>
+          
+          <div class="ui error compact message">
+            <div class="header">Error - please try again</div>
+          </div>
+        </div>
+        <div class="three wide field">
+            <button class="fluid ui pink button" id="saveorderbutton">
+              <i class="save icon"></i>
+              Save
+            </button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>

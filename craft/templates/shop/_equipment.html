@@ -1,0 +1,87 @@
+{% set shop = craft.entries.section('shop').first %}
+{% set category = craft.entries.section('shopEquipment').first %}
+
+{% set breadcrumbEntries = [] %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([shop]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([category]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([product]) %}
+
+{% if entry.metaTitle is defined and entry.metaTitle | length %}
+    {% set metaTitle = entry.metaTitle %}
+{% else %}
+    {% set metaTitle = "Equipment / Online Store / La Cuisine, Paris - cooking classes and food tours in the heart of Paris" %}
+{% endif %}
+{% if entry.metaDescription is defined and entry.metaDescription | length %}
+    {% set metaDescription = entry.metaDescription %}
+{% else %}
+    {% set metaDescription = "" %}
+{% endif %}
+
+{% set equipment = craft.commerce.products.type('equipment').find %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+	</header>
+	<div class="row">
+		<div class="col-xs-12">
+			
+			<div class="shop-productdetail">
+
+				<img src="{{ product.shopThumbnailImage.first.getUrl() }}" alt="{{ wine.title }}" class="shop-productdetail__thumb">
+
+				<div class="shop-productdetail__description">
+
+					<div class="shop-productdetail__text">
+						<h2>{{ product.title }}</h2>
+						{{ product.productDetail }}
+					</div>
+
+					<form method="POST" class="shop-productdetail__addtocartform">
+					    <input type="hidden" name="action" value="commerce/cart/updateCart">
+					    <input type="hidden" name="redirect" value="cart">
+					    <input type="hidden" name="purchasableId" value="{{ product.defaultVariant.purchasableId }}">
+
+					    {#<div class="important"><img src="/img/flags/us.svg" alt="US"><p>U.S. CUSTOMERS ONLY<br> - <a href="#">find out more</a></p></div>#}
+
+						{######## HAS STOCK ########}
+						{% if product.defaultVariant.hasStock %}
+							<div class="shop-productdetail__quantity">
+								<label for="shop-productdetail__quantityinput">Quantity</label>
+								<input id="shop-productdetail__quantityinput" name="qty" type="number" value="1">
+							</div>
+							<div class="shop-productdetail__addtocart">
+								<p>Price: {{ product.defaultVariant.price | currency(cart.currency) }}</p>
+								<button type="submit" class="button">Add to cart</button>
+							</div>
+						{% endif %}
+
+						{########## NO STOCK ########}
+						{% if not product.defaultVariant.hasStock %}
+							<div class="button disabled">Sold Out</div>
+						{% endif %}
+
+					</form>
+
+				</div><!-- /.shop-productdetail__description -->
+			</div><!-- /.shop-productdetail -->
+			
+		</div>
+
+	</div>
+	<div class="row">
+
+		<div class="col-sm-12">
+			<hr class="pink">
+		</div>
+
+	</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+#checkoutnotice {
+	margin-bottom: 2rem;
+}
+
+#checkoutnotice ul {
+	padding-left: 1rem;
+	margin-bottom: 0.75rem;
+    @include font('sans', 16, $textColor); text-align: left; line-height: 1.4em;
+}
+	#checkoutnotice li strong {
+		@include font('sans', 16, $highlightColor);
+	}
+
+#checkoutsteps {
+	margin-bottom: 0; padding-bottom: 0;
+}
+	#checkoutsteps ul {
+		list-style-type: none;
+		margin: 1rem 0 0; padding: 0;
+	}
+		#checkoutsteps li {
+			margin-bottom: 0.5rem; padding: 0.45rem 1rem 0.5rem;
+    		@include font('serif', 19, $textColor, 'italic'); text-align: left; line-height: 1.4em;
+    		background: $tintColor;
+		}
+		#checkoutsteps li:last-of-type {
+			margin-bottom: 0;
+		}
+		#checkoutsteps li.active {
+			background: $tintColorActive;
+		}
+
+.participantsform ul:not(:last-of-type) {
+	margin-bottom: 3rem;
+}
+@media (max-width: 767px) {
+#cartsummary {
+	margin-top: 2rem;
+}
+}

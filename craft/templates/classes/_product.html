@@ -1,0 +1,61 @@
+{% set product = craft.commerce.products.id(craft.request.lastSegment).first %}
+
+{% set breadcrumbEntries = [] %}
+{% set entry = craft.entries.section('classes').relatedTo(product).first %}
+{% set parentOverview = craft.entries.section('classes').ancestorOf(entry).type('overview').first %}	
+{% set parentCategory = craft.entries.section('classes').ancestorOf(entry).type('category').first %}
+{% if parentCategory | length %}
+	{% set metaTitle = product.title ~ ' / ' ~ parentCategory.title ~ ' / ' ~ parentOverview.title %}
+	{% set cats = parentOverview.children().type('category') %}
+{% else %}
+	{% set metaTitle = product.title ~ ' / ' ~ parentOverview.title %}
+{% endif %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([parentOverview]) %}
+{% if parentCategory | length %}
+	{% set breadcrumbEntries = breadcrumbEntries | merge([parentCategory]) %}
+{% endif %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([product]) %}
+{% set products = craft.commerce.products().relatedTo(entry).type('class').date('> ' ~ now).order('date') %}
+
+{% extends "_layout" %}
+
+{% block content %}
+<div class="container">
+
+	<section id="product">
+		<header id="classheader" class="row">		
+
+			{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+			<div class="col-md-12">
+				{% set vars = { 'addToCart': TRUE } %}
+				{% include "classes/_incs/_productSnippet" with vars %}
+			</div>
+		</header>
+
+		<div class="row">
+			{% include "classes/_incs/_classSummary" %}
+		</div>
+	</section>
+
+
+	{% if product.date > now %}
+		{% include "classes/_incs/_similarClasses" %}
+	{% endif %}
+
+	{% if cats is defined and cats | length %}
+	<div class="row">
+		{% for cat in cats %}
+			<div class="col-sm-3 col-xs-6">
+				<a href="{{ cat.url }}" class="boxlink light" id="box-{{ cat.slug }}">
+					<h3>{{ cat.title }}</h3>
+					{% include "_svgs/_" ~ cat.svgThumbnail %}
+				</a>
+			</div>			
+		{% endfor %}
+	</div>
+	{% endif %}
+
+</div>
+
+{% endblock %}

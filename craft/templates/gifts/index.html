@@ -1,0 +1,93 @@
+{% set breadcrumbEntries = [] %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+
+{% if entry.metaTitle is defined and entry.metaTitle | length %}
+    {% set metaTitle = entry.metaTitle %}
+{% else %}
+    {% set metaTitle = "Private events / La Cuisine, Paris" %}
+{% endif %}
+{% if entry.metaDescription is defined and entry.metaDescription | length %}
+    {% set metaDescription = entry.metaDescription %}
+{% else %}
+    {% set metaDescription = "" %}
+{% endif %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+	</header>
+
+	<div class="row">
+
+		<div class="col-lg-3 col-md-3 col-sm-4">
+			<div class="boxlink light single" id="box-{{ entry.slug }}">
+				<h3 style="color: white;">{{ entry.title }}</h3>
+				{% include "_svgs/_bow" %}
+			</div>
+		</div>
+
+		<div class="col-lg-7 col-md-9 col-sm-8">
+			<h2>
+				{{ entry.title }}
+			</h2>
+			<p>{{ entry.shortSummary }}</p>
+		</div>
+
+	</div>
+
+	{% if entry.giftVouchers is defined and entry.giftVouchers | length %}	
+	{% for voucher in entry.giftVouchers %}
+	<form method="POST" class="addtocartform">
+	    <input type="hidden" name="action" value="giftVouchers/saveProduct">
+	    <input type="hidden" name="redirect" value="{{ siteUrl }}cart">
+	    <input type="hidden" name="enabled" value="1">
+	    <input type="hidden" name="postDate[date]" value="{{ now | date('d/m/Y i:H') }}">
+	    <input type="hidden" name="typeId" value="5">
+	    <input type="hidden" name="expiryDate[date]" value="">
+	    <input type="hidden" name="slug" value="">
+	    <input type="hidden" name="shippingCategoryId" value="1">
+	    <input type="hidden" name="variants[new1][unlimitedStock]" value="1">
+	    <input type="hidden" name="variants[new1][sku]" value="GV{{ now | date('U') }}">
+	    <input type="hidden" name="variants[new1][minQty]" value="1">
+	    <input type="hidden" name="variants[new1][maxQty]" value="1">
+	    <input type="hidden" name="taxCategoryId" value="1">
+	    <input type="hidden" name="freeShipping" value="1">
+	    <input type="hidden" name="promotable" value="1">
+	    <input type="hidden" name="title" value="Gift Voucher">
+	    <input type="hidden" name="variants[new1][price]" value="{{ voucher.price }}">
+
+		<div class="productsnippet">
+		<div class="row">
+			<div class="col-md-12">
+				<h2>{{ voucher.whatIsThisGiftVoucherCalled }}</h2>
+			</div>
+			<div class="col-lg-6 col-md-8 {% if addToCart is defined %}col-sm-7{% else %}col-sm-8{% endif %}">
+				<ul>
+					<li><span class="cat-title">{{ voucher.price | currency(cart.currency) }} gift voucher</span></li>
+					{% if voucher.shortDescription | length %}
+						<li>{{ voucher.shortDescription }}</li>
+					{% endif %}	
+				</ul>
+			</div>
+
+			<div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+				<label>Enter recipient's name</label>
+				<input type="text" class="recipientname" name="fields[recipientName]" value="" placeholder="Recipient name">
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-4">
+				<button type="submit" class="button">Add to cart ({{ voucher.price | currency(cart.currency) }})</button>
+			</div>
+		</div>
+		</div>
+	</form>
+	{% endfor %}
+	{% endif %}
+
+</div>
+
+{% endblock %}

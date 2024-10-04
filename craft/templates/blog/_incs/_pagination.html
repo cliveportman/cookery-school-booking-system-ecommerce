@@ -1,0 +1,25 @@
+
+{% if paginate.prevUrl | length or paginate.nextUrl | length %}
+<nav id="pagination">
+	<div class="row">
+
+		<div class="col-sm-12 hidden-xs" id="paginationnumbers">
+			<p>	   
+        {% if paginate.prevUrl %}
+          <a href="{{ paginate.prevUrl }}" class="previous">&lt; Previous</a> &nbsp;&nbsp;&nbsp;
+        {% endif %}     		
+	         {% for page, url in paginate.getPrevUrls(5) %}
+			       <a href="{{ url }}">{{ page }}</a> /
+			    {% endfor %}
+			    <span class="current">{{ paginate.currentPage }}</span> /
+			    {% for page, url in paginate.getNextUrls(5) %}
+			        <a href="{{ url }}">{{ page }}</a> {% if not loop.last %} /{% endif %}
+			    {% endfor %}
+          {% if paginate.nextUrl %}
+             &nbsp;&nbsp;&nbsp; <a href="{{ paginate.nextUrl }}" class="next">Next &gt;</a>
+          {% endif %}
+		    </p>
+	    </div>
+    </p>
+</nav>
+{% endif %}

@@ -1,0 +1,19 @@
+<div class="col-md-12">
+<nav id="blognav">
+	<div id="blognavcats">
+		<h6>Categories:</h6> 
+		{% set cats = craft.categories.group('blogCategories') %}
+		{% for cat in cats %}
+			<a href="{{ cat.url }}" {% if craft.request.lastSegment == cat.slug %}class="active"{% endif %}>{{ cat.title }}</a> 
+		{% endfor %}
+	</div>
+	<div id="blognavarchive">
+		<h6>Archive:</h6> 
+		{% set allArticles = craft.entries.section('blog') %}
+		{% set articlesByYear = allArticles | group("postDate | date('Y')") %}
+		{% for year, articles in articlesByYear %}
+			<a href="{{ siteUrl }}blog/archive/{{ year }}" {% if craft.request.lastSegment == year %}class="active"{% endif %}>{{ year }}</a> 
+		{% endfor %}
+	</div>
+</nav>
+</div>

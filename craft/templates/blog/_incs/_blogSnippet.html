@@ -1,0 +1,86 @@
+{% if context is defined and context == "sitewide" %}
+<section id="articlesnippetlist">
+	<div class="row">
+		<div class="col-md-12">
+			<h2 class="bigheading withborder">La Cuisine Paris Blog</h2>
+		</div>
+	</div>
+</section>
+{% endif %}
+
+{% if context is defined and context == "relatedArticles" %}
+<section id="articlesnippetlist">
+	<div class="row">
+		<div class="col-md-12">
+			<h2 class="bigheading withborder">You might be interested in the following</h2>
+		</div>
+	</div>
+</section>
+{% endif %}
+
+{% if style is defined and style == 'masonry' %}
+
+  <div class="blog-grid">
+  <div class="grid-sizer"></div>
+    {% for article in articles %}
+    <div class="blogsnippet-masonry">
+      <h2><a href="{{ article.url }}">{{ article.title }}</a></h2>
+      {% if article.leadImage | length %}
+      {% set image = article.leadImage.first %}
+        <a href="{{ article.url }}"><img src="{{ image.getUrl(blogThumb) }}" alt="{{ image.altText }}"></a>
+      {% endif %}
+      <p class="excerpt">{{ article.excerpt | nl2br }}</p>
+      <p class="meta">
+        {{ article.postDate | date('d/m/Y') }}
+        {% if article.category | length %} 
+        {% for cat in article.category %}
+          <a href="{{ cat.url }}">{{ cat.title }}</a>{% if not loop.last %}, {% endif %}
+        {% endfor %}
+        {% endif %}
+      </p>
+    </div>
+    {% endfor %}
+  </div>
+
+{% else %}
+<div class="row">
+	<div class="col-md-12">
+		{% for article in articles %}
+			<article class="blogsnippet {% if style is defined and style == "short" %}short{% endif %}">
+				<div class="row">
+
+					{% if style is not defined or style != "short" %}
+					<div class="col-md-2 col-sm-3">
+            {% if article.leadImage | length %}
+            {% set image = article.leadImage.first %}
+              <img src="{{ image.getUrl(blogThumb) }}" alt="{{ image.altText }}">
+            {% endif %}
+					</div>
+					{% endif %}
+
+					{% if style is not defined or style != "short" %}
+					<div class="col-md-8 col-sm-9">
+					{% else %}
+					<div class="col-md-10 col-sm-12">
+					{% endif %}
+						<h3><a href="{{ article.url }}">{{ article.title }}</a></h3>
+						<p class="meta">
+							{{ article.postDate | date('l j M Y') }}
+							{% if article.category | length %} / 
+							{% for cat in article.category %}
+								<a href="{{ cat.url }}">{{ cat.title }}</a>{% if not loop.last %}, {% endif %}
+							{% endfor %}
+							{% endif %}
+						</p>
+						{% if style is not defined or style != "short" %}
+							<p class="excerpt">{{ article.excerpt | nl2br }}</p>
+						{% endif %}
+						<a href="{{ article.url }}" class="readmore">Read more</a>
+					</div>
+
+				</div>
+			</article>
+		{% endfor %}
+	</div>
+</div>
+{% endif %}

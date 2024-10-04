@@ -1,0 +1,107 @@
+{% set breadcrumbEntries = [] %}
+
+{% if entry.type == "overview" %}
+	{% set cats = entry.children().type('category') %}
+	{##################
+		THE 'NOT' AND 'AND' CLAUSES DON'T WORK WITH ENTRY TYPES FOR SOME REASON,
+		SO GET BOTH SEPARATELY AND MERGE
+	###################}
+	{% set classes = entry.children().type('class') %}
+	{% set classes = classes | merge(entry.children().type('tour')) %}
+	{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+
+{% elseif entry.type == "category" %}
+	{% set parentOverview = craft.entries.section('classes').ancestorOf(entry).type('overview').first %}	
+	{% set cats = parentOverview.children().type('category') %}
+	{% set classes = entry.children() %}
+	{% set breadcrumbEntries = breadcrumbEntries | merge([parentOverview]) %}
+	{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+
+{% else %}
+	{# MUST BE A CLASS OR A TOUR ENTRY TYPE #}
+	{% set parentOverview = craft.entries.section('classes').ancestorOf(entry).type('overview').first %}	
+	{% set parentCategory = craft.entries.section('classes').ancestorOf(entry).type('category').first %}
+	{% if parentCategory | length %}
+		{% set cats = parentOverview.children().type('category') %}
+	{% endif %}
+	{% set breadcrumbEntries = breadcrumbEntries | merge([parentOverview]) %}
+	{% if parentCategory | length %}
+		{% set breadcrumbEntries = breadcrumbEntries | merge([parentCategory]) %}
+	{% endif %}
+	{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+	{% set products = craft.commerce.products().relatedTo(entry).type('class').date('> ' ~ now).order('date').limit(NULL) %}
+	
+{% endif %}
+
+{% if entry.metaTitle is defined and entry.metaTitle | length %}
+    {% set metaTitle = entry.metaTitle %}
+{% else %}
+    {% set metaTitle = "La Cuisine, Paris - cooking classes and food tours in the heart of Paris" %}
+{% endif %}
+{% if entry.metaDescription is defined and entry.metaDescription | length %}
+    {% set metaDescription = entry.metaDescription %}
+{% else %}
+    {% set metaDescription = "" %}
+{% endif %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header id="classheader" class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+		{% include "classes/_incs/_classSummary" %}
+	</header>
+
+	{% if classes is defined and classes | length %}
+		<div class="row">
+			<div class="col-md-12">
+				{% for class in classes %}
+				<div class=" classsnippet">
+					<div class="row">
+						<div class="col-lg-7 col-md-8 col-sm-8">
+							<h2><a href="{{ class.url }}">{{ class.title }}</a></h2>
+							{% if class.shortSummary | length %}
+								<p>{{ class.shortSummary }}</p>
+							{% endif %}
+						</div>
+						<div class="col-lg-3 col-lg-push-2 col-md-3 col-md-push-1 col-sm-4">
+							<a href="{{ class.url }}" class="button">Find Out More &amp; Book</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	{% endif %}
+
+	{% if products is defined and products | length %}
+		<div class="row">
+			<div class="col-md-12" id="productslist">
+				{% for product in products %}
+					{% if not product.privateClass | length or parentOverview.id == 1988 %}
+						{% include "classes/_incs/_productSnippet" %}
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	{% endif %}
+
+	{% if cats is defined and cats | length %}
+	<div class="row">
+		{% for cat in cats %}
+			<div class="col-sm-3 col-xs-6">
+				<a href="{{ cat.url }}" class="boxlink light" id="box-{{ cat.slug }}">
+					<h3>{{ cat.title }}</h3>
+					{% include "_svgs/_" ~ cat.svgThumbnail %}
+				</a>
+			</div>			
+		{% endfor %}
+	</div>
+	{% endif %}
+
+</div>
+
+{% endblock %}

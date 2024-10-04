@@ -1,0 +1,110 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, acronym, address, big, cite, code, del, dfn, em, figure, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {margin: 0; padding: 0; border: 0; outline: 0; background: transparent; font-size: 100%; font-weight: normal; vertical-align: baseline;}
+audio, canvas, video { display: inline-block; }
+audio:not([controls]) { display: none; height: 0; }
+[hidden] { display: none; }
+html {  -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); overflow-y: auto; }
+html {
+	color: #000; margin: 0; padding: 0 0 0; font-size: 16px; line-height: 1.2em; background: #fff;
+}
+.clearfix { *zoom: 1; }
+.clearfix:before, .clearfix:after { display: table; line-height: 0; content: ""; }
+.clearfix:after { clear: both; }
+*, *:before, *:after {
+  -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
+}
+  a {
+  	outline: none; color: inherit; text-decoration: underline;
+  }
+section {
+	margin-bottom: $vMargin;
+}
+
+/*
+#####################################
+_SVGS
+#####################################
+*/
+.svg-container {
+  display: block; width: 100%; height: 0; overflow: hidden;
+  position: relative;
+  padding-bottom: 100%;
+  vertical-align: middle;
+}
+.svg-container.logo {
+  padding-bottom: 38.9743%;
+}
+  .svg-container svg {
+    display: block;
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+
+/*
+#####################################
+PRE
+#####################################
+*/
+pre {
+    display: block;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.42857143;
+    color: #333;
+    word-break: break-all;
+    word-wrap: break-word;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+code, kbd, pre, samp {
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
+.strikethrough {
+  text-decoration: line-through !important;
+}
+.caps {
+  text-transform: uppercase !important;
+}
+.underline {
+  text-decoration: underline !important;
+}
+.highlight {
+  color: $highlightColor;
+}
+
+/*
+###################################
+DEFAULT IMAGES
+###################################
+*/
+img {
+  display: block; max-width: 100%; height: auto;
+  margin-left: auto; margin-right: auto;
+}
+
+h2.bigheading {
+    margin-bottom: 0.5rem;
+    @include font('serif', 19, $textColor, 'italic'); text-align: center; line-height: 1.4em;
+}
+h2.withborder {
+  padding-bottom: 0.5rem;
+  border-bottom: 10px solid $tintColor;
+
+}
+@media (min-width: $sm) {
+h2.bigheading {
+    @include font('serif', 24, $textColor, 'italic');
+}
+}
+@media (min-width: $md) {
+h2.bigheading {
+    @include font('serif', 32, $textColor, 'italic');
+}
+}
+@media (min-width: $lg) {
+h2.bigheading {
+    @include font('serif', 'big', $textColor, 'italic');
+}
+}

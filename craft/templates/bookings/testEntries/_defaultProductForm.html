@@ -1,0 +1,60 @@
+{% if craft.request.getPost() is defined %}
+  {% set post = craft.request.getPost() %}
+  {{ dump(post) }}
+{% endif %}
+
+<form method="post" accept-charset="UTF-8" class="ui form" id="addentryform">
+    {{ getCsrfInput() }}
+            
+        <input type="hidden" name="action" value="commerce/products/saveProduct">
+        <input type="hidden" id="redirectinput" name="redirect" value="bookings/testEntries/thanks">
+        <input type="hidden" name="typeId" value="4">
+        <input type="hidden" name="enabled" value="1">
+        <input type="hidden" name="variants[new1][unlimitedStock]" value="">
+        <input type="hidden" name="postDate[date]" value="{{ now | date('d/m/Y') }}">
+        <input type="hidden" name="expiryDate[date]" value="">
+        <input type="hidden" name="slug" value="">
+        {#<input type="hidden" name="variants[new1][sku]" value="{{ now | date('U') }}">#}
+        <input type="hidden" name="variants[new1][minQty]" value="">
+        <input type="hidden" name="variants[new1][maxQty]" value=""> 
+        {% if product is defined and product | length %}
+          <input type="hidden" name="productId" value="{{ product.id }}">
+        {% endif %}
+        <input type="hidden" tabindex="0" class="hidden" name="promotable" value="1">        
+        <input type="hidden" name="freeShipping" value="">
+            <select id="taxcategory" name="taxCategoryId">
+              <option value="1" {% if product is defined and product.taxCategoryId == 1 %}selected{% endif %}>General</option>
+            </select>       
+        <input type="hidden" name="variants[new1][price]" value="100">
+        <input type="hidden" name="variants[new1][stock]" value="10">
+
+    {% macro errorList(errors) %}
+        {% if errors %}
+            <ul class="errors">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endmacro %}
+
+    {% from _self import errorList %}
+
+    <label for="title">Title</label>
+    <input id="title" type="text" name="title"
+        {%- if product is defined %} value="{{ product.title }}"{% endif -%}>
+
+    {% if product is defined %}
+        {{ errorList(product.getErrors('title')) }}
+    {% endif %}
+
+   <li><input type="text" name="fields[date][date]" id="dateinput" value="28/10/2016"></li>
+
+    {% if product is defined %}
+      {{ dump(product.getAllErrors()) }}
+      {{ errorList(product.getErrors('date')) }}
+    {% endif %}
+
+
+    <input type="submit" value="Publish">
+</form>

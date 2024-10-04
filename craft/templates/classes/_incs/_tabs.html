@@ -1,0 +1,14 @@
+{% if entry.tabs %}
+<nav id="tabsnav" class="tabs nav-tabs courses hidden-xs clearfix" role="tablist">
+	{% for tab in entry.tabs %}				
+		<a href="#tab{{ loop.index }}" class="tab{% if loop.first %} active{% endif %}" aria-controls="profile" role="tab" data-toggle="tab">{{ tab.heading }}</a>	
+	{% endfor %}
+</nav>
+{% for tab in entry.tabs %}
+<div class="tabcontent tab-pane {% if loop.first %} active{% endif %}" id="tab{{ loop.index }}" role="tabpanel">
+	<h3 class="visible-xs">{{ tab.heading }}</h3>
+	{{ tab.text }}
+	{#<a href="#top" class="backtotop visible-xs">Back to top</a>#}
+</div>
+{% endfor %}
+{% endif %}

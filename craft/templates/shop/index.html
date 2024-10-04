@@ -1,0 +1,51 @@
+{% set breadcrumbEntries = [] %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+
+{% if entry.metaTitle is defined and entry.metaTitle | length %}
+    {% set metaTitle = entry.metaTitle %}
+{% else %}
+    {% set metaTitle = "Online Store / La Cuisine, Paris - cooking classes and food tours in the heart of Paris" %}
+{% endif %}
+{% if entry.metaDescription is defined and entry.metaDescription | length %}
+    {% set metaDescription = entry.metaDescription %}
+{% else %}
+    {% set metaDescription = "" %}
+{% endif %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+	</header>
+	<div class="row">
+		<div class="col-sm-4 ">
+			{{ entry.introduction }}
+		</div>
+
+		<div class="col-sm-4 col-xs-6">
+			<a href="/shop/wines" class="boxlink">
+				<h3>Shop Wines</h3>
+				{% include "_svgs/_wine" %}
+			</a>
+		</div>
+
+		<div class="col-sm-4 col-xs-6">
+			<a href="/shop/equipment" class="boxlink">
+				<h3>Shop Equipment</h3>
+				{% include "_svgs/_spoons" %}
+			</a>
+		</div>
+
+		<div class="col-sm-12">
+			<hr class="pink">
+		</div>
+
+	</div>
+
+</div>
+
+{% endblock %}

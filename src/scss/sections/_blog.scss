@@ -1,0 +1,428 @@
+#blog {
+	position: relative;
+}
+
+h1.blog-mainheading, h2.blog-mainheading {
+  padding: 0 1rem; margin: 0 0 2rem;
+  @include font('serif', 'heading'); color: white; text-decoration: none; font-weight: normal;
+  text-align: center; line-height: 4rem;
+  background: $highlightColor;
+  border: none;
+}
+@media (min-width: $sm) {
+  h1.blog-mainheading, h2.blog-mainheading {
+    @include font('serif', 'big'); color: white;
+}
+}
+
+#blog #breadcrumbtext {
+		display: block; width: 100%; overflow: hidden;
+		white-space: nowrap; text-overflow: ellipsis;
+}
+@media (min-width: $md) {
+	#blog #breadcrumbtext {
+		//float: left;width: 30%;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+@media (min-width: $sm) {
+.blog-grid {
+  border-right: 1px solid $textColorDark;
+}
+.blogsnippet-masonry, .grid-sizer {
+  width: 250px;
+}
+.blogsnippet-masonry {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid $textColor;
+}
+}
+@media (min-width: $md) {
+.blogsnippet-masonry, .grid-sizer {
+  width: 220px;
+}
+}
+@media (min-width: $lg) {
+.blogsnippet-masonry, .grid-sizer {
+  width: 268px;
+}
+}
+
+.blogsnippet-masonry h2 {
+  font-size: 28px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+#blognav {
+    margin-bottom: 2rem; padding-bottom: 1rem; margin-top: -1rem;
+	border-bottom: 10px solid $tintColor;
+}
+	#blognav #blognavcats {
+		margin-bottom: 1rem;
+	}
+	#blognav .blognavline {}
+		#blognav h6 {
+			display: inline;
+			@include font('sans', 18, $textColor); font-weight: bold; line-height: 1.4em;
+		}
+		#blognav a {
+			display: inline;
+			padding: 0 0.25rem;
+			@include font('sans', 18, $textColor); line-height: 1.4em;
+		}
+		#blognav a.active {
+			@include font('sans', 18, $highlightColor); font-weight: bold; text-decoration: none;
+		}
+
+
+
+@media (min-width: $md) {
+#blognav {
+	position: relative;
+	display: block;
+	margin-bottom: 0; padding-bottom: 0.2rem;
+	text-align: left;
+}
+	#blognav #blognavarchive {
+		position: absolute; bottom: 4.8rem; right: 0;
+		display: block;
+		margin-top: 0.35rem;
+	}
+}
+@media (min-width: $lg) {
+}
+
+#articlesnippetlist {
+	padding-top: 10px solid $tintColor;
+}
+
+
+.blogsnippet {
+	position: relative;
+	margin: 0 0 1.5rem; padding: 0 0 1.5rem;
+	border-bottom: 10px solid $tintColor;
+}
+.blogsnippet:first-of-type {
+	margin-top: 1.5rem;
+}
+#blog .blogsnippet:first-of-type {
+	margin-top: 0.5rem;
+}
+	.blogsnippet img {
+		margin-bottom: 1rem;
+	}
+	@media (min-width: $sm) {
+	.blogsnippet img {
+		margin-bottom: 0;
+	}
+   .blogsnippet-masonry img {
+    margin-bottom: 0.5rem;
+   }
+	}
+	.blogsnippet h3 {
+		margin-bottom: 0.5rem;
+		font-weight: normal;
+	}
+		.blogsnippet h3 a {
+			@include font('serif', 'heading', $textColor); text-decoration: none; font-weight: normal
+		}
+		.blogsnippet h3 a:focus, .blogsnippet h3 a:hover, .blogsnippet h3 a:active {
+			color: $highlightColor;
+		}
+
+	
+	.blogsnippet p.meta {
+		margin-bottom: 0.5rem;
+		@include font('sans', 16, $textColor);
+	}
+	#blogarticle p.meta {
+		font-weight: bold;
+	}
+	.blogsnippet.short p.meta {
+		margin-bottom: 0;
+	}
+	.blogsnippet p.meta a, .blogsnippet-masonry p.meta a {
+		color: $highlightColor;  font-weight: normal;
+	}
+		.blogsnippet p.meta a:focus, .blogsnippet p.meta a:hover, .blogsnippet p.meta a:active {
+			color: $highlightColor;
+		}
+	.blogsnippet p.excerpt {
+		margin-bottom: 0.5rem;
+		@include font('sans', 16, $textColor);
+	}
+	@media (min-width: $sm) {
+		.blogsnippet h3 a {
+			@include font('serif', 32, $textColor);
+		}
+	}
+	@media (min-width: $md) {
+		.blogsnippet h3 a {
+			@include font('serif', 32, $textColor);
+		}
+		.blogsnippet p.excerpt {
+			margin-bottom: 0;
+		}
+	}
+	@media (min-width: $lg) {
+	.blogsnippet h3 {
+		margin-bottom: 1.5rem;
+	}
+		.blogsnippet h3 a {
+			@include font('serif', 'big', $textColor);
+		}
+
+	.blogsnippet p.meta {
+		margin-bottom: 1rem;
+	}
+	}
+
+@media (min-width: $sm) {
+#blogarticle {
+  padding-right: 20px;
+  border-right: 1px solid $textColor;
+}
+}
+	#blogarticle h1 {
+		margin-bottom: 1.5rem; padding: 0;
+		@include font('serif', 'big', $textColor); line-height: 1.1em;
+		border: none;
+	}
+	@media (min-width: $sm) {
+		#blogarticle h1 {
+			@include font('serif', 36, $textColor); line-height: 1.1em;
+		}
+	}
+	@media (min-width: $md) {
+		#blogarticle h1 {
+			@include font('serif', 36, $textColor); line-height: 1.1em;
+		}
+	}
+	@media (min-width: $lg) {
+		#blogarticle h1 {
+			@include font('serif', 42, $textColor); line-height: 1.1em;
+		}
+	}
+
+	#blogarticle blockquote {
+		margin: 0.75em 0 1em; padding: 0;
+		@include font('serif', 'big', $textColor);
+		border: none;
+	}
+	@media (min-width: $sm) {
+		#blogarticle blockquote {
+			@include font('serif', 48, $textColor);
+		}
+	}
+	@media (min-width: $md) {
+		#blogarticle blockquote {
+			@include font('serif', 62, $textColor);
+		}
+	}
+	@media (min-width: $lg) {
+		#blogarticle blockquote {
+			@include font('serif', 70, $textColor);
+		}
+	}
+
+	#blogarticle h2 {
+		margin-bottom: 0;
+		@include font('serif', 24, $textColor); font-weight: bold; line-height: 1.2em;
+	}
+
+	#blogarticle h3 {
+		margin-bottom: 0;
+		@include font('serif', 24, $textColor); font-weight: bold; line-height: 1.2em;
+	}
+  #blogarticle p.meta {
+    margin-bottom: 4rem;
+    font-size: 18px;
+  }
+  #blogarticle p.excerpt {
+    font-weight: bold;
+  }
+	#blogarticle p, #blogarticle li {
+		margin-bottom: 1rem;
+		@include font('serif', 16, $textColor); line-height: 1.4em;
+	}
+	#blogarticle ul, #blogarticle ol {
+		padding-left: 1.5em; margin-bottom: 1rem;
+	}
+	#blogarticle li {
+		 line-height: 1.4em; margin-bottom: 0.25rem;
+	}
+
+	#blogarticle img, #blogarticle figure {
+		margin-bottom: 1.5rem;
+	}
+  #blogarticle p.caption {
+    margin: -1rem 0 2rem; padding-bottom: 0.25rem;
+    @include font('sans', 12, $textColor);
+    border-bottom: 1px solid $textColor;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+a.readmore {
+	display: block;
+	margin-bottom: 0;
+	@include font('sans', 18, $textColor);	text-transform: uppercase; text-decoration: underline;
+}
+a.readmore:focus, a.readmore:hover, a.readmore:active {
+	color: $highlightColor;
+}
+@media (min-width: $sm) {
+}
+@media (min-width: $md) {
+a.readmore {
+	position: absolute; right: -165px; bottom: -2px;
+	width: 165px;
+	margin-right: 10px;
+	@include font('sans', 22, $textColor); text-decoration: none; text-align: right; line-height: 1em;
+}
+a.readmore:focus, a.readmore:hover, a.readmore:active {
+	text-decoration: underline;
+}
+a.readmore:after {
+	content: ">";
+}
+}
+@media (min-width: $lg) {
+a.readmore {
+	right: -190px; bottom: -6px;
+	width: 190px;
+	@include font('sans', 27, $textColor);
+}
+}
+
+#paginationnumbers {
+	text-align: center;
+}
+#paginationnumbers p {
+    padding-top: 2px;
+    @include font('sans', 18, $textColor); font-weight: bold; text-decoration: none; text-align: center;
+    line-height: 3rem;
+    border: none;
+}
+  #paginationnumbers p .current {
+    color: $highlightColor;
+  }
+  #paginationnumbers p a {
+    color: $textColor; text-decoration: none;
+  }
+  #paginationnumbers p a.previous, #paginationnumbers p a.next {
+    font-weight: normal;
+  }
+	#paginationnumbers p a:focus, #paginationnumbers p a:hover, #paginationnumbers p a:active {
+		color: $highlightColor;
+	}
+@media (min-width: $sm) {
+#paginationnumbers p {
+    line-height: 4.5rem;
+}
+}
+
+
+
+#blog-sidebar {
+}
+  #blog-sidebar h3.header {
+    margin-bottom: 1rem;
+    @include font('sans', 18, $textColor); font-weight: bold; text-decoration: none;
+    line-height: 1.4rem;
+    border: none;
+
+  }
+  #blog-sidebar.with-article section:first-of-type h3.header {
+    margin-bottom: 4rem;
+  }
+  #blog-sidebar a.blog-sidebar-articlelink {
+    display: block;
+    margin-bottom: 2rem;
+    text-decoration: none;
+  }
+    #blog-sidebar a.blog-sidebar-articlelink h4.header {
+      margin-bottom: 0.1rem;
+      @include font('serif', 'heading', $textColor); font-weight: normal; text-decoration: none;
+      line-height: 1.2em;
+      border: none;
+      outline: none;
+    }
+    #blog-sidebar a.blog-sidebar-articlelink p.meta {
+      margin-bottom: 0.1rem;
+      @include font('sans', 12, $textColor); font-weight: normal; text-decoration: none;
+      line-height: 1.2rem;
+      border-bottom: 1px solid $textColor;
+
+    }
+
+
+  #blog-searchform {
+    margin-bottom: 2rem;
+    border: 1px solid $textColor; border-left: none; border-right: none;
+
+  }
+    #blog-searchform-input {
+      display: block; width: 80%; height: 40px;
+      float: left;
+      border: none;
+
+    }
+    #blog-searchform-button {
+      display: block; width: 20%; height: 40px; min-width: 20px;
+      float: right;
+      padding: 0.2rem 0 0;
+      background: none; webkit-appearance: none; color: $textColor;
+      font-size: 1rem; line-height: 3px; font-weight: bold;
+      border: none;
+
+    }
+
+    .sidebar-list {
+      list-style-type: none;
+    }
+      .sidebar-list li {
+        margin: 0 0 0.55rem;
+        @include font('sans', 15, $textColor); font-weight: bold; text-decoration: none;
+        line-height: 1em;
+      }
+      .sidebar-list li.level-2 {
+        margin-left: 20px;
+        font-size: 14px;
+      }
+        .sidebar-list li a {
+          color: $highlightColor; text-decoration: none;
+          &:hover, &:active, &:focus {
+            text-decoration: underline;
+          }
+        }

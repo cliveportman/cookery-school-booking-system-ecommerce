@@ -1,0 +1,86 @@
+{% if year is not defined %}
+  {% set year = now | date('Y') %}
+{% endif %}
+
+{% if month is not defined %}
+  {% set month = now | date('m') %}
+{% endif %}
+
+{% set thisMonth = date(year ~ '-' ~ month ~ '-01') %}
+{% set lastMonth = date(year ~ '-' ~ month ~ '-01 - 1 month') %}
+{% set nextMonth = date(year ~ '-' ~ month ~ '-01 + 1 month') %}
+
+{% set breadcrumbEntries = [] %}
+
+{% set item = {'title': 'Calendar', 'url': siteUrl ~ 'calendar/'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+{% set item = {'title': thisMonth | date('F Y'), 'url': siteUrl ~ 'calendar/' ~ thisMonth | date('Y/m')} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+
+{% set metaTitle = thisMonth | date('F Y') ~ " / Calendar / La Cuisine, Paris" %}
+{% set metaDescription = "" %}
+
+{% set calendarStartDate = date('01-' ~ month ~ '-' ~ year) %}
+{% set vars = {
+  'calendarStyle': 'calendar',
+  'calendarStartDate': calendarStartDate | date('j F Y'),
+  'calendarWeekBegins': 'Monday',
+  'calendarLength': 'month',  
+  'showDisabledProducts': currentUser
+} %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+{% cache for 5 minutes %}
+{% set dates = craft.productsCalendar.getProducts(vars) %}
+<div class="container">
+
+	<header id="calendarheader" class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+		<p id="calendarnextprevlinksheader" class="">
+			<a href="{{ siteUrl }}calendar/list/{{ lastMonth | date('Y/m') }}" class="previousmonth">&lt; {{ lastMonth | date('F Y') }}</a> / <a href="{{ siteUrl }}calendar/list/{{ nextMonth | date('Y/m') }}" class="nextmonth">{{ nextMonth | date('F Y') }} &gt;</a>
+		</p>
+	</header>
+
+	<div class="row">
+		<div class="col-md-12">
+	       	
+			{% for productDay in dates.productDays %}
+				{% if productDay.date | date('U') > now | date('U') %}
+					<h2>{{ productDay.date | date('D j') }} <span class="month">{{ productDay.date | date('F') }}</span></h2>
+					{% if productDay.products | length %}
+						{% for product in productDay.products %}
+						{% if not product.privateClass | length or (parentOverview is defined and parentOverview.id == 1988) %}	
+							{% set class = craft.entries.section('classes').relatedTo(product).first %}
+							{% set parentOverview = craft.entries.section('classes').ancestorOf(class).type('overview').first %}	
+							{% set parentCategory = craft.entries.section('classes').ancestorOf(class).type('category').first %}
+							{% set entry = class %}
+								{% if not product.privateClass | length or (parentOverview is defined and parentOverview.id == 1988) %}
+									{% include "classes/_incs/_productSnippet" %}
+								{% endif %}
+						{% endif %}
+						{% endfor %}
+					{% else %}
+						<p>We have no classes running on this day.</p>
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+
+			<div class="row" id="calendarnextprevlinksfooter" class="">
+				<div class="col-md-3">
+					<a href="{{ siteUrl }}calendar/{{ lastMonth | date('Y/m') }}" class="previousmonth">&lt; {{ lastMonth | date('F Y') }}</a>
+					</div>
+				<div class="col-md-3 col-md-push-6">
+					<a href="{{ siteUrl }}calendar/{{ nextMonth | date('Y/m') }}" class="nextmonth">{{ nextMonth | date('F Y') }} &gt;</a>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+</div>
+{% endcache %}
+{% endblock %}

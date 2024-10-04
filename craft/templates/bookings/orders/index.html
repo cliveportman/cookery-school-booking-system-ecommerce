@@ -1,0 +1,131 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% if day is not defined and month is defined %}
+  {% set day = '01' %}
+{% elseif day is not defined %}
+  {% set day = now | date('d') %}
+{% endif %}
+
+{% if month is not defined %}
+  {% set month = now | date('m') %}
+{% endif %}
+
+{% if year is not defined %}
+  {% set year = now | date('Y') %}
+{% endif %}
+
+{% set metaTitle =  'Orders' %}
+
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+<div class="ui masthead vertical">
+<div class="ui container">
+  <h1 class="ui header">
+    <i class="bullseye icon"></i>          
+            Orders
+  </h1>
+</div>
+</div>
+
+<div class="ui container">
+    <div class="ui column grid">
+      <div class=" five wide column">
+      </div>
+      <div class="six wide column">
+      </div>
+      <div class=" five wide column">
+        <form action="{{ siteUrl }}bookings/orders/search" method="post"  class="ui form">
+        <div class="two fields">
+        <div class="twelve wide field">
+          <input type="search" name="q" placeholder="Search by name or email">
+          </div>
+        <div class="two wide field">
+          <button class="ui circular icon button"><i class="search icon"></i> </button>
+        </div>
+        </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="ui one column grid">
+      <div class="column">
+
+        <table class="ui selectable very basic table">
+          <thead>
+            <tr>
+              <th><i class="bullseye icon"></i> Order number </th>
+              <th>Customer</th>
+              <th>Order value</th>
+              <th>Quantity</th>
+              <th>Links</th>
+              <th>Order date/time</th>
+            </tr>
+          </thead>
+          <tbody>
+        
+          {% paginate craft.commerce.orders.order('dateOrdered desc').limit(25) as orders %}
+          {% for order in orders %}
+
+
+
+            {% set address = order.shippingAddress %}
+            {% set equipment = false %}
+            {% set class = false %}
+            {% set voucher = false %}
+
+            {% for lineItem in order.lineItems %}
+              {% if lineItem.purchasable.product.type == 'equipment' %}{% set equipment = true %}{% endif %}
+              {% if lineItem.purchasable.product.type == 'class' %}{% set class = true %}{% endif %}
+              {% if lineItem.purchasable.product.type == 'giftVoucher' %}{% set voucher = true %}{% endif %}
+            {% endfor %}
+
+            <tr id="{{ order.shortNumber }}" class="{% if order.orderStatus.id == 3 %}cancelled{% endif %}">
+              <td><p><strong>
+                {% if equipment %}<i class="orange paint brush icon"></i>{% endif %}
+                {% if class %}<i class="yellow user icon"></i>{% endif %}
+                {% if voucher %}<i class="blue gift icon"></i>{% endif %}
+
+
+                 #{{ order.shortNumber }} </strong></p></td>
+              <td>{{ address.firstName }} {{ address.lastName }}
+                {% if order.orderMessage | length %}<br><em>{{ order.orderMessage }}</em>{% endif %}
+              </td>
+              <td id="{{ order.shortNumber }}">{{ order.totalPrice | currency(order.currency) }} &nbsp;&nbsp;&nbsp; {% if order.isPaid %}<span class="green">PAID</span>{% else %}<span class="red">UNPAID</span>{% endif %}</td>
+              <td class="qty">{{ order.totalQty }}</td>
+              <td><a class="showOrderModal" data-url="{{ siteUrl }}modal/order-expanded/{{ order.number }}"> View order </a></td>
+              <td>{{ order.dateOrdered | date('j F Y') }} / {{ order.dateOrdered | date('g.ia') }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+
+    <h4 id="pagination">
+      {% if paginate.prevUrl %}<a href="{{ paginate.prevUrl }}">Previous</a>{% endif %}
+
+      {% for page, url in paginate.getPrevUrls(5) %}
+          <a href="{{ url }}">{{ page }}</a>
+      {% endfor %}
+
+      <span class="current">{{ paginate.currentPage }}</span>
+
+      {% for page, url in paginate.getNextUrls(5) %}
+          <a href="{{ url }}">{{ page }}</a>
+      {% endfor %}
+
+      {% if paginate.nextUrl %}<a href="{{ paginate.nextUrl }}">Next</a>{% endif %}
+    </h4>
+
+
+
+
+
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

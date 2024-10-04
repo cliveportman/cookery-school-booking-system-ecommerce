@@ -1,0 +1,195 @@
+{% if entry is not defined %}
+	{% set entry = craft.entries.section('contact').first %}
+{% endif %}
+
+{% set breadcrumbEntries = [] %}
+{% if craft.request.lastSegment == "thank-you" %}
+	{% set contactPage = { 'title': 'Contact / Thank You', 'url': siteUrl ~ 'contact' } %}
+{% else %}
+	{% set contactPage = { 'title': 'Contact', 'url': siteUrl ~ 'contact' } %}
+{% endif %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([contactPage]) %}
+
+{% if entry.metaTitle is defined and entry.metaTitle | length %}
+    {% set metaTitle = entry.metaTitle %}
+{% else %}
+    {% set metaTitle = "Contact / La Cuisine, Paris" %}
+{% endif %}
+{% if entry.metaDescription is defined and entry.metaDescription | length %}
+    {% set metaDescription = entry.metaDescription %}
+{% else %}
+    {% set metaDescription = "" %}
+{% endif %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header class="row">	
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+	</header>
+
+	<div class="row">
+
+		<div class="col-sm-12">
+          	{% if message is defined and message %}
+
+	          {% if message.errors['recaptcha'][0] == 'Failed reCAPTCHA validation.' %}
+	            <p class="error"><strong>There was a problem with your enquiry</strong><br>To protect us from spam, we use something called a reCaptcha.<br> Please complete this before submitting your query. You can find it at the bottom of the form.<br><a href="#enquiryform">Please click here to continue</a>.</p>
+	          {% endif %}
+	          {% endif %}
+	        <style>
+	          p.error {
+	            padding: 10px;
+	            border: 1px solid red;
+	            color: red;
+	          }
+	        </style>
+    	</div>
+
+		<div class="col-md-6 col-sm-12">
+
+			{% if craft.request.lastSegment == "thank-you" %}
+				<section id="thankyoumessage">
+					{{ entry.thankYouMessage }}
+				</section>
+			{% endif %}
+	
+			{{ entry.introduction }}
+
+			<div class="row">
+				<div class="col-md-12 col-sm-12">
+			
+					<section id="contactdetails">
+						<h4>Address</h4>
+						<p>{{ contactDetails.address }}</p>
+						<h4>Telephone</h4>
+						<p>{{ contactDetails.tel }}</p>
+						<h4>Email</h4>
+						<p>{{ contactDetails.email }}</p>
+					</section>
+
+					{{ entry.furtherContactDetails }}
+
+				</div>
+
+				<div class="col-md-12 col-sm-12">
+
+					<form class="defaultform" id="enquiryform" method="post" action="" accept-charset="UTF-8">
+
+				        <h2>Enquiry Form</h2>
+
+			            <input type="hidden" name="redirect" value="contact/thank-you">
+			            <input type="hidden" name="subject" value="Enquiry from website">
+            			<input type="hidden" name="action" value="recaptcha/service/sendMessage">
+
+				        <ul class="form">
+
+			                <li class="select">
+			                <div class="row">
+			                    <div class="col-md-4 col-sm-3">
+			                        <label for="persontitle">Title</label>
+			                    </div>
+			                    <div class="col-md-8 col-sm-9">
+			                    	<select name="message[Title]" id="persontitle">
+			                    		<option value="">Please select</option>
+			                    		<option value="Mr" {{ message.message['Title'] == 'Mr' ? 'selected' }}>Mr</option>
+			                    		<option value="Mrs" {{ message.message['Title'] == 'Mrs' ? 'selected' }}>Mrs</option>
+			                    		<option value="Miss" {{ message.message['Title'] == 'Miss' ? 'selected' }}>Miss</option>
+			                    		<option value="Ms" {{ message.message['Title'] == 'Ms' ? 'selected' }}>Ms</option>
+			                    		<option value="Dr" {{ message.message['Title'] == 'Dr' ? 'selected' }}>Dr</option>
+			                    	</select>
+			                    </div>
+			                </div>
+			                </li>
+
+			                <li>
+			                <div class="row">
+			                    <div class="col-md-3 col-sm-3">
+			                        <label for="formFirstname">First Name</label>
+			                    </div>
+			                    <div class="col-md-8 col-sm-9">
+			                        <input id="formFirstname" type="text" name="message[First name]" placeholder="Enter first name" value="{{ message.message['First name'] ?? '' }}">
+			                    </div>
+			                </div>
+			                </li>
+
+			                <li>
+			                <div class="row">
+			                    <div class="col-md-3 col-sm-3">
+			                        <label for="formLastname">Last Name</label>
+			                    </div>
+			                    <div class="col-md-8 col-sm-9">
+			                        <input id="formLastname" type="text" name="message[Last name]" placeholder="Enter last name" value="{{ message.message['Last name'] ?? '' }}">
+			                    </div>
+			                </div>
+			                </li>
+
+			                <li>
+			                <div class="row">
+			                    <div class="col-md-3 col-sm-3">
+			                        <label for="email">Email *</label>
+			                    </div>
+			                    <div class="col-md-8 col-sm-9">
+			                        <input type="email" name="fromEmail" placeholder="Enter email" value="{{ message.fromEmail ?? '' }}" required>
+			                    </div>
+			                </div>
+			                </li>
+
+			                <li>
+			                <div class="row">
+			                    <div class="col-md-3 col-sm-3">
+			                        <label for="formPhone">Telephone</label>
+			                    </div>
+			                    <div class="col-md-8 col-sm-9">
+			                        <input id="formPhone" type="tel" name="message[Tel]" placeholder="Enter telephone" value="{{ message.message['Tel'] ?? '' }}">
+			                    </div>
+			                </div>
+			                </li>
+
+			                <li>
+			                <div class="row">
+			                    <div class="col-md-12">
+			                        <label for="email">Enquiry *</label>
+			                    </div>
+			                    <div class="col-md-12">
+			                        <textarea name="message[body]" placeholder="Your enquiry..." required>{{ message.message['body'] ?? '' }}</textarea>
+			                    </div>
+			                </div>
+			                </li>
+
+				        </ul> 
+
+			            <div class="row">
+			                <div class="col-sm-8">
+			                	{{ craft.recaptcha.render() }}
+			                </div>
+			                <div class="col-sm-4">
+			                    <button class="button" type="submit" name="submit">Send</button>
+			                </div>
+			            </div>
+
+				    </form>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="col-md-6 col-sm-12">
+			{% set locationPage = craft.entries.id(57).first %}
+			{% set vars = { 
+				'latitude': locationPage.latitude, 
+				'longitude': locationPage.longitude,
+				'mapZoom': locationPage.mapZoom
+				}
+			%}
+			{% include "contact/_incs/_map" with vars %}
+		</div>
+
+	</div>
+
+</div>
+
+{% endblock %}

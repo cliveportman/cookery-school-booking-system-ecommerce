@@ -1,0 +1,37 @@
+{% set product = craft.commerce.products.id(craft.request.lastSegment).first %}
+{% set entry = craft.entries.section('masterclasses').relatedTo(product).first %}
+{% set overview = craft.entries.section('masterclassesOverview').first %}
+
+{% set breadcrumbEntries = [] %}
+
+{% set overview = craft.entries.section('masterclassesOverview').first %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([overview]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([product]) %}
+
+{% set metaTitle = product.title ~ ' / ' ~ overview.metaTitle %}
+{% set metaDescription =  "" %}
+
+{% extends "_layout" %}
+
+{% block content %}
+<div class="container">
+
+	<section id="product">
+		<header id="classheader" class="row">		
+
+			{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+			<div class="col-md-12">
+				{% set vars = { 'addToCart': TRUE } %}
+				{% include "masterclasses/_incs/_productSnippet" with vars %}
+			</div>
+		</header>
+
+		<div class="row">
+			{% include "masterclasses/_incs/_classSummary" %}
+		</div>
+	</section>
+
+</div>
+
+{% endblock %}

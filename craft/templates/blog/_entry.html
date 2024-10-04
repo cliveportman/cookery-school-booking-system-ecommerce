@@ -1,0 +1,109 @@
+{% if entry.metaTitle is defined and entry.metaTitle | length %}
+    {% set metaTitle = entry.metaTitle %}
+{% else %}
+   {% set metaTitle = entry.title ~ " / Blog / La Cuisine Paris" %}
+{% endif %}
+{% if entry.metaDescription is defined and entry.metaDescription | length %}
+    {% set metaDescription = entry.metaDescription %}
+{% else %}
+    {% set metaDescription = entry.excerpt | striptags %}
+{% endif %}
+
+{% set breadcrumbEntries = [] %}
+{% set blogOverview = { 'url': siteUrl ~ 'blog', 'title': 'la Cuisine Paris Blog' } %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([blogOverview]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+
+{% extends "_layout" %}
+
+{% block content %}
+<div class="container">
+	<section class="row" id="blog">
+
+    <div class="col-md-12">
+      <a href="{{ siteUrl }}blog" style="text-decoration: none;"><h1 class="blog-mainheading" style="text-decoration: none;">La Cuisine Paris Blog</h1></a>
+    </div>
+
+    <div class="col-sm-9">
+  		<article id="blogarticle">
+
+        {% if entry.type == "article2018" %}
+        <header class="row">
+          <div class="col-sm-12">
+            <p class="meta">
+              {{ entry.postDate | date('l j M Y') }} &nbsp;&nbsp;
+              {% if entry.category | length %} 
+              {% for cat in entry.category %}
+                <a href="{{ cat.url }}">{{ cat.title }}</a>{% if not loop.last %}, {% endif %}
+              {% endfor %}
+              {% endif %}
+            </p>
+          </div>
+          <div class="col-sm-6 col-sm-push-6">
+            {% if entry.leadImage | length %}
+              {% set halfImage = { mode: 'fit', width: 600 } %}
+              {% if entry.leadImageDownload | length %}
+                <a href="{{ entry.leadImageDownload.first.getUrl }}" target="_blank">{% endif %}
+                  <img src="{{ entry.leadImage.first.getUrl(halfImage) }}" alt="{{ image.altText }}">
+                {% if entry.leadImageDownload | length %}</a>{% endif %}
+              {% if entry.leadImage.first.caption | length %}
+                <p class="caption">{{ entry.leadImage.first.caption }}</p>
+              {% endif %}
+            {% endif %}
+          </div>
+          <div class="col-sm-6 col-sm-pull-6">
+            <h1>{{ entry.title }}</h1>
+            {% if entry.excerpt %}
+              <p class="excerpt">{{ entry.excerpt }}</p>
+            {% endif %}
+            {% set firstBlock = entry.mainArticle2018[0] %}
+            {% if firstBlock.type == 'textOnly' %}
+              {{ firstBlock.text }}
+            {% endif %}
+          </div>
+          <div class="col-md-12"></div>
+        </header>
+        {% else %}
+          <div class="col-md-12">
+            <h1>{{ entry.title }}</h1>
+          </div>
+          <div class="col-sm-12">
+            <p class="meta">
+              {{ entry.postDate | date('l j M Y') }}
+              {% if entry.category | length %} / 
+              {% if entry.category | length == 1 %}
+                Category: 
+              {% else %}
+                Categories: 
+              {% endif %}
+              {% for cat in entry.category %}
+                <a href="{{ cat.url }}">{{ cat.title }}</a>{% if not loop.last %}, {% endif %}
+              {% endfor %}
+              {% endif %}
+            </p>
+          </div>
+        {% endif %}
+
+  			{% if entry.type == "article" %}
+  				{% include "blog/_incs/_articleBody" %}
+        {% elseif entry.type == "recipe" %}
+          {% include "blog/_incs/_recipeBody" %}
+        {% elseif entry.type == "article2018" %}
+          {% include "blog/_incs/_article2018Body" %}
+  			{% endif %}
+
+      </article>
+    </div>
+
+    <div class="col-sm-3">
+      {% include "blog/_incs/_blogSidebar" with {'context': 'article'} %}
+    </div>
+
+
+	</section>
+</div>
+{% endblock %}
+
+
+
+

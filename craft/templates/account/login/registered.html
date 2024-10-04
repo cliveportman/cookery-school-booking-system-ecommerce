@@ -1,0 +1,33 @@
+{% set breadcrumbEntries = [] %}
+
+{% set item = {'title': 'Your account / Create an account', 'url': siteUrl ~ 'account'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+
+{% set metaTitle = "You are now registered / La Cuisine Paris" %}
+
+{% extends "_layout" %}
+
+{% block content %}
+<div class="container">
+
+    <section id="accountpage">
+
+        <div class="row">
+    		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+            <div class="col-md-5 col-sm-6">
+                <h3>Thank you</h3>
+                <p>Your account has been created and you are now logged-in.</p>
+                <p>Any purchases you've already made using the same email address can now be seen in your main account area.</p>
+                <p><a href="{{ siteUrl }}account">Click here to continue to your main account area.</a></p>
+            </div>
+            <div class="col-md-5 col-md-push-2 col-sm-6"> 
+            </div>
+        </div>
+
+
+
+    </section>
+
+</div>
+
+{% endblock %}

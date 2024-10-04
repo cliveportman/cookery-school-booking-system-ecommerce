@@ -1,0 +1,145 @@
+#carttable {
+	margin-bottom: 0;
+}
+
+#cartheader {
+	padding-top: 2rem; padding-bottom: $vMargin;
+}
+	#cartheader h3 {
+		margin-bottom: 0;
+		@include font('sans', 16, $textColor); text-align: left;
+	}
+.cartrow {
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 2rem;
+}
+/*
+###################################
+CART PRODUCT SNIPPET
+###################################
+*/
+.cartitem.productsnippet {
+	border-bottom: none;
+	margin-bottom: 0;
+}
+.cartitem.productsnippet ul {
+	margin-bottom: 0;
+}
+@media (min-width: $sm) {
+.cartitem.productsnippet ul {
+	margin-bottom: 1rem;
+}
+}
+@media (max-width: 1023px) {
+.cartitem.productsnippet li {
+	font-size: 16px; line-height: 1.4em;
+}
+}
+@media (min-width: $md) and (max-width: 1365px) {
+.cartitem.productsnippet li {
+	font-size: 18px; line-height: 1.4em;
+}
+}
+.cartitem.productsnippet .time {
+	display: block; padding: 0;
+}
+
+/*
+###################################
+CART ITEM PRICE
+###################################
+*/
+.lineitemprice {
+	position: relative;
+	margin: 0 0 1rem;
+}
+.lineitemprice .price {	
+	margin: 0; padding: 0; list-style-type: none;
+	@include font('serif', 'heading', $textColor); line-height: 1.4em;
+}
+@media (min-width: $sm) {
+.lineitemprice {	
+	margin: 0;
+}
+}
+
+.lineitemquantity {
+	margin-bottom: 1rem;
+}
+@media (min-width: $sm) {
+.lineitemquantity {
+	margin-bottom: 0;
+}
+}
+	.quantityform input[type=number], .quantityform input[type=text]{
+		display: block; width: 4.5rem; height: 5rem;
+		float: left;
+		@include font('sans', 'heading', $textColor); text-align: center;
+	}
+	.quantityform button {
+		display: block; width: 40%; height: 2.25rem;
+		padding: 0;
+		position: absolute; left: 5.75rem; top: 0;
+		@include font('sans', 16, white); text-align: center; line-height: 2rem;
+	}
+	.removeform button {
+		position: absolute; left: 5.75rem; top: 2.75rem;
+		display: block; width: 40%; height: 2.25rem;
+		@include font('sans', 16, white); text-align: center; line-height: 2rem;
+	}
+
+.lineitemsubtotal {
+	margin-bottom: 1rem;
+	@include font('serif', 'heading', $textColor); line-height: 1.4em;
+}
+@media (min-width: $sm) {
+.lineitemsubtotal {
+	margin-bottom: 0;
+}
+}
+
+#cardlogos {
+	padding: 1rem 0;
+}
+
+
+#promoform {
+}
+	#promoform button {
+		line-height: 2rem;
+	}
+
+
+
+#carttotals {
+	margin-bottom: 0;
+}
+	#carttotals p {
+		margin-bottom: 2rem;
+		@include font('serif', 'heading', $textColor); line-height: 1em;
+	}
+		#carttotals .price {
+			@include font('serif', 'heading', $textColor); line-height: 1em;
+		}
+@media (min-width: $sm) {
+	#carttotals p {
+		margin-bottom: 0;
+		@include font('sans', 16, $textColor); 
+	}
+		#carttotals .price {
+			display: block;
+			padding: 2rem 0 $vMargin;
+		}
+}
+
+#checkoutbuttonsarea {
+	margin-bottom: 0;
+}
+
+
+@media (max-width: 767px) {
+	#checkoutbuttonsarea .button {
+		height: 6rem;
+		line-height: 6rem;
+	}
+}

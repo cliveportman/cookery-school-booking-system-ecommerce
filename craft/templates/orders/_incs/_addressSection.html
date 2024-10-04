@@ -1,0 +1,27 @@
+{% if hasDeliverable %}
+<h3>Order email:</h3>
+<p>{{ order.email }}</p>
+
+<div class="row">
+	<div class="col-sm-6">
+		<h3>Payment Address:</h3>
+		{% set address = order.billingAddress %}
+		<p>{% include "checkout/_incs/_address" %}</p>
+	</div>
+	<div class="col-sm-6">
+		<h3>Shipping Address:</h3>
+		{% set address = order.shippingAddress %}
+		<p>{% include "checkout/_incs/_address" %}</p>
+	</div>
+</div>
+{% else %}
+<h3>Order email:</h3>
+<p>{{ order.email }}</p>
+<div class="row">
+	<div class="col-sm-6">
+		<h3>Payment Address:</h3>
+		{% set address = order.shippingAddress %}
+		<p>{% include "checkout/_incs/_address" %}</p>
+	</div>
+</div>
+{% endif %}

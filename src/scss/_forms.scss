@@ -1,0 +1,236 @@
+input[type=email], input[type=text] {
+    display: block; width: 100%;
+    padding: 5px 10px; margin-bottom: 10px;
+    //border: 1px solid $teColor;
+    //color: $teColor; font-size: 0.875rem; line-height: 20px;
+}
+button {
+    display: inline-block; min-width: 120px;
+    padding: 5px 10px;
+    //background: $teColor;
+    //color: #fff; text-align: left; font-size: 0.875rem; line-height: 20px;
+    //border: 1px solid $teColor;
+}
+@media (min-width: $md) {
+    button {
+        width: 100%;
+    }
+}
+
+select {
+    display: block; width: 100%; height: 35px; overflow: hidden;
+    padding: 0 0.75rem;
+    @include font('sans', 16, $textColor); font-size: 1rem; color: #000; line-height: 35px; text-align: left;
+    border-radius: 0; border: 1px solid $tintColor;
+    -webkit-appearance:none;
+}
+@media (min-width: $md) {
+select {
+    display: inline-block; width: auto;
+    float: right;
+    font-size: 0.875rem; 
+}
+}
+
+/*
+#####################################
+DEFAULT FORM STYLING
+#####################################
+*/
+.defaultform {
+    width: 100%;
+    padding: 0;
+}
+    .defaultform h2 {
+        margin-bottom: 1rem;
+        @include font('sans', 16, $textColor); color: #000; font-size: 1.556rem;
+    }
+    .defaultform h2.bigheading {
+        margin-bottom: 0.5rem;
+        @include font('serif', 19, $textColor, 'italic'); text-align: center; line-height: 1.4em;
+    }
+    @media (min-width: $sm) {
+    .defaultform h2.bigheading {
+        @include font('serif', 24, $textColor, 'italic'); text-align: left;
+    }
+    }
+    .defaultform ul {
+        padding: 0; margin: 0;
+        list-style-type: none;
+        
+    }
+        .defaultform li {
+            padding: 0; margin: 0 0 0.75rem;
+            border: 1px solid $tintColor;
+            list-style-type: none;          
+        }
+        .defaultform li.checkbox {
+            border: none;
+        }
+        @media (min-width: $md) {
+        .defaultform li.select {
+            width: 75%;
+        }
+        .defaultform li.select.large {
+            width: 100%;
+        }
+        }
+    .defaultform label {
+        display: block; height: 35px;
+        margin: 0; padding: 0 0 0 10px;;
+        @include font('sans', 16, $textColor); font-weight: bold; font-size: 16px; color: #000; line-height: 35px;
+    }
+    .defaultform input {
+        width: 100%; height: 35px;
+        margin: 0; padding: 0 10px;
+        border: none;
+        background: none;
+        @include font('sans', 16, $textColor); font-size: 16px;
+    }
+    @media (min-width: $sm) {
+        .defaultform input {
+            padding: 0 15px;
+        }
+    }
+    .defaultform input[type=checkbox] {
+        display: block; width: auto;
+        float: left;
+        margin-right: 10px;
+    }
+    .defaultform select {
+        width: 100%; height: 35px;
+        margin: 0; padding: 0 10px;
+        border: none;
+        background: none;
+        @include font('sans', 16, $textColor); font-size: 16px;
+    }
+    .defaultform textarea {
+        width: 100%; height: 200px;
+        padding: 10px;
+        border: none;
+        @include font('sans', 16, $textColor); font-size: 16px;
+    }
+    @media (min-width: $sm) {
+        .defaultform textarea {
+             height: 250px;
+            padding: 5px 10px;
+        }
+    }
+    .defaultform button {
+    }
+    .defaultform button:focus, .defaultform button:hover, .defaultform button:active {
+        //color: $tintColor;
+    }
+@media (min-width: $lg) {
+.defaultform {
+}
+}
+fieldset {
+    margin-bottom: 1rem;
+}
+    .defaultform fieldset h2 {
+        margin-bottom: 0.5rem;
+        @include font('sans', 16, $textColor); color: $tintColor; font-size: 1.3333rem;
+    }
+
+#thankyoumessage {
+    padding-bottom: 2rem;
+    border-bottom: 1px solid $tintColor;
+}
+
+
+/*
+###################################
+NEWSLETTER SIGNUP
+###################################
+*/
+#subscribeform-container {}
+
+    #subscribeform {
+        padding: 15px 15px 15px; margin-bottom: 10px;
+        background: $highlightColor;
+    }
+    @media (min-width: $sm) {
+    #subscribeform {
+        margin-bottom: $vMargin;
+    }
+    }
+    #subscribeform input[type=email] {
+        display: block; width: 100%; height: 70px;
+        padding: 0 15px; margin-bottom: 0.5rem;
+        @include font('sans', 16, white); line-height: 70px;
+        background: none;
+        border: 1px solid #fff;
+    }
+        #subscribeform input[type=email]::-webkit-input-placeholder {
+            color: #fff; font-weight: bold;
+        }
+        #subscribeform input[type=email]::-moz-placeholder {  /* Firefox 19+ */
+           color: #fff; font-weight: bold; 
+        }
+        #subscribeform input[type=email]:-ms-input-placeholder {  
+           color: #fff; font-weight: bold; 
+        }
+    @media (min-width: $sm) {
+    #subscribeform input[type=email] {
+        margin-bottom: 0;
+    }
+    }
+    #subscribeform button {
+        display: block; width: 100%; height: 70px;
+        padding: 0 15px;
+        @include font('sans', 16, white); line-height: 70px; font-weight: bold;
+        background: $textColor;
+        border: none;
+    }
+    #subscribeform button:focus,#subscribeform button:hover, #subscribeform button:active {
+        background: $textColorDark;
+    }
+@media (min-width: $sm) {
+}
+@media (min-width: $md) {
+}
+@media (min-width: $lg) {
+}
+
+.addtocartform {
+}
+    .addtocartform label {
+        display: block; height: 1.5rem;
+        @include font('sans', 16, $textColor); line-height: 1.4em;
+    }
+    .addtocartform select {
+        display: block; width: 100%;
+        padding-left: 1rem;
+        @include font('sans', 22, $textColor);
+    }
+    @media (min-width: $sm) {
+    .addtocartform select {
+        display: block; width: 100%; height: 3.5rem;
+        @include font('sans', 22, $textColor);
+    }
+    }
+
+
+/*
+###################################
+WAITING LIST
+###################################
+*/
+.waitinglisttoggle {
+    display: block;
+    margin-bottom: 10px;
+    @include font('sans', 16, $highlightColor); font-weight: bold; text-decoration: none; text-align: left; text-transform: uppercase;
+    cursor: pointer;
+}
+.waitinglistcancel {
+    display: block;
+    @include font('sans', 16, $highlightColor); font-weight: bold; text-decoration: none; text-align: left; text-transform: uppercase;
+    cursor: pointer;  text-transform: none;  
+}
+.waitinglistform {
+}
+    .waitinglistform li {
+        display: block;
+        margin-bottom: 5px !important;
+    }

@@ -1,0 +1,50 @@
+{% set variant = product.defaultVariant %}
+
+<article class="cartitem">
+    <div class="row">
+        <div class="col-lg-5 col-md-5 col-sm-5 cartitem productsnippet">
+            <h2><a href="{{ siteUrl }}gifts">{{ item.price | currency(cart.currency) }} {{ product.title }}</a></h2>
+            <ul>
+                <li></li>
+                {% if product.recipientName | length %}
+                    <li>for {{ product.recipientName }}</li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-3 cartitem lineitemprice">
+            {% if item.onSale %}
+                {% set save = item.price - item.salePrice %}
+                <span class="originalprice"><s>{{ item.price | currency(cart.currency) }}</s></span>
+                <span class="price">{{ item.salePrice | currency(cart.currency) }}<span class="hidden-lg hidden-md"> x {{ item.qty }}</span>
+                </span>                                
+            {% else %}
+                <span class="price">{{ item.price | currency(cart.currency) }}<span class="hidden-lg hidden-md"> x {{ item.qty }}</span>
+                </span>
+            {% endif %}
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4 cartitem lineitemprice">
+            <div class="row">
+                <div class="col-sm-5">
+                    <span class="price">{{ item.qty }} item{% if item.qty > 1 %}s{% endif %}</span>
+                </div>
+                <div class="col-sm-6">
+                    <form method="POST">
+                        <input type="hidden" name="action" value="commerce/cart/removeLineItem"/>
+                        <input type="hidden" name="redirect" value="cart"/>
+                        {{ getCsrfInput() }}
+                        <input type="hidden" name="lineItemId" value="{{ item.id }}"/>
+                        <input type="submit" class="button sub small" value="Remove"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2col-md-2 hidden-sm hidden-xs lineitemsubtotal">
+            {{ item.subtotal | currency(cart.currency) }}
+            {% if item.discount < 0 %}<br>({{ item.discount|currency(cart.currency) }}){% endif %}
+        </div>
+    </div>
+</article>
+
+{% if loop.last %}
+    {% set monthOfLastClassAdded = product.date | date('Y/m') %}
+{% endif %}

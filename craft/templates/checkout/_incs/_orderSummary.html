@@ -1,0 +1,168 @@
+{% if order.lineItems | length %}
+    <section id="cartsummary">
+        {% if craft.request.firstSegment == 'account' %}
+            <h3>Classes</h3>
+        {% else %}
+            <h3>Your order: #{{ order.shortNumber }}</h3>
+        {% endif %}
+    
+        {% for item in order.lineItems %}
+
+            {% set product = item.purchasable.product %}
+
+            {% if product.type == 'class' %}
+            {% set class = product.class.first %}
+            {% set parent = class.getParent() %}
+            {% set variant = product.defaultVariant %}
+            <article>
+                <p class="nobottommargin"><strong>{{ parent.title }} / {{ product.title }}</strong></p>
+                <p>
+                {% if product.location | length %}
+                    {% set location = product.location.first %}
+                {% else %}
+                    {% set location = class.location.first %}
+                {% endif %}
+                {% if location | length and craft.request.firstSegment() == 'orders' %}Location: {{ location.title }}<br>{% endif %}
+
+                Time: {{ product.startTime | date('G:i') }} - {{ product.finishTime | date('G:i') }}
+                    &nbsp;&nbsp;&nbsp;
+                    Price: 
+                        {% if item.onSale %}
+                            {% set save = item.price - item.salePrice %}
+                            <s>{{ item.price | currency(cart.currency) }}</s> {{ item.salePrice | currency(cart.currency) }}                                
+                        {% else %}
+                            {{ item.price | currency(cart.currency) }}
+                        {% endif %}
+                    &nbsp;&nbsp;&nbsp;
+                    Quantity: {{ item.qty }}
+                    {% if order.registers | length and craft.request.firstSegment == 'account' %}
+                    {% for register in order.registers %}
+                        {% if register.product.first.id == product.id %}
+                        <br>Participants: 
+                        {% for row in register.participants %}
+                            <em>{{ row.name }}{% if not loop.last %}, {% endif %}</em>
+                        {% endfor %}
+                        {% endif %}
+                        {% if register.notes | length %}
+                        <br>Notes: <em>{{ register.notes }}</em>
+                        {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <br><a class="" href="{{ siteUrl }}orders/{{ order.number }}/participants/account">Update particpants names / notes</a>
+                </p>                         
+            </article>
+
+            {% elseif product.type == 'masterclass' %}
+            {% set class = product.class.first %}
+            {% set variant = product.defaultVariant %}
+            <article>
+                <p class="nobottommargin"><strong>Masterclasses / {{ product.title }}</strong></p>
+                <p>
+                {% if product.location | length %}
+                    {% set location = product.location.first %}
+                {% else %}
+                    {% set location = class.location.first %}
+                {% endif %}
+                {% if location | length and craft.request.firstSegment() == 'orders' %}Location: {{ location.title }}<br>{% endif %}
+
+                Dates: {{ product.startDate | date('l j M Y') }} to {{ product.endDate | date('l j M Y') }}<br>
+                Time: {{ product.startTime | date('G:i') }} - {{ product.finishTime | date('G:i') }}
+                    &nbsp;&nbsp;&nbsp;
+                    Price: 
+                        {% if item.onSale %}
+                            {% set save = item.price - item.salePrice %}
+                            <s>{{ item.price | currency(cart.currency) }}</s> {{ item.salePrice | currency(cart.currency) }}                                
+                        {% else %}
+                            {{ item.price | currency(cart.currency) }}
+                        {% endif %}
+                    &nbsp;&nbsp;&nbsp;
+                    Quantity: {{ item.qty }}
+                    {% if order.registers | length and craft.request.firstSegment == 'account' %}
+                    {% for register in order.registers %}
+                        {% if register.product.first.id == product.id %}
+                        <br>Participants: 
+                        {% for row in register.participants %}
+                            <em>{{ row.name }}{% if not loop.last %}, {% endif %}</em>
+                        {% endfor %}
+                        {% endif %}
+                        {% if register.notes | length %}
+                        <br>Notes: <em>{{ register.notes }}</em>
+                        {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    <br><a class="" href="{{ siteUrl }}orders/{{ order.number }}/participants/account">Update particpants names / notes</a>
+                </p>                         
+            </article>
+            {% elseif product.type == 'wines' or product.type == 'equipment' %}
+                <article>
+                    <p class="nobottommargin"><a href="{{ product.url }}">{{ product.title }}</a></p>
+                    <p>
+                        Price: 
+                            {% if item.onSale %}
+                                {% set save = item.price - item.salePrice %}
+                                <s>{{ item.price | currency(cart.currency) }}</s> {{ item.salePrice | currency(cart.currency) }}                                
+                            {% else %}
+                                {{ item.price | currency(cart.currency) }}
+                            {% endif %}
+                        &nbsp;&nbsp;&nbsp;
+                        Quantity: {{ item.qty }}
+                    </p>
+
+                </article>
+            {% else %}
+                <article>
+                    <p class="nobottommargin"><a href="{{ siteUrl }}gifts">{{ item.price | currency(cart.currency) }} {{ product.title }}</a></p>
+                    <p>for {{ product.recipientName }}<br>
+                        #{{ product.discountCode }}<br>
+                        Price: 
+                            {% if item.onSale %}
+                                {% set save = item.price - item.salePrice %}
+                                <s>{{ item.price | currency(cart.currency) }}</s> {{ item.salePrice | currency(cart.currency) }}                                
+                            {% else %}
+                                {{ item.price | currency(cart.currency) }}
+                            {% endif %}
+                        &nbsp;&nbsp;&nbsp;
+                        Quantity: {{ item.qty }}
+                    </p>
+
+                </article>
+            {% endif %}
+                <p>
+
+                    {###################### LINE TOTALS IF NEEDED
+                    = {{ item.subtotal | currency(order.currency) }}
+                        {% if item.discount < 0 %}<br>({{ item.discount|currency(order.currency) }}){% endif %}
+                    #######################}
+                </p>
+                       
+                    <p class="lineitemsubtotal">
+                        
+                    </p>
+            </article>
+        {% endfor %}
+                  
+        <p id="carttotal">
+        {% if order.totalDiscount < 0 %}
+            <strong class="pink">
+            Total discount<br>
+            {{ order.totalDiscount|currency(order.currency) }}<br>
+            </strong>
+        {% endif %}
+        {% if order.totalTax > 0 or order.totalShippingCost > 0 %}
+            <strong class="pink">
+                {{ ((order.totalPrice - order.totalTax) - order.totalShippingCost) | currency(order.currency) }} (exc. VAT)
+                {% if order.totalTax > 0 %}
+                    <br>+ {{ order.totalTax | currency(order.currency) }} VAT
+                {% endif %}
+                {% if order.totalShippingCost > 0 %}
+                    <br>+ {{ order.totalShippingCost | currency(order.currency) }} shipping
+                {% endif %}
+            </strong>
+        {% endif %} 
+             <strong>Order Total: {{ order.totalPrice|currency(order.currency) }}</strong>
+        </p>
+
+    </section>
+{% else %}
+    <p>There is nothing in your cart.</p>
+{% endif %}

@@ -1,0 +1,53 @@
+@media (min-width: $sm) {
+#testimonials {	
+    -webkit-column-count: 2; /* Chrome, Safari, Opera */
+    -moz-column-count: 2; /* Firefox */
+    column-count: 2;
+}
+}
+	#testimonials blockquote {
+		margin-bottom: 0.75rem; padding-bottom: 1rem;
+		border-bottom: 1px solid $tintColor;
+		break-inside: avoid-column;
+		-webkit-column-break-inside: avoid;
+		page-break-inside: avoid; 
+	}
+		#testimonials blockquote p {
+			margin-bottom: 0.25rem;
+    		@include font('serif', 20, $textColor, 'italic');
+		}
+		@media (min-width: $md) {
+		#testimonials blockquote p {
+			margin-bottom: 0.25rem;
+    		@include font('serif', 24, $textColor, 'italic');
+		}
+		}
+		#testimonials blockquote cite {
+    		@include font('sans', 18, $textColor); font-weight: bold;
+    	}
+		#testimonials blockquote a {
+			display: block;
+    		@include font('sans', 18, $textColor);
+    	}
+    	#testimonials blockquote a:focus, #testimonials blockquote a:hover, #testimonials blockquote a:active {
+    		color: $highlightColor;
+    	}
+
+#viewmoretestimonials {
+	display: block;
+	padding: 1rem 0; margin-top: 1rem; margin-bottom: $vMargin;
+	@include font('sans', 18, $textColor); text-align: center; text-decoration: none;
+	background: $tintColor;
+}
+#viewmoretestimonials:focus, #viewmoretestimonials:hover, #viewmoretestimonials:active {
+	background: $tintColorActive;
+}
+
+#map {
+	height: 600px;
+	margin-top: 2rem;
+}
+
+#CDSWIDSSP {
+	width: 100% !important;
+}

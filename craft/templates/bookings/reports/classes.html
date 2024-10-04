@@ -1,0 +1,90 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set metaTitle = 'Products' %}
+{% extends "bookings/_layout" %}
+
+{% block content %}
+        
+  {% set classes = [] %}
+  {% set classes = classes | merge(craft.entries.section('classes').type('class').descendantOf(24).limit(NULL)) %}
+  {% set classes = classes | merge(craft.entries.section('classes').type('tour').descendantOf(24).limit(NULL)) %}
+  {% set classes = classes | merge(craft.entries.section('classes').type('class').descendantOf(41).limit(NULL)) %}
+  {% set classes = classes | merge(craft.entries.section('classes').type('tour').descendantOf(41).limit(NULL)) %}
+  {% set classes = classes | merge(craft.entries.section('classes').type('class').descendantOf(45).limit(NULL)) %}
+  {% set classes = classes | merge(craft.entries.section('classes').type('tour').descendantOf(45).limit(NULL)) %}
+
+
+<div class="ui masthead vertical">
+<div class="ui container">
+      <h1 class="ui header">
+        <i class="line chart icon"></i>Reports / Classes
+      </h1>
+</div>
+</div>
+
+<div class="ui container">
+
+  <div class="ui column grid">
+
+    <form class="ui form ten wide centered column" id="salesreportform">
+      <p>Please select a date range and one or two classes.</p>
+
+      <div class="fields">
+
+        <div class="required eight wide field">
+          <label>Report start date</label>
+          <div class="ui calendar datefield">
+            <div class="ui input left icon">
+              <i class="calendar icon"></i>
+              <input type="text" value="{{ now | date('m/d/Y') }}">
+            </div>
+          </div>
+          <input type="hidden" name="" id="startdate" value="{{ now | date('Y-m-d') }}">
+        </div>        
+
+        <div class="required eight wide field">
+          <label>Report end date</label>
+          <div class="ui calendar datefield">
+            <div class="ui input left icon">
+              <i class="calendar icon"></i>
+              <input type="text" value="{{ now | date('m/d/Y') }}">
+            </div>
+          </div>
+          <input type="hidden" name="" id="enddate" value="{{ now | date('Y-m-d') }}">
+        </div>
+
+      </div>
+
+      <div class="required sixteen wide field">
+        <label>Classes (you can select more than one)</label>
+
+
+        <select multiple="" class="ui search dropdown" name="" id="classselect">
+          <option value=""></option>
+          {% for class in classes %}
+            {% set parentOverview = craft.entries.section('classes').ancestorOf(class).type('overview').first %}
+            <option value="{{ class.id }}">{% if parentOverview.id == 1988 %}Private / {% endif %} {{ class.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button type="submit" class="ui pink button">          
+        Fetch sales data
+      </button>
+
+    </form>
+  </div>
+
+
+  <script>var $siteUrl = "{{ siteUrl }}";</script>
+  <div class="ui column grid">
+    <div class="ui sixteen column" id="salesreports">
+    </div>
+  </div>
+     
+     
+</div>
+
+{% endblock %}

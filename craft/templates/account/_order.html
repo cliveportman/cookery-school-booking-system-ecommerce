@@ -1,0 +1,84 @@
+{% set order = craft.commerce.orders.number(craft.request.lastSegment).first() %}
+
+{% set breadcrumbEntries = [] %}
+{% set item = {'title': 'Account', 'url': siteUrl ~ 'account'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+{% set item = {'title': 'Order #' ~ order.shortNumber, 'url': siteUrl} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+
+{% set metaTitle = "Order #" ~ order.shortNumber ~ " / La Cuisine Paris" %}
+
+{% extends "_layout" %}
+
+{% block content %}
+<div class="container">
+
+    <section id="accountpage">
+
+        <div class="row">
+    		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+            <div class="col-md-6">
+                {% include "checkout/_incs/_orderSummary" %}
+            </div>
+            <div class="col-md-3 col-md-push-3">
+                {#########################
+                  ORDER PDF
+                ##########################}
+                {% if order.pdfUrl %}
+                  <a href="{{ order.getPdfUrl('receipt') }}" class="button caps">Download facture</a>
+                {% endif %}
+            </div>
+            <div class="col-md-12 col-sm-6">
+                <h3>Order details</h3>
+                <div class="row">
+                    <div class="col-md-4">
+                        {#########################
+                          ORDER SUMMARY
+                        ##########################}
+                        <p><strong>Order:</strong> #{{ order.shortNumber }}<br>
+                          <strong>Email:</strong> {{ order.email }}<br>
+                            <strong>Total:</strong> {{ order.totalPrice|currency(order.currency) }}<br>
+                            <strong>Date:</strong> {{ order.dateOrdered | date("D j M Y") }}
+                        </p>
+                    </div>
+                    <div class="col-md-4">   
+                      {#########################
+                        BILLING ADDRESS
+                      ##########################}
+                      {% if order.billingAddress %}
+                        <p>
+                            <strong>Address:</strong><br>
+                          {% include 'emails/_incs/_address' with { address: order.billingAddress } %}
+                        </p>
+                      {% endif %}
+                    </div>
+                    <div class="col-md-4">  
+                    <p>
+                        <strong>Payment:</strong><br>
+                      {% for adjustment in order.adjustments %}
+                        {% if adjustment.type != 'Tax' %}
+                          {{ adjustment.type }} ({{ adjustment.name }}):  {{ adjustment.amount|currency(order.currency) }}<br>
+                        {% endif %}
+                      {% endfor %}
+                      {% for adjustment in order.adjustments %}
+                        {% if adjustment.type == 'Tax' %}
+                          Subtotal (HT): {{ (order.totalPrice - adjustment.amount) | currency(order.currency) }}<br>
+                          Tax (TVA):  {{ adjustment.amount|currency(order.currency) }}<br>
+                        {% endif %}
+                      {% endfor %}
+                      {% if order.totalShippingCost > 0 %}
+                          + {{ order.totalShippingCost | currency(order.currency) }} shipping
+                        <br>
+                      {% endif %}
+                      <strong>Total (TTC): {{ order.totalPrice | currency(order.currency) }}</strong>
+                    </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

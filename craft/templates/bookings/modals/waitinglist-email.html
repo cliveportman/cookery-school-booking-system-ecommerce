@@ -1,0 +1,24 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set productIds = craft.request.lastSegment | split('-') %}
+{% set entries = craft.entries.id(productIds) %}
+{% set customers = [] %}
+{% for entry in entries %}
+  {% set customer = { 'name': entry.personName, 'email': entry.email } %}
+  {% set customers = customers | merge([customer]) %}
+{% endfor %}
+
+<div class="ui modal">
+  <i class="close icon"></i>
+
+  <div class="header">
+    <h2>Send email</h2>
+  </div>
+
+  <div class="content">
+    {% set vars = {'purpose': 'waitingList'} %}
+    {% include "bookings/incs/forms/_emailForm" with vars %} 
+  </div>
+</div>

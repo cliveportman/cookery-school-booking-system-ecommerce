@@ -1,0 +1,71 @@
+{% set shop = craft.entries.section('shop').first %}
+
+{% set breadcrumbEntries = [] %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([shop]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+
+{% if entry.metaTitle is defined and entry.metaTitle | length %}
+    {% set metaTitle = entry.metaTitle %}
+{% else %}
+    {% set metaTitle = "Equipment / Online Store / La Cuisine, Paris - cooking classes and food tours in the heart of Paris" %}
+{% endif %}
+{% if entry.metaDescription is defined and entry.metaDescription | length %}
+    {% set metaDescription = entry.metaDescription %}
+{% else %}
+    {% set metaDescription = "" %}
+{% endif %}
+
+{% set equipment = craft.commerce.products.type('equipment').find %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+	</header>
+	<div class="row">
+		<div class="col-sm-3 ">
+			<img src="{{ entry.shopThumbnailImage.first.getUrl() }}" alt="Wines" class="shop-summaryimage">
+		</div>
+		<div class="col-sm-6 ">
+			<h2>Equipment from La Cuisine, Paris</h2>
+			{{ entry.introduction }}
+		</div>
+
+	</div>
+	<div class="row">
+		{% for item in equipment %}
+			<div class="col-sm-6 ">
+				<div class="shop-productsummary">
+
+					<h2>{{ item.title }}</h2>
+
+					<div class="shop-productsummary__image">
+						<a href="{{ item.url }}"><img src="{{ item.shopThumbnailImage.first.getUrl() }}" alt="{{ item.title }}"></a>
+					</div>
+
+					<div class="shop-productsummary__text">
+						{{ item.productListingSummary }}
+						<div class="pricing">
+							<p>Price: {{ item.defaultVariant.price | currency(cart.currency) }}</p>
+							<a href="{{ item.url }}" class="button"> Find Out More</a>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		{% endfor %}
+
+		<div class="col-sm-12">
+			<hr class="pink">
+		</div>
+
+	</div>
+
+</div>
+
+{% endblock %}

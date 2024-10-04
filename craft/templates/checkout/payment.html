@@ -1,0 +1,118 @@
+{% set breadcrumbEntries = [] %}
+{% set cartPage = {'title': 'Cart', 'url': siteUrl ~ 'cart'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([cartPage]) %}
+{% set addressesPage = {'title': 'Addresses', 'url': siteUrl ~ 'checkout/addresses'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([addressesPage]) %}
+{% set item = {'title': 'Payment', 'url': siteUrl ~ 'checkout/summary'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+
+{% set modelName = modelName is defined ? modelName : 'address' %}
+{% set model = address is defined ? address : null %}
+
+{% set metaTitle = "Payment / Checkout / La Cuisine, Paris" %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+{% macro errorList(errors) %}
+    {% if errors %}
+        <ul class="errors">
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% from _self import errorList %}
+
+<div class="container">
+
+    <section>
+        <div class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+
+        {% set error = craft.session.getFlash('error') %}
+        {% if error | length %}
+        <div class="col-sm-12 col-md-8 col-md-push-2">
+              <div id="checkout-paymenterror">
+                {#{{ error }}#}
+                <p>There was a problem processing your payment. Please try again.<br>If the problem persists try using a different card for payment.</p>
+              </div>
+        </div>
+        <style>
+            #checkout-paymenterror {
+                margin: 0 0 30px; padding: 20px;
+                border: 5px solid #f36;
+            }
+                #checkout-paymenterror p {
+                    margin-bottom: 0;
+                    color: #f36;
+                    font-weight: 700;
+                }
+        </style>
+        {% endif %}
+
+        <div class="col-md-5 col-sm-8">
+            <p>Please review your order before proceeding. Selecting <strong>Pay by Credit/Debit Card</strong> wil redirect you to our bank's payment pages, where you'll be prompted for payment.</p>
+            <p>After payment you'll be returned here where you'll be shown an order confirmation. We'll also send you an email confirmation and you'll be given the opportunity to add the names of the people accompanying you and/or create an account.</p>
+
+            {##################
+            <p class="error" style="color: red;">
+            	{% if paymentForm is defined %}
+            	ERROR<br>
+                {{ dump(paymentForm) }}
+            		
+            	{% endif %}
+            </p>
+            ##################}
+
+        </div>
+        <div class="col-md-4 col-sm-4">
+            {% include "checkout/_incs/_cartSummary" %}
+
+
+
+            
+        </div>
+
+        <div class="col-md-3 col-md-push-0 col-sm-push-8 col-sm-4" id="checkoutbuttonsarea">
+                
+
+            
+            {% if cart.paymentMethodId == 7 %}
+                {#############
+                    SHOW US CUSTOMER BOTH PAYMENT METHODS
+                ##############}
+                {% include 'checkout/_incs/_moneticoPaymentForm' %}
+                {#{% include 'checkout/_incs/_stripePaymentIntentsPaymentForm' %}#}
+            {% else %}
+                {% include 'checkout/_incs/_moneticoPaymentForm' %}
+            {% endif %}
+
+            {% set ipList = [] %}
+            {% set ipTable = checkout.ipAddressForManualAccess %}
+            {% for row in ipTable %}
+                {% set ipList = ipList|merge([row.ipAddress])  %}
+            {% endfor %}
+            {% if craft.request.getIpAddress() in ipList %}
+                {% include 'checkout/_incs/_manualPaymentForm' %}
+            {% endif %}
+
+            <img src="{{ siteUrl }}img/card-logos.png" alt="Visa, Mastercard, Maestro, American Express" id="cardlogos">
+
+        </div>
+
+        </div>
+
+        {% include "checkout/_incs/_checkoutSteps" %}
+
+    </section>
+
+</div>
+
+
+
+
+{% endblock %}

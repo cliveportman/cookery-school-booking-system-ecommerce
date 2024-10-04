@@ -1,0 +1,29 @@
+<div class="col-md-12">
+	<h1 class="clearfix">
+	<span id="breadcrumbtext">
+		{% for item in breadcrumbEntries %}			
+			{% if not loop.last %}<a href="{{ item.url }}">{% endif %}
+				{% if item.date is defined and item.date | length %}
+					{{ item.date | date('l j M Y') }}
+				{% elseif item.sectionTitle is defined and item.sectionTitle | length %}
+					{{ item.sectionTitle }}
+				{% else %}
+					{{ item.title }}
+				{% endif %}
+			{% if not loop.last %}</a> / {% endif %}			
+		{% endfor %}
+	</span>
+	{% if craft.request.getSegment(1) == "calendar" %}
+		{% if craft.request.getSegment(2) == "list" %}
+			<a href="{{ siteUrl }}calendar/{{ thisMonth | date('Y/m') }}" class=" hidden-xs calendarviewlink">View as calendar</a>
+		{% else %}
+			<a href="{{ siteUrl }}calendar/list/{{ thisMonth | date('Y/m') }}" class="hidden-xs calendarviewlink">View as list</a>
+		{% endif %}
+	{% endif %}
+	</h1>
+</div>
+
+
+{% if currentUser and craft.request.firstSegment == 'account' %}
+	<a class="button caps" href="{{ logoutUrl }}" id="logoutbutton">Logout</a>
+{% endif %}

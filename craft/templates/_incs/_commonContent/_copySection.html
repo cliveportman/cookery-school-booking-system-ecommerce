@@ -1,0 +1,14 @@
+
+<div class="col-md-6 col-sm-7">
+{% if entry.body | length %}
+	{{ entry.body }}
+{% endif %}
+
+{% set vars = { 
+	'latitude': entry.latitude, 
+	'longitude': entry.longitude,
+	'mapZoom': entry.mapZoom
+	}
+%}
+{% include "contact/_incs/_map" with vars %}
+</div>

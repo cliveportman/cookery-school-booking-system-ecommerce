@@ -1,0 +1,16 @@
+{% if craft.request.getSegment(3) %}
+  {% set newProduct = craft.commerce.products.id(craft.request.getSegment(3)).first %}
+  {% if newProduct | length %}
+    <div class="ui column grid">
+      <div class="twelve wide column centered">
+        <div class="ui message">
+          <i class="close icon"></i>
+          <div class="header">
+            Product added
+          </div>
+          <p><em>{{ newProduct.title }}</em> was added successfully.</p>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}

@@ -1,0 +1,29 @@
+{% spaceless %}
+{% if not currentUser and currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set target = craft.entries.id(craft.request.getSegment(3)).first %}
+{% if not target | length %}
+	{% set target = craft.users.id(craft.request.getSegment(3)).first %}
+{% endif %}
+
+{% set productIds = craft.commerce.products.relatedTo(target).date('and', '>= ' ~craft.request.getSegment(4), '<= ' ~ craft.request.getSegment(5)).limit(NULL).ids %}
+
+{% set vars = {
+  "startDate": craft.request.getSegment(4),
+  "endDate": craft.request.getSegment(5),
+  "productIds": productIds
+} %}
+
+{% set sales = craft.salesFigures.getSalesByProduct(vars) %}
+{"sales": {
+	"id": "{{ target.id }}",
+	"title": "{{ target.title | length ? target.title : target.name }}",
+	"products": "{{ productIds | length }}",
+  	"number": "{{ sales.totalSalesNumber }}",
+  	"value": "{{ sales.totalSalesValue | commerceCurrency('EUR') }}",
+  	"unsoldSpaces": "{{ sales.unsoldSpaces }}"
+}}
+
+{% endspaceless %}

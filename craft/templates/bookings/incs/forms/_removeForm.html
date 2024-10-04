@@ -1,0 +1,50 @@
+<form method="post" accept-charset="UTF-8" class="ui form">
+            
+      <input type="hidden" name="action" value="commerce/products/deleteProduct">
+      <input type="hidden" id="redirectinput" name="redirect" value="products/edited/{{ product.class.first.id }}/{id}">
+      {% if craft.request.getSegment(2) == 'class' %}
+        <input type="hidden" id="redirectinput" name="redirect" value="products/class/{{ product.class.first.id }}/removed">
+      {% else %}
+        <input type="hidden" id="redirectinput" name="redirect" value="products/masterclass/{{ product.masterclass.first.id }}/removed">
+      {% endif %}
+      <input type="hidden" name="productId" value="{{ product.id }}">
+
+  <div class="ui column grid">
+    <div class="twelve wide column centered">
+      <p>Are you sure you want to delete this product?</p>
+      <table class="ui selectable very basic table">
+        {% set teacher = product.teacher.first %}
+        {% set variant = product.defaultVariant %}
+        <tr>
+          <td>
+            <p>
+              <i class="tag icon"></i>
+              <strong>{{ product.title }}, {{ product.startTime | date('h.i') }}-{{ product.finishTime | date('h.i') }}</strong>
+            </p>
+          </td>
+          <td>{{ variant.stock }} places available</td>
+          <td>{% if teacher | length %}{{ teacher.name }}, {% endif %}{% if product.room != 'nA' %}{{ product.room.label }}{% endif %}</td>
+          <td>{{ variant.sku }}</td>
+        </tr>
+      </table>
+
+      <div class="fields">
+        <div class="nine wide field">
+        </div>
+          <div class="three wide field">
+            <a href="{{ siteUrl }}products/remove/{{ product.id }}" class="fluid cancel ui button" id="">
+              No, cancel
+            </a>
+          </div>
+        <div class="four wide field">
+          <button type="submit" class="fluid pink ui button">
+            <i class="remove circle icon"></i>
+            Yes, delete
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</form>

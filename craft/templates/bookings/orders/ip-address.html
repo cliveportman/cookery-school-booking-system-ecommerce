@@ -1,0 +1,15 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set metaTitle = 'IP Address' %}
+
+{% set orders = craft.commerce.orders.limit(100).order('dateOrdered desc') %}
+
+<h1>Orders listed with last IP address</h1>
+
+<ul>
+{% for order in orders %}
+  <li>{{ order.lastIp }} - {{ order.dateOrdered | date('j F Y') }} / {{ order.dateOrdered | date('g.ia') }}</li>
+{% endfor %}
+</ul>

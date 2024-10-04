@@ -1,0 +1,57 @@
+{% if address.firstName is not empty or address.lastName is not empty %}
+    {% if address.firstName is not empty %}
+        {{ address.firstName }}
+    {% endif %}
+
+    {% if address.lastName is not empty %}
+        {{ address.lastName }}
+    {% endif %}
+    {% if address.businessName is not empty %}
+        <br>
+        {{ address.businessName }}
+        
+    {% endif %}
+
+    {% if address.businessTaxId is not empty %}
+        - {{ address.businessTaxId }}
+    {% endif %}
+    
+{% endif %}
+
+{% if address.address1 is not empty %}
+    <br>{{ address.address1 }}
+{% endif %}
+
+{% if address.address2 is not empty %}
+    <br>{{ address.address2 }}
+{% endif %}
+
+
+{% if address.zipCode is not empty or address.city is not empty %}
+    <br>
+        {% if address.zipCode is not empty %}
+            {{ address.zipCode }}
+        {% endif %}
+
+        {% if address.city is not empty %}
+            {{ address.city }}
+        {% endif %}
+    
+{% endif %}
+
+
+{% if address.countryText is defined %}
+    <br>{{ address.countryText }}
+{% endif %}
+
+{% if address.stateText is not empty %}
+    <br>{{ address.stateText }}
+{% endif %}
+
+{% if address.phone is not empty %}
+    <br>Tel: {{ address.phone }}
+{% endif %}
+
+{% if address.alternativePhone is not empty %}
+    <br>{{ address.alternativePhone }}
+{% endif %}

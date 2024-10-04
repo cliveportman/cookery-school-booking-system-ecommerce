@@ -1,0 +1,189 @@
+{% set metaTitle = "Addresses / Checkout / La Cuisine, Paris" %}
+
+{% set breadcrumbEntries = [] %}
+{% set cartPage = {'title': 'Cart', 'url': siteUrl ~ 'cart'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([cartPage]) %}
+{% set addressesPage = {'title': 'Addresses', 'url': siteUrl ~ 'checkout/addresses'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([addressesPage]) %}
+
+{% set addresses = craft.commerce.customer.addresses %}
+{% set modelName = modelName is defined ? modelName : 'address' %}
+{% set model = address is defined ? address : null %}
+
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+    <section>
+
+        <div class="row">
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+
+        {########################
+        DEV ONLY
+        #########################
+
+        {% set addresses = craft.commerce.customer.addresses %}
+        {% for address in addresses %}
+
+        {{ address.id }}
+
+        {% endfor %}
+        {% set customer = craft.commerce.getCustomer() %}
+        {{ customer.lastUsedBillingAddress }}
+
+        {{ dump(customer.lastUsedBillingAddress) }}
+        ####################################}
+
+        <form method="post" class="defaultform checkoutform">      
+
+            <input type="hidden" name="action" value="commerce/cart/updateCart">
+            <input type="hidden" name="redirect" value="checkout/payment"/>
+
+
+            {#####################
+
+                Set the payment method to be either Monetico (5) or Stripe (7)
+                We'll default to Stripe but look for a non US or Canadian
+
+            ####################}
+            <input type="hidden" name="paymentMethodId" value="7" id="paymentmethodid">
+
+
+
+
+            {{ getCsrfInput() }}
+
+
+            <div class="col-md-8 col-sm-8">
+
+                {% set hasClass = false %}
+                {% set hasDeliverable = false %}
+                {% set hasWine = false %}
+
+                {% if cart.lineItems | length %}
+                {% for item in cart.lineItems %}
+
+                    {% set product = item.purchasable.product %}
+
+                    {% switch product.type %}
+
+                        {% case 'wines' %}
+                            {% set hasDeliverable = true %}
+                            {% set hasWine = true %}
+
+                        {% case 'equipment' %}
+                            {% set hasDeliverable = true %}
+
+                        {% case 'class' %}
+                            {% set hasClass = true %}
+
+                        {% case 'masterClass' %}
+                            {% set hasClass = true %}
+
+                        {% default %}
+
+                    {% endswitch %}
+
+                {% endfor %}
+                {% endif %}
+
+                {% if hasDeliverable %}
+
+                    <h2 class="bigheading">Contact Email Address </h2>
+                    <ul>                
+                        <li class="row">
+                            <div class="col-md-3 col-sm-3">
+                                <label for="email">Email *</label>
+                            </div>
+                            <div class="col-md-9 col-sm-9">
+                                <input type="email" id="email" class="u-full-width" name="email" value="{% if cart.email %}{{ cart.email }}{% endif %}" required>
+                            </div>
+                        </li>
+                        {% if model and model.getErrors('email') %}
+                            <span class="flash">{{ model.getErrors('email')|join }}</span>
+                        {% endif %}
+                    </ul>
+                    <br>
+
+                    <h2 class="bigheading">Shipping Address</h2>
+                    <p><strong>Must be a location where your purchase can be signed-for by an adult</strong></p>
+
+                    {% include 'checkout/_incs/_addressForm' with {
+                    'modelName': 'shippingAddress',
+                    'address': attribute(cart, 'shippingAddress')
+                    } %}
+
+                    <br>
+                    <h2 class="bigheading">Billing Address</h2>
+
+                    {% include 'checkout/_incs/_addressForm' with {
+                    'modelName': 'billingAddress',
+                    'address': attribute(cart, 'billingAddress')
+                    } %}
+
+                {% else %}
+
+                <h2 class="bigheading">Billing details</h2>
+                <ul>                
+                    <li class="row">
+                        <div class="col-md-3 col-sm-3">
+                            <label for="email">Email *</label>
+                        </div>
+                        <div class="col-md-9 col-sm-9">
+                            <input type="email" id="email" class="u-full-width" name="email" value="{% if cart.email %}{{ cart.email }}{% endif %}" required>
+                        </div>
+                    </li>
+                    {% if model and model.getErrors('email') %}
+                        <span class="flash">{{ model.getErrors('email')|join }}</span>
+                    {% endif %}
+                </ul>
+
+                    {% include 'checkout/_incs/_addressForm' with {
+                    'modelName': 'shippingAddress',
+                    'address': attribute(cart, 'shippingAddress')
+                    } %}
+
+                {% endif %}
+
+                {% if currentUser %}
+                <ul>
+                    <li class="row">
+                        <div class="col-md-3 col-sm-3">
+                            <label for="ordernote">Note</label>
+                        </div>
+                        <div class="col-md-9 col-sm-9">
+                            <textarea id="ordernote" name="fields[orderMessage]" placeholder="">{{ cart.orderMessage | length ? cart.orderMessage : '' }}</textarea>
+                        </div>
+                    </li>
+                </ul>
+                {% endif %}
+
+                <div class="row" id="checkoutbuttonsarea">
+                    <div class="col-md-4 col-md-push-8 col-sm-4 col-sm-push-8">
+                        <button type="submit" class="button orange checkout">Continue</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-4 col-sm-4">
+                {% include "checkout/_incs/_cartSummary" %}
+            </div>
+
+        </form>
+        </div>
+
+        {% include "checkout/_incs/_checkoutSteps" %}
+
+    </section>
+
+</div>
+
+
+
+
+{% endblock %}

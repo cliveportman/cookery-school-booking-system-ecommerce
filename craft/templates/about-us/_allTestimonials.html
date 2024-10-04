@@ -1,0 +1,50 @@
+{% set entry = craft.entries.slug('testimonials').first %}
+{% set breadcrumbEntries = [] %}
+{% set parentOverview = craft.entries.section('overviewAboutUs').first %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([parentOverview]) %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+
+{% if entry.metaTitle is defined and entry.metaTitle | length %}
+    {% set metaTitle = entry.metaTitle %}
+{% else %}
+    {% set metaTitle = "La Cuisine, Paris - cooking classes and food tours in the heart of Paris" %}
+{% endif %}
+{% if entry.metaDescription is defined and entry.metaDescription | length %}
+    {% set metaDescription = entry.metaDescription %}
+{% else %}
+    {% set metaDescription = "" %}
+{% endif %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+		{% set tabs = { 'overview': parentOverview, 'channel': 'aboutUs' } %}
+		{% include "_incs/_subnav" with tabs %}
+	</header>
+	<div class="row">
+		{% set testimonials = craft.entries.section('testimonials').limit(NULL) %}
+		{% if testimonials | length %}
+		<div class="col-md-12">
+			<div id="testimonials">
+			{% for testimonial in entry.leadTestimonials %}
+				<blockquote>
+					<p>{{ testimonial.quote }}</p>
+					<cite>{{ testimonial.source }}</cite>
+					{% if testimonial.class | length %}
+						<a href="{{ testimonial.class.first.url }}">{{ testimonial.class.first.title }}</a>
+					{% endif %}
+				</blockquote>
+			{% endfor %}
+			</div>
+		</div>
+		{% endif %}
+	</div>
+
+</div>
+
+{% endblock %}

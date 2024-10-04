@@ -1,0 +1,33 @@
+{% set breadcrumbEntries = [] %}
+
+{% set item = {'title': 'Your account / Login', 'url': siteUrl ~ 'account'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+
+{% set metaTitle = "Login to your account / La Cuisine Paris" %}
+
+{% extends "_layout" %}
+
+{% block content %}
+<div class="container">
+
+    <section>
+
+        <div class="row">
+    		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+            <div class="col-md-5 col-sm-6">
+                <h2>Login</h2>
+                {% include "account/_incs/_loginForm" %}  
+            </div>
+            <div class="col-md-5 col-md-push-2 col-sm-6">
+                <h2>Create an account</h2>
+                {% include "account/_incs/_registerForm" %}  
+            </div>
+        </div>
+
+
+
+    </section>
+
+</div>
+
+{% endblock %}

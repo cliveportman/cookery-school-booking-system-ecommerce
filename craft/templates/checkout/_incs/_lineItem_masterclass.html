@@ -1,0 +1,69 @@
+
+{% set class = product.masterclass.first %}
+{% set overview = craft.entries.section('masterclassesOverview').first %}
+{% set variant = product.defaultVariant %}
+
+<article class="cartitem">
+    <div class="row">
+        <div class="col-lg-5 col-md-5 col-sm-5 cartitem productsnippet">
+            <h2><a href="{{ product.url }}">{{ overview.title }} / {{ product.title }}</a></h2>
+            <ul>
+                <li></li>
+                {% if product.additionalDescription | length %}
+                    <li>{{ product.additionalDescription }}</li>
+                {% endif %}
+                <li> <span class="time">{{ product.startDate | date('l j M Y') }} to {{ product.endDate | date('l j M Y') }}</span></li>
+                <li> <span class="time">{{ product.startTime | date('G:i') }} - {{ product.finishTime | date('G:i') }}</span></li>
+            </ul>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-3 cartitem lineitemprice">
+            {% if item.onSale %}
+                {% set save = item.price - item.salePrice %}
+                <span class="originalprice"><s>{{ item.price | currency(cart.currency) }}</s></span>
+                <span class="price">{{ item.salePrice | currency(cart.currency) }}<span class="hidden-lg hidden-md"> x {{ item.qty }}</span>
+                </span>                                
+            {% else %}
+                <span class="price">{{ item.price | currency(cart.currency) }}<span class="hidden-lg hidden-md"> x {{ item.qty }}</span>
+                </span>
+            {% endif %}
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-4 lineitemquantity">
+            {# IS THIS CART TABLE UPDATABLE? IF SO, PRESENT UPDATE FORMS #}
+            {% if updatable is defined %}
+                {% if product.defaultVariant.stock > 5 %}
+                    {% set max = 5 %}
+                {% else %}
+                    {% set max = product.defaultVariant.stock %}
+                {% endif %}
+                <div class="row">
+                    <div class="col-lg-12 col-xs-9">
+                        <form method="POST" class="quantityform">
+                            <input type="hidden" name="action" value="commerce/cart/updateLineItem">
+                            <input type="hidden" name="redirect" value="cart">
+                            <input type="hidden" name="lineItemId" value="{{ item.id }}">
+                            <input class="lineqtyinput" type="number" name="qty" min="1" max="{{ max }}" value="{{ item.qty }}">
+                            <button type="submit" class="button sub">Update</button>
+                        </form>
+                        <form method="POST" class="removeform">
+                            <input type="hidden" name="action" value="commerce/cart/removeLineItem"/>
+                            <input type="hidden" name="redirect" value="cart"/>
+                            {{ getCsrfInput() }}
+                            <input type="hidden" name="lineItemId" value="{{ item.id }}"/>
+                            <button type="submit" class="button sub">Clear</button>
+                        </form>
+                    </div>
+                </div>
+            {% else %}
+                {{ item.qty }} item{% if item.qty > 1 %}s{% endif %}
+            {% endif %}
+            </div>
+        <div class="col-lg-2col-md-2 hidden-sm hidden-xs lineitemsubtotal">
+            {{ item.subtotal | currency(cart.currency) }}
+            {% if item.discount < 0 %}<br>({{ item.discount|currency(cart.currency) }}){% endif %}
+        </div>
+    </div>
+</article>
+
+{% if loop.last %}
+    {% set monthOfLastClassAdded = product.startDate | date('Y/m') %}
+{% endif %}

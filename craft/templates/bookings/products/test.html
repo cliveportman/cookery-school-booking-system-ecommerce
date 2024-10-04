@@ -1,0 +1,422 @@
+{% if year is not defined %}
+  {% set year = now | date('Y') %}
+{% endif %}
+
+{% if month is not defined %}
+  {% set month = now | date('m') %}
+{% endif %}
+
+{% if day is not defined %}
+  {% set day = now | date('d') %}
+{% endif %}
+
+{% set today = date(year ~ '-' ~ month ~ '-' ~ day) %}
+{% set yesterday = date(year ~ '-' ~ month ~ '-' ~ day ~ ' - 1 day') %}
+{% set tomorrow = date(year ~ '-' ~ month ~ '-' ~ day ~ ' + 1 day') %}
+
+{% set metaTitle = today | date('l j F Y') %}
+
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+
+<div class="ui container">
+
+    <div class="ui column grid">
+      <div class="column">
+
+<form id="container" method="post" accept-charset="UTF-8" data-saveshortcut="" data-saveshortcut-redirect="commerce/products/class/{id}-{slug}" data-confirm-unload="">
+      
+  
+    <div id="notifications-wrapper">
+      <div id="notifications">
+                                                                      </div>
+    </div>
+
+                    
+    <div class="topbar"><nav id="crumbs"><ul><li><a href="http://bookings.localhost/lacuisine/public_html/admin/commerce/products">Products</a></li><li><a href="http://bookings.localhost/lacuisine/public_html/admin/commerce/products/class">Class</a></li></ul></nav></div>
+
+
+    <header id="page-header">
+      
+        <div id="page-title">
+                                    <h1>Create a new product</h1>
+                              </div>
+
+        
+          </header>
+
+             {% macro errorList(errors) %}
+        {% if errors %}
+            <ul class="errors">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endmacro %}  
+    <main id="main" role="main">
+      <div class="padded">
+                  <input type="hidden" name="action" value="commerce/products/saveProduct">
+  <input type="hidden" name="redirect" value="commerce/products">
+  <input type="hidden" name="typeId" value="3">
+    
+  
+
+  <div class="grid first" data-max-cols="3" style="height: 606px;">
+    <div class="item" data-position="left" data-colspan="2" style="position: absolute; display: block; width: 66.6667%; left: 0%; top: 0px;">
+
+      <div id="fields" class="pane last">
+        <nav id="tabs" class="tabs">
+  <ul>
+                  <li><a id="tab-0" class="tab sel " href="#tab1" tabindex="0">Details</a></li>
+                        <li><a id="tab-1" class="tab " href="#tab2" tabindex="0">Optional</a></li>
+            </ul>
+</nav>
+
+                    <div class="field first" id="title-field">
+      <div class="heading">
+              <label class="required" for="title">Title</label>
+                </div>
+    <div class="input ltr">
+      <input class="text fullwidth" type="text" id="title" name="title" value="" maxlength="255" autofocus="" autocomplete="off" placeholder="Enter title">
+  </div>
+    </div>
+
+
+
+
+        <div>
+                                <div id="tab1">
+              
+      
+
+                
+  <div class="field" id="fields-class-field">
+      <div class="heading">
+              <label class="required" for="fields-class">Class/Tour</label>
+                </div>
+    <div class="input ltr">
+      <input type="hidden" name="fields[class]" value="">
+
+<div id="fields-class" class="elementselect">
+  <div class="elements">
+      </div>
+
+  <div class="btn add icon dashed" tabindex="0" style="position: absolute; top: 0px; left: 0px;">Select class/tour</div>
+</div>
+
+
+
+  </div>
+    </div>
+      
+
+                
+  <div class="field" id="fields-date-field">
+      <div class="heading">
+              <label class="required" for="fields-date">Date</label>
+                </div>
+    <div class="input ltr">
+    <div class="datewrapper"><input class="text hasDatepicker" type="text" id="fields-date-date" size="10" name="fields[date][date]" value="" autocomplete="off"></div>
+  </div>
+    </div>
+      
+
+                
+  <div class="field" id="fields-startTime-field">
+      <div class="heading">
+              <label class="required" for="fields-startTime">Start time</label>
+                </div>
+    <div class="input ltr">
+     <div class="timewrapper"><input class="text ui-timepicker-input" type="text" id="fields-startTime-time" size="10" name="fields[startTime][time]" value="" autocomplete="off"></div>
+  </div>
+    </div>
+      
+
+                
+  <div class="field" id="fields-finishTime-field">
+      <div class="heading">
+              <label for="fields-finishTime">Finish time</label>
+                </div>
+    <div class="input ltr">
+     <div class="timewrapper"><input class="text ui-timepicker-input" type="text" id="fields-finishTime-time" size="10" name="fields[finishTime][time]" value="" autocomplete="off"></div>
+  </div>
+    </div>
+      
+
+                
+  <div class="field" id="fields-room-field">
+      <div class="heading">
+              <label for="fields-room">Room</label>
+                </div>
+    <div class="input ltr">
+    <div class="select">
+  <select name="fields[room]">
+                                          <option value="nA" selected="">n/a</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                </select>
+</div>
+
+  </div>
+    </div>
+              </div>
+                      <div id="tab2" class="hidden">
+              
+      
+
+                
+  <div class="field" id="fields-additionalDescription-field">
+      <div class="heading">
+              <label for="fields-additionalDescription">Additional description</label>
+                </div>
+    <div class="input ltr">
+    
+
+    <input class="text nicetext fullwidth" type="text" id="fields-additionalDescription" name="fields[additionalDescription]" value="" data-show-chars-left="" autocomplete="off" placeholder="">
+
+  </div>
+    </div>
+      
+
+                
+  <div class="field" id="fields-location-field">
+      <div class="heading">
+              <label for="fields-location">Location</label>
+                </div>
+    <div class="input ltr">
+      <input type="hidden" name="fields[location]" value="">
+
+<div id="fields-location" class="elementselect">
+  <div class="elements">
+      </div>
+
+  <div class="btn add icon dashed" tabindex="0" style="position: absolute; top: 0px; left: 0px;">Select location</div>
+</div>
+
+
+
+  </div>
+    </div>
+              </div>
+                  </div>
+      </div>
+
+          <object type="text/html" data="about:blank" style="display: block; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; border: none; padding: 0px; margin: 0px; opacity: 0; z-index: -1000; pointer-events: none;"></object></div>
+
+    <div id="meta-pane" class="item last" data-position="right" style="position: absolute; display: block; width: 33.3333%; left: 66.6667%; top: 0px;">
+
+              
+<div class="btn big livepreviewbtn" tabindex="0">
+  Live Preview
+  <div class="spinner hidden"></div>
+</div>
+
+      
+      
+      <div class="pane meta">
+                    <div class="field" id="slug-field">
+      <div class="heading">
+              <label for="slug">Slug</label>
+                </div>
+    <div class="input ltr">
+      <input class="text fullwidth" type="text" id="slug" name="slug" value="" autocomplete="off" placeholder="Enter slug">
+  </div>
+    </div>
+
+
+
+        <div class="field" id="postDate-field">
+      <div class="heading">
+              <label for="postDate">Post Date</label>
+                </div>
+    <div class="input ltr">
+        <div class="datetimewrapper">
+        <div class="datewrapper"><input class="text hasDatepicker" type="text" id="postDate-date" size="10" name="postDate[date]" value="" autocomplete="off"></div>
+        <div class="timewrapper"><input class="text ui-timepicker-input" type="text" id="postDate-time" size="10" name="postDate[time]" value="" autocomplete="off"></div>
+    </div>
+  
+  </div>
+    </div>
+
+
+
+        <div class="field" id="expiryDate-field">
+      <div class="heading">
+              <label for="expiryDate">Expiry Date</label>
+                </div>
+    <div class="input ltr">
+        <div class="datetimewrapper">
+        <div class="datewrapper"><input class="text hasDatepicker" type="text" id="expiryDate-date" size="10" name="expiryDate[date]" value="" autocomplete="off"></div>
+        <div class="timewrapper"><input class="text ui-timepicker-input" type="text" id="expiryDate-time" size="10" name="expiryDate[time]" value="" autocomplete="off"></div>
+    </div>
+  
+  </div>
+    </div>
+
+
+
+
+        
+          <div class="field" id="enabled-field">
+      <div class="heading">
+              <label for="enabled">Enabled?</label>
+                </div>
+    <div class="input ltr">
+              <div class="left">
+              
+<div class="lightswitch on" tabindex="0">
+  <div class="lightswitch-container">
+    <div class="label on"></div>
+    <div class="handle"></div>
+    <div class="label off"></div>
+  </div>
+  <input type="hidden" name="enabled" value="1"></div>
+
+          </div>
+
+                  
+  </div>
+    </div>
+
+      </div>
+
+      <div class="pane meta">
+            <div class="field">
+      <div class="heading">
+              <label class="required">Tax Category</label>
+                </div>
+    <div class="input ltr">
+      <div class="select">
+  <select name="taxCategoryId">
+                                          <option value="1">General</option>
+                </select>
+</div>
+
+  </div>
+    </div>
+
+
+
+          <div class="field" id="free-shipping-field">
+      <div class="heading">
+              <label for="free-shipping">Free Shipping</label>
+                </div>
+    <div class="input ltr">
+      <input type="hidden" name="freeShipping" value=""><input type="checkbox" value="1" id="free-shipping" class="checkbox" name="freeShipping"><label for="free-shipping"></label>
+  </div>
+    </div>
+
+  
+
+          <div class="field" id="promotable-field">
+      <div class="heading">
+              <label for="promotable">Promotable</label>
+                </div>
+    <div class="input ltr">
+      <input type="hidden" name="promotable" value=""><input type="checkbox" value="1" id="promotable" class="checkbox" name="promotable" checked=""><label for="promotable"></label>
+  </div>
+    </div>
+
+  
+
+      </div>
+
+                      <div class="pane meta last">
+          
+              <div class="field" id="variants-new1-sku-field">
+      <div class="heading">
+              <label class="required" for="variants-new1-sku">SKU</label>
+                </div>
+    <div class="input ltr">
+      <input class="text fullwidth" type="text" id="variants-new1-sku" name="variants[new1][sku]" value="" autocomplete="off" placeholder="Enter SKU">
+  </div>
+    </div>
+
+
+
+              <div class="field" id="variants-new1-price-field">
+      <div class="heading">
+              <label class="required" for="variants-new1-price">Price</label>
+                </div>
+    <div class="input ltr">
+          <div class="flex">
+        <div class="textwrapper"> <input class="text fullwidth" type="text" id="variants-new1-price" name="variants[new1][price]" value="" autocomplete="off" placeholder="Enter price"></div>
+        <div class="label light">EUR</div>
+      </div>
+    
+  </div>
+    </div>
+
+
+
+  
+    <div class="field" id="variants-new1-stock-field">
+      <div class="heading">
+              <label class="required" for="variants-new1-stock">Stock</label>
+                </div>
+    <div class="input ltr">
+        <div class="flex">
+      <div class="textwrapper">
+          <input class="text fullwidth" type="text" id="variants-new1-stock" name="variants[new1][stock]" value="" autocomplete="off" placeholder="Enter stock">
+      </div>
+      <div class="nowrap">
+          <input type="hidden" name="variants[new1][unlimitedStock]" value=""><input type="checkbox" value="1" id="variants-new1-unlimited-stock" class="unlimited-stock checkbox" name="variants[new1][unlimitedStock]"><label for="variants-new1-unlimited-stock">Unlimited</label>
+      </div>
+    </div>
+  
+  </div>
+    </div>
+
+
+  
+    <div class="field" id="variants-new1-minQty-field">
+      <div class="heading">
+              <label for="variants-new1-minQty">Allowed Qty</label>
+                </div>
+    <div class="input ltr">
+        <div class="flex">
+      <div class="textwrapper">
+          <input class="text fullwidth" type="text" id="variants-new1-minQty" name="variants[new1][minQty]" value="" autocomplete="off" title="Minimum allowed quantity" placeholder="Any">
+      </div>
+      <div class="label light">to</div>
+      <div class="textwrapper">
+          <input class="text fullwidth" type="text" id="variants-new1-maxQty" name="variants[new1][maxQty]" value="" autocomplete="off" title="Maximum allowed quantity" placeholder="Any">
+      </div>
+    </div>
+  
+  </div>
+    </div>
+
+    
+                  <div id="extra-headers">
+            <div class="btngroup"><input type="submit" class="btn submit" value="Save"><div class="btn submit menubtn"></div></div>
+          </div>
+
+
+        </div>
+                      
+      
+    <object type="text/html" data="about:blank" style="display: block; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; border: none; padding: 0px; margin: 0px; opacity: 0; z-index: -1000; pointer-events: none;"></object></div>
+  <object type="text/html" data="about:blank" style="display: block; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; border: none; padding: 0px; margin: 0px; opacity: 0; z-index: -1000; pointer-events: none;"></object></div>
+              </div>
+    </main>
+
+    
+    <div id="footer"><div id="edition" class="edition"><div id="edition-logo"><div class="edition-name">Pro</div></div></div><ul>
+        <li>Craft CMS 2.6.2797</li>
+        <li>© Pixel &amp; Tonic</li>
+                  <li><a id="footer-updates" href="http://bookings.localhost/lacuisine/public_html/admin/updates">2 updates available</a></li>
+                          <li><a href="http://bookings.localhost/lacuisine/public_html/admin/utils/serverinfo">Server Info</a></li>
+              </ul>
+    </div>
+
+      </form>
+
+</div>
+</div>
+</div>
+{% endblock %}

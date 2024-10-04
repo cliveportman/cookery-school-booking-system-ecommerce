@@ -1,0 +1,6 @@
+{% set domain = craft.request.getServerName() %}
+{% if domain starts with 'bookings' %}
+    {% include 'bookings/index' %}
+{% else %}
+	{% include 'homepage' %}
+{% endif %}

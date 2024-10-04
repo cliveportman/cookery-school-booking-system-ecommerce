@@ -1,0 +1,80 @@
+{% if cart.lineItems | length %}
+    {% set monthOfLastClassAdded = '' %}
+
+    <section id="carttable">
+        <header id="cartheader" class="row hidden-xs">
+            <div class="col-md-5 col-sm-5">
+                <h3>Item</h3>
+            </div>
+            <div class="col-md-2 col-sm-3">
+                <h3>Unit Cost</h3>
+            </div>
+            <div class="col-md-3 col-sm-4">
+                <h3>Quantity</h3>
+            </div>
+            <div class="col-md-2 col-sm-2 hidden-sm lineitemsubtotal">
+                <h3>Subtotal</h3>
+            </div>
+        </header>
+    
+        {% for item in cart.lineItems %}
+
+            {% set product = item.purchasable.product %}
+            {% include "checkout/_incs/_lineItem_" ~ product.type %}
+
+        {% endfor %}
+
+        <div class="row">
+
+            <div class="col-md-8 col-sm-6">
+                {% include "checkout/_incs/_promoForm" %}
+            </div>
+
+            <div class="col-md-2 col-sm-3">
+                <section id="carttotals">
+                    <p class="total">
+                    {% if cart.totalDiscount < 0 %}
+                        Total discount<br>
+                        <span class="price">{{ cart.totalDiscount|currency(cart.currency) }}</span><br>
+                    {% endif %}
+                    </p>
+                </section>
+            </div>
+
+            <div class="col-md-2 col-sm-3">
+                <section id="carttotals">                    
+                    <p class="total">
+                        Total price
+                        <span class="price">{{ ((cart.totalPrice - cart.totalTax) - cart.totalShippingCost) | currency(cart.currency) }}</span>
+                    </p>
+                </section>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3 col-sm-4">
+                {#####################
+                    NOT SURE WHERE THIS SHOULD GO
+                    COMMON (LAZY?) PRACTICE WOULD BE THE HOMEPAGE
+                    BUT IS AKIN TO DUMPING PEOPLE BACK AT OUTSIDE THE FRONT DOOR
+                    <a class="button caps sub" href="{{ siteUrl }}checkout">Continue shopping</a>
+                #####################}
+                <a class="button caps sub" href="{{ siteUrl }}calendar{% if monthOfLastClassAdded | length %}/{{ monthOfLastClassAdded }}{% endif %}">Continue shopping</a>
+            </div>
+            <div class="col-md-3">
+
+            </div>
+            <div class="col-md-3 col-md-push-3 col-sm-4 col-sm-push-4">
+                <section id="checkoutbuttonsarea">
+                    <a class="button caps" href="{{ siteUrl }}checkout/terms">Go to checkout</a>
+                </section>
+            </div>
+            <div class="col-md-3 col-md-pull-3 col-sm-4 col-sm-pull-4">
+                <img src="{{ siteUrl }}img/card-logos.png" alt="Visa, Mastercard, Maestro, American Express" id="cardlogos">
+            </div>
+            <div class="col-md-12">
+            </div>
+        </div>
+    </section>
+{% else %}
+    <p>There is nothing in your cart.</p>
+{% endif %}

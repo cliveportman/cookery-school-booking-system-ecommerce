@@ -1,0 +1,53 @@
+{% cache for 1 day %}
+{% set overviews = craft.entries.section('classes').type('overview').id('and, not 1988') %}
+<nav id="mainclasslinks" class="row">
+    {% for overview in overviews %}
+    <div class="col-sm-4 col-xs-12">
+        <a href="{{ overview.url }}" class="{% if craft.request.getSegment(1) == overview.slug %}active{% endif %}">
+            <p>{{ overview.responsiveTitle | raw }}</p>
+            {% if entry.slug is defined and entry.slug == 'homepage' %}
+                {% if overview.thumbnailImage | length %}
+                    {% set image = overview.thumbnailImage.first %}
+                    <style>
+                        #imagelink{{ loop.index }} { background: url({{ image.getUrl(thumb) }}); }
+                    </style>
+                {% endif %}
+                <div class="imagelink" id="imagelink{{ loop.index }}"></div>                
+            {% endif %}
+        </a>
+    </div>
+    {% endfor %}
+    <div class="hidden-lg hidden-md hidden-sm col-xs-12">
+        <a href="https://lacuisineparis.teachable.com/" target="_blank">
+            <p>Online Video Classes</p>
+        </a>
+    </div>
+</nav>
+
+<div class="row hidden-xs">
+<div class="col-xs-12">
+    <a href="https://lacuisineparis.teachable.com/" target="_blank" class="" id="homepage-onlineclasseslink">
+      Click here for Online Video Classes
+    </a>
+</div>
+</div>
+
+<style>
+#homepage-onlineclasseslink { 
+  display: block;
+  padding: 1rem 1rem 0.85rem; margin-top: -10px;
+  font-family: Georgia, serif; font-style: italic; font-size: 1.25rem; color: #673535;
+  line-height: 1.3em; text-decoration: none; text-align: center;
+  background: #f9dddd;
+}
+@media (min-width: 1024px) {
+#homepage-onlineclasseslink {
+  font-size: 2.55rem;
+}
+}
+#homepage-onlineclasseslink:focus, #homepage-onlineclasseslink:hover, #homepage-onlineclasseslink:active {
+  background: #ffcbcb; text-decoration: underline;
+}
+</style>
+
+{% endcache %}

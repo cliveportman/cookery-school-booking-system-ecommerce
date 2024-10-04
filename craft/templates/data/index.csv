@@ -1,0 +1,43 @@
+{% spaceless %}
+{% if not currentUser and currentUser.can('accessCp') %}
+  {% redirect "/" %}
+{% endif %}
+
+{# Y-m-d #}
+
+{% set orders = craft.commerce.orders.dateOrdered('and', '>= ' ~craft.request.getSegment(2), '<= ' ~ craft.request.getSegment(3)).limit(NULL) %}
+
+#,ID,Date,Email,Total,BillingAdd,ShippingAdd,"Items[Name,ID,Qty,Price]"<br>
+
+
+{% for order in orders %}{% spaceless %}
+{{ order.number }},
+{{ order.id }},
+{{ order.dateOrdered | date('Y-m-d') }},
+{{ order.email }},
+{{ order.totalPrice | currency(order.currency) }},
+"{{ order.billingAddress.firstName }} {{ order.billingAddress.lastName }},
+{{ order.billingAddress.address1 }},
+{% if order.billingAddress.address2 %}{{ order.billingAddress.address2 }},{% endif %}
+{{ order.billingAddress.city }},
+{{ order.billingAddress.zipCode }},
+{% if order.billingAddress.stateText %}{{ order.billingAddress.stateText }},{% endif %}
+{{ order.billingAddress.countryText }}",
+"{{ order.shippingAddress.firstName }} {{ order.shippingAddress.lastName }},
+{{ order.shippingAddress.address1 }},
+{% if order.shippingAddress.address2 %}{{ order.shippingAddress.address2 }},{% endif %}
+{{ order.shippingAddress.city }},
+{{ order.shippingAddress.zipCode }},
+{% if order.shippingAddress.stateText %}{{ order.shippingAddress.stateText }},{% endif %}
+{{ order.shippingAddress.countryText }}",
+
+{% for item in order.lineItems %}
+{% set product = item.purchasable.product %}
+"[{{ product.type }}: {{ product.title }}, {% if product.type == 'class' %}SKU: {{ item.sku }}{% elseif product.type == 'giftVoucher' %}CODE: {{ product.discountCode }}{% endif %}, {{ item.qty }}, {{ item.price | currency(order.currency) }}]"
+{% if not loop.last %},{% endif %}
+{% endfor %}
+<br>
+{% endspaceless %}
+{% endfor %}
+
+{% endspaceless %}

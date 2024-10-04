@@ -1,0 +1,31 @@
+
+<div class="button disabled soldout">Sold Out</div>
+<a href="#" class="waitinglisttoggle">Add name to waiting list?</a>
+<form class="waitinglistform defaultform" method="post" action="" accept-charset="UTF-8" style="display: none;">
+    {{ getCsrfInput() }}
+    <input type="hidden" name="action" value="guestEntries/saveEntry">
+    <input type="hidden" name="redirect" value="classes/waiting-list">
+    <input type="hidden" name="sectionId" value="20">
+    <input type="hidden" name="title" value="{{ product.title }}">
+    <input type="hidden" name="fields[product][]" value="{{ product.id }}">
+    <ul>                
+        <li>
+            <input type="text" name="fields[personName]" value="" required placeholder="Name" required>
+        </li>                
+        <li>
+            <input type="email" name="fields[email]" value="{% if cart.email %}{{ cart.email }}{% endif %}" required placeholder="Email">
+        </li>          
+        <li>
+            <input type="text" name="fields[tel]" value="" required placeholder="Number of participants, e.g '2'" required>
+        </li>
+            {{ craft.recaptcha.render() }}
+        <div class="row">
+        	<div class="col-sm-6 hidden-xs">
+        		<a href="#" class="waitinglistcancel">Cancel</a>
+        	</div>
+        	<div class="col-sm-6">
+        		<button type="submit" class="button small">Submit</a>
+        	</div>
+        </div>
+    </ul>
+</form>

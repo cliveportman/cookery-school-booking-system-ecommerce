@@ -1,0 +1,240 @@
+/*
+#########################
+CALENDAR HEADER
+#########################
+*/
+#calendarheader {
+	position: relative;
+}
+#calendarnextprevlinksheader {
+  display: none;
+}
+@media (min-width: $sm) {
+#calendarnextprevlinksheader {
+	display: block;
+	position: absolute; right: 10px; top: 5px;
+}
+}
+
+
+@media (min-width: $sm) {
+.calendarviewlink {
+  padding-left: 3rem;
+  @include font('serif', 19, 'highlight'); text-decoration: underline !important;
+  &:focus, &:hover, &:active {
+    color: $highlightColorActive;
+  }
+}
+}
+
+
+
+
+/*
+#########################
+CALENDAR TABLE
+#########################
+*/
+
+
+/*
+###################################
+CALENDARS
+###################################
+*/
+#calendartable {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: separate;
+  border-bottom: 1px solid #ccc;
+}
+  #calendartable th {
+    display: none;
+    @include font('serif', 'heading'); text-transform: none; text-align: center; line-height: 40px; 
+  }
+  #calendartable td {
+    padding: 0 10px;
+    @include font('sans', 'heading', 'highlight');  text-transform: none; text-align: center; line-height: 40px; 
+  }
+@media (min-width: $sm) {
+  #calendartable th {
+    width: 14.2%;
+    //border-bottom: 1px solid #ccc;
+  }
+  #calendartable td {
+    height: 8rem;
+    border-right: 1px solid #ccc; 
+    border-top: 1px solid #ccc;
+  }
+  #calendartable tr td:first-child {
+    border-left: 1px solid #ccc;
+  }
+  #calendartable td.inactive h2 {
+    @include font('sans', 'heading', 'highlight'); color: #ccc;
+  }
+}
+
+
+
+    #calendartable p.thumbcatheading {
+        height: 26px;
+        padding-top: 2px; margin-bottom: 0.25rem;
+        @include font('sans', 'heading', 'highlight'); text-transform: uppercase; color: #fff; text-align: center; line-height: 24px;
+    }
+    #calendartable a {
+        display: block;
+        padding: 10px 0; margin: 0;
+        text-decoration: none;
+    }
+    #calendartable a:focus h3, #calendartable a:hover h3, #calendartable a:active h3 {
+        text-decoration: underline;
+    }
+    #calendartable a.firstday {
+        border-left: 1px solid #fff;
+    }
+    #calendartable a.lastday {
+        border-right: 1px solid #fff;
+    }
+        #calendartable h2 {
+            margin: 0 0 0; padding: 1rem 0;
+            @include font('serif', 28, 'highlight'); text-align: center; line-height: 1em;
+        }
+          #calendartable h2 span.month {
+            display: block;
+            @include font('serif', 18, 'highlight');
+          }
+        @media (min-width: $lg) {
+          #calendartable h2 {
+              margin: 0 0 0; padding: 1rem 0;
+              @include font('serif', 'big', 'highlight'); text-align: center; line-height: 1em;
+          }
+            #calendartable h2 span.month {
+              display: block;
+              @include font('serif', 18, 'highlight');
+            }
+
+        }
+        #calendartable a.calendarproductlink {
+            text-decoration: none;
+
+            &.pastdate {
+              opacity: 0.25;
+            }
+            &.masterclass {
+              margin-left: -10px; margin-right: -10px;
+              background: #f1f1f1;
+              padding: 10px;
+            }
+
+            h3 {
+                margin-bottom: 0;
+                @include font('sans', 12); text-align: left; font-weight: bold;
+            }
+        }
+        #calendartable a ul {
+            margin: 0; padding: 0;
+            list-style-type: none;
+        }
+            #calendartable a li {
+                margin: 0; padding: 0;
+                list-style-type: none;
+                @include font('sans', 12, 'highlight'); text-align: left;
+            }
+
+
+
+    @media (max-width: 767px) {
+      #calendartable {
+        border-bottom: none;
+      }
+      #calendartable tr {
+        display: block;
+      }
+      #calendartable td {
+        display: block; width: 100%;
+        border-bottom: 1px solid #ccc;
+      }
+      #calendartable td.inactive {
+        display: none;
+      }
+        #calendartable h2 {
+          padding: 20px 0; margin-bottom: 0;
+          text-align: left;
+        }
+        #calendartable a.calendarproductlink h3 {
+          font-size: 1.2rem;
+        }
+        #calendartable a.calendarproductlink p {
+          text-align: left; font-size: 1.2rem;
+        }
+            #calendartable a.calendarproductlink li {
+                @include font('sans', 16, 'highlight');
+            }
+        #calendartable a.calendarproductlink p.calendarvenue {
+          font-size: 1rem;
+        }
+        #calendartable a.calendarproductlink p.calendardayof {
+          text-align: left; font-size: 1rem;
+        }
+        #calendarnextprevlinks {
+          padding: 20px 0 0; margin-bottom: 0;
+         @include font('sans', 'heading', 'highlight'); text-align: center;
+        }
+    }
+
+
+
+
+    #calendartable td a.notcurrentmonth {
+      color: #B3B3B3;
+    }
+    #calendartable td a.notcurrentmonth:focus, #calendartable td a.notcurrentmonth:hover, #calendartable td a.notcurrentmonth:active {
+      color: #B3B3B3;
+    }
+#calendartable th.lightgreybg, #calendartable td.lightgreybg {
+  background: #ccc; color: #fff !important;
+}
+  #calendartable th.lightgreybg a, #calendartable td.lightgreybg a {
+    color: #fff;
+  }
+
+/*
+###################################
+CALENDAR NOTE
+###################################
+*/
+#calendarnote {
+  padding-top: 15px; margin-bottom: 0;
+  color: #B3B3B3;
+}
+
+/*
+###################################
+NEXT/PREVIOUS MONTH LINKS
+###################################
+*/
+a.month {
+  display: inline-block; width: 72px; height: 66px;
+  margin: 20px 40px 20px 0;
+}
+  a.month:focus, a.month:hover, a.month:active {
+    color: #000;
+  }
+
+
+
+
+/*
+#########################
+CALENDAR HEADER
+#########################
+*/
+#calendarnextprevlinksfooter a {
+    display: block;
+    padding: 1rem 0 0.85rem; margin-top: 10px;
+    @include font('serif', 19, 'textColor', 'italic'); text-decoration: none; text-align: center;
+    background: $tintColor;
+}
+        #calendarnextprevlinksfooter a:focus, #calendarnextprevlinksfooter a:hover, #calendarnextprevlinksfooter a:active, #calendarnextprevlinksfooter a.active {
+            background: $tintColorActive;
+        }

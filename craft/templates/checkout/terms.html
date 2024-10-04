@@ -1,0 +1,107 @@
+{% set breadcrumbEntries = [] %}
+{% set cartPage = {'title': 'Cart', 'url': siteUrl ~ 'cart'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([cartPage]) %}
+{% set addressesPage = {'title': 'Terms', 'url': siteUrl ~ 'checkout/terms'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([addressesPage]) %}
+
+{% set modelName = modelName is defined ? modelName : 'address' %}
+{% set model = address is defined ? address : null %}
+
+{% set metaTitle = "Terms / Checkout / La Cuisine, Paris" %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+
+
+
+
+{############### CART CHECKS #############}
+{% set hasClass = false %}
+{% set hasDeliverable = false %}
+{% set hasWine = false %}
+
+{% if cart.lineItems | length %}
+{% for item in cart.lineItems %}
+
+    {% set product = item.purchasable.product %}
+
+    {% switch product.type %}
+
+        {% case 'wines' %}
+            {% set hasDeliverable = true %}
+            {% set hasWine = true %}
+
+        {% case 'equipment' %}
+            {% set hasDeliverable = true %}
+
+        {% case 'class' %}
+            {% set hasClass = true %}
+
+        {% case 'masterClass' %}
+            {% set hasClass = true %}
+
+        {% default %}
+
+    {% endswitch %}
+
+{% endfor %}
+{% endif %}
+{############## /END CART CHECKS ##########}
+
+
+{% macro errorList(errors) %}
+    {% if errors %}
+        <ul class="errors">
+            {% for error in errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% from _self import errorList %}
+
+<div class="container">
+
+    <section>
+        <div class="row">
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+
+        <div class="col-md-8 col-sm-8">
+            <article id="checkoutnotice">
+                <h3>Before continuing, please confirm...</h3>
+                {% if hasClass %}
+                    {{ checkout.termsForClasses }}
+                {% endif %}
+
+                {% if hasWine %}
+                    {{ checkout.termsForWines }}
+                {% elseif hasDeliverable %}
+                    {{ checkout.termsForOthers }}                   
+                {% endif %}
+            </article>
+
+            <div class="row" id="checkoutbuttonsarea">
+                <div class="col-md-4 col-md-push-8 col-sm-6 col-sm-push-6">
+                    <a class="button caps" href="{{ siteUrl }}checkout/addresses">Yes, I understand</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-4" id="checkoutbuttonsarea">
+            {% include "checkout/_incs/_cartSummary" %}
+        </div>
+
+        </div>
+
+        {% include "checkout/_incs/_checkoutSteps" %}
+
+    </section>
+
+</div>
+
+
+
+
+{% endblock %}

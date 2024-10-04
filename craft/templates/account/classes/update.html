@@ -1,0 +1,39 @@
+{% set order = craft.commerce.orders.number(craft.request.getSegment(4)).first() %}
+{% set breadcrumbEntries = [] %}
+
+{% set item = {'title': 'Order #' ~ order.shortNumber, 'url': siteUrl ~ 'orders/' ~ order.number} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+{% set item = {'title': 'Participants', 'url': siteUrl} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+
+{% set metaTitle = 'Participants / Order #' ~ order.shortNumber %}
+
+{##########################
+
+orders/participants/###############
+orders/thank-you/participants/###############
+
+##########################}
+
+{% extends "_layout" %}
+
+{% block content %}
+<div class="container">
+
+    <section class="row" id="accountpage">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+
+        {% include "orders/_incs/_participantsForm" %}
+
+        </div>
+        <div class="col-md-7">
+        </div>
+
+    </section>
+
+</div>
+
+
+
+
+{% endblock %}

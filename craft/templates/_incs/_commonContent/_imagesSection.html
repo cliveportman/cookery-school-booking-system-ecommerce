@@ -1,0 +1,38 @@
+
+<div class="col-md-6 col-sm-5">
+{% if entry.images | length %}
+<section id="imagessection">
+	{% for block in entry.images %}
+		{% switch block.type %}
+
+			{% case "singleImage" %}
+				<figure class="{% if block.caption | length %}withcaption{% endif %}">
+					{% set image = block.image.first %}
+					<img src="{{ image.getUrl(thumb) }}" alt="{{ image.altText }}">
+					{% if block.caption | length %}<figcaption>{{ block.caption }}</figcaption>{% endif %}
+				</figure>
+
+			{% case "twoImages" %}
+				<div class="row">
+					<figure class="col-xs-6 {% if block.captionLeft | length %}withcaption{% endif %}">
+						{% set imageLeft = block.imageLeft.first %}
+						<img src="{{ imageLeft.getUrl(thumb) }}" alt="{{ imageLeft.altText }}">
+						{% if block.captionLeft | length %}<figcaption>{{ block.captionLeft }}</figcaption>{% endif %}
+					</figure>
+					<figure class="col-xs-6 {% if block.captionRight | length %}withcaption{% endif %}">
+						{% set imageRight = block.imageRight.first %}
+						<img src="{{ imageRight.getUrl(thumb) }}" alt="{{ imageRight.altText }}">
+						{% if block.captionRight | length %}<figcaption>{{ block.captionRight }}</figcaption>{% endif %}
+					</figure>
+				</div>
+
+			{% case "video" %}
+				<figure class="videoWrapper {% if block.caption | length %}withcaption{% endif %}">
+					<iframe width="1180" height="664" src="https://www.youtube.com/embed/{{ block.youtubeVideoHash }}?rel=0" frameborder="0" allowfullscreen></iframe>
+				</figure>
+
+		{% endswitch %}
+	{% endfor %}
+</section>
+{% endif %}
+</div>

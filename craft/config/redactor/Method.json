@@ -1,0 +1,6 @@
+{
+	"formatting": ["h4", "p"],
+	"buttons": ["format","bold","italic","lists","link"],
+	"plugins": ["source","fullscreen"],
+	"pastePlainText": TRUE
+}

@@ -1,0 +1,84 @@
+{% if cart.lineItems | length %}
+    <section id="cartsummary">
+    
+        {% for item in cart.lineItems %}
+
+            {% set product = item.purchasable.product %}
+            {% if product.type == 'class' %}
+                {% set class = product.class.first %}
+                {% set parent = class.getParent() %}
+                {% set variant = product.defaultVariant %}
+                <article>
+                    <p class="nobottommargin"><a href="{{ product.url }}">{{ parent.title }} / {{ product.title }}</a></p>
+                    <p>Time: {{ product.startTime | date('G:i') }} - {{ product.finishTime | date('G:i') }}
+                        &nbsp;&nbsp;&nbsp;
+                        Price: 
+                            {% if item.onSale %}
+                                {% set save = item.price - item.salePrice %}
+                                <s>{{ item.price | currency(cart.currency) }}</s> {{ item.salePrice | currency(cart.currency) }}                                
+                            {% else %}
+                                {{ item.price | currency(cart.currency) }}
+                            {% endif %}
+                        &nbsp;&nbsp;&nbsp;
+                        Quantity: {{ item.qty }}
+                    </p>
+                </article>
+            {% elseif product.type == 'wines' or product.type == 'equipment' %}
+                <article>
+                    <p class="nobottommargin"><a href="{{ product.url }}">{{ product.title }}</a></p>
+                    <p>
+                        Price: 
+                            {% if item.onSale %}
+                                {% set save = item.price - item.salePrice %}
+                                <s>{{ item.price | currency(cart.currency) }}</s> {{ item.salePrice | currency(cart.currency) }}                                
+                            {% else %}
+                                {{ item.price | currency(cart.currency) }}
+                            {% endif %}
+                        &nbsp;&nbsp;&nbsp;
+                        Quantity: {{ item.qty }}
+                    </p>
+
+                </article>
+            {% else %}
+                <article>
+                    <p class="nobottommargin"><a href="{{ siteUrl }}gifts">{{ item.price | currency(cart.currency) }} {{ product.title }}</a></p>
+                    <p>for {{ product.recipientName }}<br>
+                        Price: 
+                            {% if item.onSale %}
+                                {% set save = item.price - item.salePrice %}
+                                <s>{{ item.price | currency(cart.currency) }}</s> {{ item.salePrice | currency(cart.currency) }}                                
+                            {% else %}
+                                {{ item.price | currency(cart.currency) }}
+                            {% endif %}
+                        &nbsp;&nbsp;&nbsp;
+                        Quantity: {{ item.qty }}
+                    </p>
+
+                </article>
+            {% endif %}
+        {% endfor %}
+                  
+        <p id="carttotal"><strong>
+        {% if cart.totalDiscount < 0 %}
+            Total discount<br>
+            {{ cart.totalDiscount|currency(cart.currency) }}<br>
+        {% endif %}
+        {% if cart.totalTax > 0 or cart.totalShippingCost > 0 %}
+            <span class="orange">
+                {{ ((cart.totalPrice - cart.totalTax) - cart.totalShippingCost) | currency(cart.currency) }} (exc. VAT)
+                {% if cart.totalTax > 0 %}
+                    <br>+ {{ cart.totalTax | currency(cart.currency) }} VAT
+                {% endif %}
+                {% if cart.totalShippingCost > 0 %}
+                    <br>+ {{ cart.totalShippingCost | currency(cart.currency) }} shipping
+                {% endif %}
+            </span>
+        {% endif %} 
+             Total price
+            <br>{{ cart.totalPrice|currency(cart.currency) }}
+        </strong></p>
+
+    </section>
+{% else %}
+    <p>There is nothing in your cart.</p>
+{% endif %}

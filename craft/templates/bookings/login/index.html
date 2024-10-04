@@ -1,0 +1,71 @@
+{% if currentUser and currentUser.can('accessCp') %}
+  {% redirect "bookings/index" %}
+{% endif %}
+
+{% set metaTitle = 'Login' %}
+
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+<div class="ui masthead vertical">
+<div class="ui container">
+    <img class="ui medium image" id="mainlogo" src="{{ siteUrl }}img/logo-colour.png">      
+</div>
+</div>
+
+<div class="ui masthead vertical">
+<div class="ui container">
+    <h1 class="ui header">
+      <i class="lock icon"></i>
+      Login
+    </h1>
+</div>
+</div>
+
+<div class="ui container">
+
+<form method="post" accept-charset="UTF-8" class="ui form" id="loginform">
+
+  {{ getCsrfInput() }}
+  <input type="hidden" name="action" value="users/login">
+
+  <div class="ui column grid">
+    <div class="six wide column centered">
+
+      {% if errorMessage is defined %}
+          <p class="error">{{ errorMessage }}</p>
+      {% endif %}      
+
+      <div class="field">
+        <label>Username or email</label>
+        <input type="text" name="loginName" value="{{ craft.session.rememberedUsername }}" id="username" placeholder="">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" name="password" value="" id="password" placeholder="">
+      </div>
+
+      <div class="fields">
+        <div class="six wide inline field">
+          <div class="ui checkbox">
+            <input type="checkbox" tabindex="0" class="hidden" name="rememberMe" value="1" checked="checked">
+            <label>Remember me</label>
+          </div>
+        </div>
+        <div class="six wide field">
+        </div>
+        <div class="four wide field">
+            <button class="fluid  ui pink button" id="loginbutton">
+              Login
+            </button>
+        </div>
+      </div>
+
+    </div>
+
+</form>
+</div>
+
+
+{% endblock %}

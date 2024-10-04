@@ -1,0 +1,47 @@
+
+
+    	#accountpage {
+    		position: relative;
+    	}
+    		#logoutbutton {
+    			position: absolute; right: 0; top: -14px;
+    			width: 120px; height: 40px;
+    			background: #f9dddd; color: #673535; line-height: 40px;
+    		}
+
+#accountpage h2 {
+	margin-bottom: 2rem;
+	padding-bottom: 0.5rem;
+	font-family: Georgia, serif;
+	font-style: italic;
+	color: #673535;
+	font-size: 1.5rem;
+	line-height: 1.3em;
+	text-align: left;
+	line-height: 1.2em;
+	border-bottom: 10px solid #f9dddd;
+
+}
+	#accountpage section {
+		margin-bottom: 40px;
+	}
+
+	#accountpage table {
+		width: 50%;
+		padding:0; margin:0;
+	}
+		#accountpage th {
+			width: 20%;
+			padding-bottom: 10px;
+			@include font('sans', 16, $textColor); text-align: left; line-height: 1.4em; font-weight: bold;
+			border: none;
+			margin:0; border-collapse: collapse; border-spacing: 0;
+		}
+		#accountpage td {
+			@include font('sans', 16, $textColor); text-align: left; line-height: 1.2em;
+			border: none; border-top: 1px solid #ccc;
+			padding: 10px 0; margin:0; border-collapse: collapse; border-spacing: 0;
+		}
+			#accountpage td a{
+				color: $highlightColor; font-weight: bold;
+			}

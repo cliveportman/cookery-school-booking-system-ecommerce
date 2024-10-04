@@ -1,0 +1,94 @@
+
+<section id="boxes">
+<div class="row">
+
+	<div class="col-sm-3 col-xs-6">
+		<a href="{{ siteUrl }}calendar" class="boxlink" id="box-calendar">
+			<div class="text">
+				<h3>Class Calendar</h3>
+				<p class="day">{{ now | date('j') }}</p>
+				<p class="month">{{ now | date('F') }}</p>
+			</div>
+			{% include "_svgs/_square" %}
+		</a>
+	</div>
+
+	<div class="col-sm-3 col-xs-6">
+		<style>
+			#box-location {
+				background-image: url({{ siteUrl }}img/map-280x280.jpg);
+			}
+		</style>
+		<a href="{{ siteUrl }}about-us/our-location" class="boxlink" id="box-location">
+			<h3>Central Paris Location</h3>
+			{% include "_svgs/_locationMarker" %}
+		</a>
+	</div>
+	<div class="col-sm-3 col-xs-6">
+		<a href="{{ siteUrl }}masterclasses" class="boxlink" id="box-testimonials">
+			<h3>Masterclasses</h3>
+			{% include "_svgs/_star" %}
+		</a>
+	</div>
+
+	<div class="col-sm-3 col-xs-6">
+		<a href="{{ siteUrl }}shop" class="boxlink" id="box-foodieguide">
+			<h3>Online Store</h3>
+			{% include "_svgs/_wine" %}
+		</a>
+	</div>
+
+	{######### REPLACED WITH SHOP #########}
+	{############
+	<div class="col-sm-3 col-xs-6">
+		<a href="{{ siteUrl }}foodie-guide-paris" class="boxlink" id="box-foodieguide">
+			<h3>Foodie Paris Guide</h3>
+			{% include "_svgs/_croissant" %}
+		</a>
+	</div>
+	############}
+
+</div>
+
+<div class="row">
+
+	<div class="col-sm-3 col-xs-6">
+		<a href="{{ siteUrl }}en-francais" class="boxlink" id="box-privateevents">
+			<h3>En français</h3>
+			{% include "_svgs/_macarons" %}
+		</a>
+	</div>
+
+	<div class="col-sm-3 col-xs-6">
+		<a href="{{ siteUrl }}gifts" class="boxlink" id="box-gifts">
+			<h3>Gifts</h3>
+			{% include "_svgs/_bow" %}
+		</a>
+	</div>
+
+	<div class="col-sm-3 col-xs-6">
+		<a href="{{ siteUrl }}private-events" class="boxlink" id="box-privatelessons">
+			<h3>Private Events</h3>
+			{% include "_svgs/_chefshat" %}
+		</a>
+	</div>
+
+	<div class="col-sm-3 col-xs-6">
+		<a href="{{ siteUrl }}about-us" class="boxlink" id="box-about">
+			<h3>About Us</h3>
+			{% include "_svgs/_spoons" %}
+		</a>
+	</div>
+
+	{######### REPLACED WITH MASTERCLASSES #########}
+	{#########
+	<div class="col-sm-3 col-xs-6">
+		<a href="{{ siteUrl }}about-us/testimonials" class="boxlink" id="box-testimonials">
+			<h3>Testimonials</h3>
+			{% include "_svgs/_star" %}
+		</a>
+	</div>
+	##########}
+
+</div>
+</section>

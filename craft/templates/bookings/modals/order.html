@@ -1,0 +1,106 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set order = craft.commerce.orders.number(craft.request.getSegment(3)).first %}
+
+<div class="ui modal small order">
+
+  <i class="close icon"></i>
+
+  <div class="header">
+    {% if order.isPaid %}
+        <h2>Order #{{ order.shortNumber }} &nbsp;&nbsp;&nbsp; 
+          <button class="ui toggle active button">PAID</button>
+        </h2>
+    {% else %}
+    {% for transaction in order.transactions %}
+      <form class="transactionupdateform" data-shortnumber="{{ order.shortNumber }}">
+        <input type="hidden" name="action" value="commerce/orders/transactionCapture">
+        <input type="hidden" name="redirect" value="{{ siteUrl }}bookings/success">
+        <input type="hidden" name="hash" value="{{ transaction.hash }}">
+        <input type="hidden" name="id" value="{{ transaction.id }}">
+        <h2>Order #{{ order.shortNumber }} &nbsp;&nbsp;&nbsp; 
+            <button class="ui toggle button">UNPAID</button>
+        </h2>
+      </form>
+    {% endfor %}
+    {% endif %}
+  </div>
+
+  <div class="content">
+
+    <form method="post" class="ui form mini order updateorderform" data-lineid="{{ craft.request.lastSegment }}">
+
+      <input type="hidden" name="action" value="registration/participants/UpdateParticipants">
+      <input type="hidden" name="redirect" value="{{ siteUrl }}bookings/success">
+      <input type="hidden" name="orderId" value="{{ order.id }}">
+
+      <h3>Customer details</h3>
+      {% set address = order.shippingAddress %}
+      <ul>
+        <li>{{ address.firstName }} {{ address.lastName }}</li>
+        <li>{{ order.email }} &nbsp;&nbsp;&nbsp;&nbsp; <a href=""><i class="mail icon"></i> Send email</a></li>
+        <li>{{ address.phone }}</li>
+      </ul>
+      {% if order.orderMessage | length %}<h3>Order note</h3><p><em>{{ order.orderMessage }}</em></p>{% endif %}
+
+      <h3>Classes</h3>
+      {% if order.registers | length %}
+      {% for register in order.registers %}
+        {% set product = register.product.first %}
+        {% if product | length %}
+          <input type="hidden" name="products[{{ loop.index }}][register]" value="{{ register.id }}">
+          <article>
+
+            {% if product.type == "masterclass" %}
+              <h5><i class="calendar outline icon"></i> {{ product.startDate | date('D j F Y') }} to {{ product.endDate | date('D j F Y') }} / {{ product.masterclass.first.title }},</h5>
+
+            {% else %}
+              {% set class = product.class.first %}
+              {% set parent = class.getParent() %}
+              <h5><i class="calendar outline icon"></i> {{ product.date | date('D j F Y') }}, {{ parent.title }} / {{ class.title }},</h5>
+
+            {% endif %}
+
+            <div class="fields">
+              {% for row in register.participants %}
+                <input type="hidden" name="products[{{ loop.parent.loop.index }}][participants][{{ loop.index }}][present]" value="{{ row.present }}">
+                <div class="four wide field">
+                <input type="text" class="names-p{{ product.id }}-{{ order.shortNumber }}" u-full-width" name="products[{{ loop.parent.loop.index }}][participants][{{ loop.index }}][name]" value="{{ row.name }}" {% if row.name | length == 0 %}placeholder=""{% endif %}>
+                </div>
+                {% if loop.index is divisible by(4) and not loop.last %}</div><div class="fields">{% endif %}
+              {% endfor %}
+            </div>
+            <div class="field">
+              <label>Class notes</label>
+                <input type="text" class="notes-p{{ product.id }}-{{ order.shortNumber }}" name="products[{{ loop.index }}][notes]" value="{{ register.notes }}">
+            </div><br>
+          </article>
+        {% endif %}
+      {% endfor %}
+      {% endif %} 
+
+      <div class="fields">
+        <div class="thirteen wide field">
+      
+          <div class="ui success compact message">
+            <div class="header">Class participants updated</div>
+          </div>
+          
+          <div class="ui error compact message">
+            <div class="header">Error - please try again</div>
+          </div>
+        </div>
+        <div class="three wide field">
+            <button class="fluid ui pink button" id="saveorderbutton">
+              <i class="save icon"></i>
+              Save
+            </button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>

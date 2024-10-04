@@ -1,0 +1,63 @@
+/*
+####################################
+FONT MIXIN
+####################################
+Use like so:
+h2 {
+    @include font('sans', 'heading', 'highlight');
+}
+p em {
+    @include font('sans', 16, 'highlight', 'italic');
+}
+*/
+
+@mixin font($font: 'sans', $size: '16', $color: $textColor, $style: 'normal') {
+
+    // font-family
+    @if $font == 'sans' {
+        font-family: Arial, Helvetica, sans-serif;
+    } @else {
+        font-family: Georgia, serif;
+    }
+
+    // italics
+    @if $style == 'italic' {
+        font-style: italic;
+    } @else {
+        font-style: normal;
+    }
+
+    // colors
+    @if $color == 'highlight' {
+        color: $highlightColor;
+
+    } @else if $color == 'tint' {
+        color: $tintColor;
+
+    } @else if $color == 'light' {
+        color: $textColorLight;
+
+    } @else if $color == 'black' {
+        color: $black;
+
+    } @else {        
+        color: $color;
+    }
+
+    // size
+    @if $size == 'heading' {
+        font-size: (24 / 16) * 1rem;
+    } @else if $size == 'big' {
+        font-size: (40 / 16) * 1rem;
+    } @else {
+        font-size: ($size / 16) * 1rem;
+    }
+
+    // other
+    line-height: 1.3em;
+
+}
+
+strong {
+    font-weight: bold !important;
+}

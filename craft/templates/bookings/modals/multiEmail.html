@@ -1,0 +1,29 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set product = craft.commerce.products.id(craft.request.getSegment(3)).first %}
+{% set class = craft.entries.section('classes').relatedTo(product).first %}
+{% set variant = product.defaultVariant %}
+{% set orders = craft.commerce.orders.hasPurchasables([variant]) %}
+
+
+{% set customers = {} %}
+{% for order in orders %}
+	{% set address = order.shippingAddress %}
+	{% set customer = { 'name': address.firstName, 'email': order.email } %}
+	{% set customers = customers | merge([customer]) %}
+{% endfor %}
+
+<div class="ui modal">
+  <i class="close icon"></i>
+
+  <div class="header">
+    <h2>Send email to everyone attending {{ product.title }}</h2>
+  </div>
+
+  <div class="content">
+    {% set vars = {'purpose': 'default'} %}
+  	{% include "bookings/incs/forms/_emailForm" with vars %} 
+  </div>
+</div>

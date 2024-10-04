@@ -1,0 +1,41 @@
+{% set earliestDate = now | date_modify('- 1 days') %} 
+{% set latestDate = now | date_modify('+ 10 days') %}
+{% set products = craft.commerce.products({
+	hasVariant: {
+	    hasStock: true
+	},
+  	type: 'class',
+  	date: 'and, > ' ~ earliestDate ~ ', < ' ~ latestDate,
+  	order: 'date',
+  	limit: 25
+}) %}
+
+{################################
+SPITS OUT 25
+#################################}
+Number of products returned: {{ products | length }} // SHOULD BE LIMITED TO 25, BUT IS DIFFERENT EVERY PAGE-LOAD
+
+{################################
+LOOP THROUGH WITH CONDITIONAL FOR STOCK
+SPITS OUT 22 
+#################################}
+
+<ol>
+{% for product in products %}
+	{% if product.defaultVariant.stock > 0 %}
+		<li>{{ product.title }} / {% include "classes/_incs/_productStock" %}</li>
+	{% endif %}
+{% endfor %}
+</ol>
+
+
+{################################
+LOOP THROUGH WITHOUT CONDITIONAL FOR STOCK
+SPITS OUT 25, INCLUDING 3 FULLY BOOKED ITEMS 
+#################################}
+
+<ol>
+{% for product in products %}
+	<li>{{ product.title }} / {% include "classes/_incs/_productStock" %}</li>
+{% endfor %}
+</ol>

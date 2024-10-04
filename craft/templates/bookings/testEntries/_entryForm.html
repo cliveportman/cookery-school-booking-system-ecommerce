@@ -1,0 +1,61 @@
+<form method="post" accept-charset="UTF-8" class="ui form" id="addentryform">
+
+  <div class="ui column grid">
+    <div class="twelve wide column centered">
+    {% macro errorList(errors) %}
+        {% if errors %}
+            <ul class="errors">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endmacro %}
+
+    {% from _self import errorList %}
+            
+        <input type="hidden" name="action" value="entries/saveEntry">
+        <input type="hidden" id="redirectinput" name="redirect" value="bookings/testEntries/thanks">
+        <input type="hidden" name="sectionId" value="16">
+        <input type="hidden" name="enabled" value="1"> 
+        {% if entry is defined and entry | length %}
+          <input type="hidden" name="entryId" value="{{ entry.id }}">
+        {% endif %} 
+
+        <div class="field">
+          <label>Title</label>
+          <input type="text" name="title" value="{% if entry is defined and  entry | length %}{{ entry.title }}{% endif %}" id="entrytitle" placeholder="">
+        </div>
+
+        <div class="fields">
+
+          <div class="required four wide field">
+            <label>Date</label>
+            <div class="ui calendar" id="date">
+              <div class="ui input left icon">
+                <i class="calendar icon"></i>
+                <input type="text" id="dateinput-text" value="{% if entry is defined and  entry | length and entry.date | length %}{{ entry.date | date('m/d/Y') }}{% endif %}">
+              </div>
+            </div>
+          </div>
+          <input type="hidden" name="fields[date][date]" id="dateinput" value="{% if entry is defined and entry.date | length %}{{ entry.date | date('d/m/Y') }}{% endif %}">
+
+        </div>
+
+        <div class="fields">
+
+          <div class="thirteen wide field">
+          </div>
+          <div class="three wide field">
+              <button class="fluid  ui pink button" id="addentrybutton">
+                <i class="save icon"></i>
+                Save
+              </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</form>

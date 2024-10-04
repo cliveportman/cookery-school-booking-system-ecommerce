@@ -1,0 +1,51 @@
+
+<div id="lcp-globalnoticeclosed__holder" style="display: none;">
+<div class="container">
+<section id="lcp-globalnoticeclosed__bar">
+    <p>
+        {% if globalNotice.displayTheWordNew %}
+            <span class="highlight">New!</span>
+        {% endif %}
+        {{ globalNotice.noticeShortTitle }}
+    </p>
+    <a href="#" id="lcp-globalnoticeclosed__openbutton">View</a>
+</section>
+</div>
+</div>
+
+{% if globalNotice.noticeImage | length %}
+    <style>
+        #lcp-globalnoticeopen__section {
+            background: #ffcbcb url("{{ globalNotice.noticeImage.first.getUrl() }}");
+            background-size: cover;
+        }
+    </style>
+{% endif %}
+
+<div id="lcp-globalnoticeopen__holder" style="display: none;">
+<div class="container">
+<section id="lcp-globalnoticeopen__section">
+
+    <div class="row">
+        <div class="col-sm-10 col-sm-push-1 ">
+            <h2>
+                {% if globalNotice.displayTheWordNew %}
+                    <span class="highlight">New!</span>
+                {% endif %}
+                {{ globalNotice.noticeMainTitle }}
+            </h2>
+            <p>{{ globalNotice.noticeText }}</p>
+            {% if globalNotice.buttonTarget | length %}
+                <a href="{{ globalNotice.buttonTarget.first.url }}" class="button">{{ globalNotice.buttonText | length ? globalNotice.buttonText : 'Find out more' }}</a>
+            {% endif %}
+        </div>
+            <a href="#" id="lcp-globalnoticeopen__closebutton">{% include "_svgs/_close" %}</a>
+        
+    </div>
+
+    <div class="clearfix"></div>
+
+
+</section>
+</div>
+</div>

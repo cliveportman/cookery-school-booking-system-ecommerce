@@ -1,0 +1,79 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set class = craft.entries.section('classes').id(craft.request.getSegment(3)).first %}
+{% set parent = class.getParent() %}
+{% set products = craft.commerce.products.relatedTo(class).order('date').limit(NULL) %}
+
+{% set metaTitle = class.title %}
+
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+<div class="ui masthead vertical">
+<div class="ui container">
+      <h1 class="ui header">      
+        {% if parent.id == 1988 %}
+          <i class="line chart icon"></i> {{ class.title }}
+        {% else %}
+          <i class="line chart icon"></i> {{ class.title }}
+        {% endif %}
+      </h1>
+</div>
+</div>
+
+<div class="ui container">
+
+  <div class="ui column grid">
+    <div class="column">
+
+        <section class="ui styled accordion">
+            <div class="content active">
+              {% if products | length %}
+                <table class="ui selectable very basic table">
+                  <thead>
+                    <tr>
+                      <th><i class="tags icon"></i> Product name/date/time</th>
+                      <th></th>
+                      <th>Availability</th>
+                      <th>Teacher/room</th>
+                      <th>SKU</th>
+                      <th>Links</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {% for product in products %}
+                    {% set teacher = product.teacher.first %}
+                    {% set variant = product.defaultVariant %}
+                    <tr>
+                      <td>
+                        <p>
+                          {% if product.privateClass | length %}
+                            <i class="hide icon"></i>
+                          {% else %}
+                            <i class="tag icon"></i>
+                          {% endif %}
+                          <strong>{{ product.title }}, {{ product.startTime | date('H.i') }}-{{ product.finishTime | date('H.i') }}</strong>
+                        </p>
+                      </td>
+                      <td></td>
+                      <td>{{ variant.stock }} places available</td>
+                      <td>{% if teacher | length %}{{ teacher.name }}, {% endif %}{% if product.room != 'nA' %}{{ product.room.label }}{% endif %}</td>
+                      <td>{{ variant.sku }}</td>
+                      <td><a href="{{ craft.config.publicSiteUrl }}{{ class.uri }}" target="_blank"><i class="tags icon"></i></a> <a href="{{ craft.config.publicSiteUrl }}{{ product.uri }}" target="_blank"><i class="tag icon"></i></a></td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <p><i class="minus circle icon"></i> No products match this class/tour.</p>
+              {% endif %}
+            </div>
+        </section>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% set earliestDate = now | date_modify('- 1 days') %} 
+{% set latestDate = now | date_modify('+ 10 days') %}
+{% set products = craft.commerce.products({
+  	privateClass: ':empty:',
+	hasVariant: {
+	    hasStock: true
+	},
+  	type: 'class',
+  	date: 'and, > ' ~ earliestDate ~ ', < ' ~ latestDate,
+  	order: 'date',
+	limit: 5
+}) %}
+
+{% if products | length %}
+<section id="lastminuteplaces">
+	<div class="row">
+		<div class="col-md-12">
+			<h2 class="withline">Last Minute Course Places</h2>
+			
+			{% for product in products %}
+
+				{% set parentClass = craft.entries.section('classes').relatedTo(product).first %}
+				{% set parentCategory = craft.entries.section('classes').ancestorOf(parentClass).type('category').first %}
+				{% if parentCategory | length %}
+				<div class=" productsnippet">
+				<div class="row">
+					<div class="col-lg-7 col-md-8 col-sm-8">
+						<h3>{{ product.date | date('j M Y') }}</h3>
+						<ul>
+							<li class="cat-title">{{ parentCategory.title }}<span class="class-title"> / {{ parentClass.title }}</span></li>
+							{% if product.additionalDescription | length %}
+								<li class="">{{ product.additionalDescription }}</li>
+							{% endif %}
+							{% if parentClass.location | length and (product.startTime | length and product.finishTime | length) %}
+								<li class="">
+									{% if parentClass.location | length %}
+										{{ parentClass.location.first.title }} &nbsp; &nbsp;
+									{% endif %}
+									{% if product.startTime | length and product.finishTime | length %}
+										Time: {{ product.startTime | date('G:i') }} - {{ product.finishTime | date('G:i') }}
+									{% endif %}
+								</li>
+							{% endif %}
+							<li class="">Price: {{ product.defaultVariant.price | currency(cart.currency) }} &nbsp; &nbsp; Availability: <span class="highlight">{% include "classes/_incs/_productStock" %}</span></li>
+						</ul>
+						<a href="{{ parentClass.url }}" class="viewmoredates hidden-xs">View more dates</a>
+					</div>
+					<div class="col-lg-3 col-lg-push-2 col-md-3 col-md-push-1 col-sm-4">
+						{% if product.defaultVariant.stock == 0 %}
+							<div class="button disabled">Sold Out</div>
+						{% else %}
+							<a href="{{ product.url }}" class="button">Find Out More &amp; Book</a>
+						{% endif %}
+					</div>
+				</div>
+				</div>
+				{% endif %}
+			{% endfor %}
+			
+		</div>
+	</div>	
+</section>
+{% endif %}

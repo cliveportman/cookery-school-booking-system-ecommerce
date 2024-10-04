@@ -1,0 +1,10 @@
+<div class="row">
+<section class="col-md-12" id="checkoutsteps">
+    <ul>
+        <li {% if craft.request.getSegment(2) == "terms" %}class="active"{% endif %}>1 Terms</li>
+        <li {% if craft.request.getSegment(2) == "addresses" %}class="active"{% endif %}>2 Addresses</li>
+        <li {% if craft.request.getSegment(2) == "payment" %}class="active"{% endif %}>3 Payment</li>
+        <li {% if craft.request.firstSegment == "orders" %}class="active"{% endif %}>4 Receipt</li>
+    </ul>
+</section>
+</div>

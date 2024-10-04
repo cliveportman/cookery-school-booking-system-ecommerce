@@ -1,0 +1,32 @@
+{% if not currentUser and currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set metaTitle = 'Thank you' %}
+
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+{% if craft.request.getPost() is defined %}
+  {% set post = craft.request.getPost() %}
+  {{ dump(post) }}
+{% endif %}
+
+
+<div class="ui container">
+
+    <div class="ui column grid">
+      <div class="column">
+        <h1 class="ui header">
+          <i class="tag icon"></i>Add entry
+        </h1>
+        <p>Thank you</p>
+      </div>
+    </div>
+
+
+</div>
+
+
+{% endblock %}

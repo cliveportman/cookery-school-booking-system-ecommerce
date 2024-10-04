@@ -1,0 +1,47 @@
+{% set vars = {
+  'calendarStyle': 'calendar',
+  'calendarStartDate': product.date,
+  'calendarWeekBegins': 'Monday',
+  'calendarLength': 'week',  
+  'showDisabledProducts': currentUser
+} %}
+
+{% set dates = craft.productsCalendar.getProducts(vars) %}
+
+{% set numberShown = 0 %}
+
+{% set similarClasses = [] %}
+
+{% for productDay in dates.productDays %}
+	{% for similarProduct in productDay.products %}
+		{% if similarProduct.defaultVariant.stock > 0 %}
+		{% set similarClasses = similarClasses | merge([similarProduct]) %}
+		{% endif %}
+	{% endfor %}
+{% endfor %}
+
+{% set similarProducts = shuffle(similarClasses) %}
+{% if similarProducts | length %}
+<div id="similaritems">
+	<h2 class="main">You may also like...</h2>
+	{% for similarProduct in similarProducts %}
+		{% if numberShown < 4 %}
+			{% include "classes/_incs/_similarProductSnippet" %}
+			{% set numberShown = numberShown + 1 %}
+		{% endif %}
+	{% endfor %}
+</div>
+{% endif %}
+
+<style>
+#similaritems {
+	padding-top: 20px;
+	border-top:  10px solid #f9dddd
+}
+	#similaritems h2.main {
+		margin-bottom: 40px;
+	}
+	li.similaritem-date {
+		color: #f36 !important;
+	}
+</style>

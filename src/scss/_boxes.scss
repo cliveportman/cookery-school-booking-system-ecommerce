@@ -1,0 +1,152 @@
+#boxes {
+    margin-bottom: 24px;
+}
+
+/*
+####################################
+BOX LINKS
+####################################
+*/
+.boxlink {
+    position: relative;
+    display: block;
+    margin-bottom: 20px;
+    text-decoration: none;
+}
+    // MOST OF THESE BOXES DON'T HAVE div.text SURROUNDING THEM
+    .boxlink h3 {
+        position: absolute; left: 0; top: 0.25rem; z-index: 1;
+        width: 100%;
+        padding: 0 0.5rem;
+        @include font('serif', 16, white, 'italic'); text-align: center;line-height: 1.1em;
+    }
+    a.boxlink h3 {
+         text-decoration: underline; 
+    }
+    @media (max-width: 767px) {
+    #classheader .boxlink h3 {
+        top: 1rem;
+        @include font('serif', 24, $textColor, 'italic'); line-height: 1.1em; 
+    }
+    }
+    @media (min-width: $sm) {
+    .boxlink h3 {
+        top: 0.25rem;
+        @include font('serif', 15, white, 'italic'); line-height: 1.3em;
+    }
+    .boxlink.single h3 {
+        top: 0.5rem;
+        @include font('serif', 20, white, 'italic'); line-height: 1.3em;
+    }
+    }
+    @media (min-width: $md) {
+    .boxlink h3 {
+        top: 0.4rem;
+        @include font('serif', 20, white, 'italic'); line-height: 1.3em;
+    }
+    .boxlink.single h3 {
+        top: 0.4rem;
+        @include font('serif', 22, white, 'italic'); line-height: 1.3em;
+    }
+    }
+    @media (min-width: $lg) {
+    .boxlink h3 {
+        top: 1rem;
+        @include font('serif', 24, white, 'italic'); line-height: 1.05em;
+    }
+    }
+    .boxlink.light h3 {
+        color: $textColor;
+    }
+
+    // FOR THOSE THAT DO
+    .boxlink .text {
+        position: absolute; left: 0; top: 0.25rem; z-index: 1;
+        width: 100%;
+        padding: 0 0.5rem;
+    }
+        .boxlink .text h3 {
+            position: relative; top: 0;
+            padding: 0; margin: 0;
+        }
+        .boxlink .text p {
+            padding: 0; margin: 0;
+            @include font('serif', 24, white); text-align: center;
+        }
+        .boxlink .text p.day {
+            margin: 0;
+            @include font('serif', 80, white); line-height: 1.05em;
+        }
+        .boxlink .text p.month {
+            @include font('serif', 26, white); line-height: 1em;
+        }
+    @media (min-width: $sm) {
+    .boxlink .text {
+        top: 0.25rem;
+    }
+        .boxlink .text p.day {
+            margin: -0.75rem 0 0.25rem;
+            @include font('serif', 90, white); line-height: 1em;
+        }
+        .boxlink .text p.month {
+            @include font('serif', 30, white);
+        }
+    }
+    @media (min-width: $md) {
+    .boxlink .text {
+        top: 0.4rem;
+    }
+        .boxlink .text p.day {
+            margin: -0.5rem 0 1rem;
+            @include font('serif', 106, white); line-height: 1em;
+        }
+        .boxlink .text p.month {
+            @include font('serif', 37, white); line-height: 1em;
+        }
+    }
+    @media (min-width: $lg) {
+    .boxlink .text {
+        top: 1rem;
+    }
+        .boxlink .text p.day {
+            margin: -0.5rem 0 1rem;
+            @include font('serif', 120, white); line-height: 1em;
+        }
+        .boxlink .text p.month {
+            @include font('serif', 37, white); line-height: 1em;
+        }
+    }
+#box-location { 
+    background-size: cover;
+    background-color: $highlightColor;
+    background-blend-mode: multiply;
+}
+#box-location:focus, #box-location:hover, #box-location:active {
+    background-color: $highlightColorActive;
+}
+    // using the svg to keep the shape
+    #box-location rect {
+        fill: none;
+    }
+.boxlink.light:focus rect.svg-bg, .boxlink.light:hover rect.svg-bg, .boxlink.light:active rect.svg-bg,
+.boxlink.light:focus path, .boxlink.light:hover path, .boxlink.light:active path {
+    fill: $tintColorActive;
+}
+#box-calendar:focus rect, #box-calendar:hover rect, #box-calendar:active rect,
+#box-testimonials:focus rect, #box-testimonials:hover rect, #box-testimonials:active rect {
+    fill: $logoPinkActive;
+}
+
+#box-about:focus rect, #box-about:hover rect, #box-about:active rect,
+#box-gifts:focus rect, #box-gifts:hover rect, #box-gifts:active rect {
+    fill: $redActive;
+}
+
+#box-foodieguide:focus rect, #box-foodieguide:hover rect, #box-foodieguide:active rect,
+#box-privateevents:focus rect, #box-privateevents:hover rect, #box-privateevents:active rect {
+    fill: $crimsonActive;
+}
+
+#box-privatelessons:focus rect, #box-privatelessons:hover rect, #box-privatelessons:active rect {
+    fill: $highlightColorActive;
+}

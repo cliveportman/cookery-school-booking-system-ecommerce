@@ -1,0 +1,52 @@
+@mixin verticalAlign() {
+  
+}
+
+// BREAKPOINTS
+$sm : 768px;
+$md : 1024px;
+$lg : 1367px;
+
+// SPACINGS
+$vMargin : 44px;
+
+// COLOURS
+$highlightColor: #ff3366; // rose pink
+$highlightColorActive: #E50E56; // slightly darker rose pink
+$tintColor: #f9dddd; // candy floss pink
+$tintColorActive: #ffcbcb; // slightly darker candy floss pink
+$textColor: #673535; // brown
+$textColorLight: #666666; // medium grey
+$textColorDark: #542525;  // darker brown
+$black: #000000; // black
+
+// PINKS
+$logoPink: #CC0066; // fuchsia
+$logoPinkActive: #BC0469; // slightly darker fuchsia
+$red: #FF3333; // poppy
+$redActive: #E21A1A; // red
+$crimson: #CC0033; // crimson
+$crimsonActive: #B20234; // slightly darker crimson
+
+// IMPORTS
+@import '_fonts';
+@import '_resets';
+@import '_grid';
+@import '_header';
+@import '_forms';
+@import '_main';
+@import '_footer';
+@import '_boxes';
+@import 'sections/_classes';
+@import 'sections/_about';
+@import 'sections/_blog';
+@import 'sections/_guide';
+@import '_blocks';
+//@import 'sections/_homepage';
+@import 'sections/_cart';
+@import 'sections/_checkout';
+@import 'sections/_contact';
+@import 'sections/_calendar';
+@import 'sections/_account';
+@import 'sections/_globalNotice';
+@import 'sections/_shop';

@@ -1,0 +1,25 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set product = craft.commerce.products.id(craft.request.getSegment(3)).first %}
+{% set class = craft.entries.section('classes').relatedTo(product).first %}
+{% set order = craft.commerce.orders.number(craft.request.getSegment(4)).first %}
+{% set address = order.shippingAddress %}
+
+{% set customers = {} %}
+{% set customer = { 'name': address.firstName, 'email': order.email } %}
+{% set customers = customers | merge([customer]) %}
+
+<div class="ui modal large">
+  <i class="close icon"></i>
+
+  <div class="header">
+    <h2>Send email to {{ address.firstName }} {{ address.lastName }} ({{ order.email }})</h2>
+  </div>
+
+  <div class="content">
+    {% set vars = {'purpose': 'default'} %}
+  	{% include "bookings/incs/forms/_emailForm" with vars %} 
+  </div>
+</div>

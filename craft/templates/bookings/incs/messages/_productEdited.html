@@ -1,0 +1,30 @@
+{##############
+{% if craft.request.getSegment(4) %}
+  {% set editedProduct = craft.commerce.products.id(craft.request.getSegment(4)).first %}
+  {% if editedProduct | length %}
+    <div class="ui column grid">
+      <div class="twelve wide column centered">
+        <div class="ui message">
+          <i class="close icon"></i>
+          <div class="header">
+            Product edited
+          </div>
+          <p><em>{{ editedProduct.title }}</em> was edited successfully.</p>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
+###############}
+
+
+<div class="ui column grid">
+  <div class="twelve wide column centered">
+    <div class="ui message">
+      <i class="close icon"></i>
+      <div class="header">
+        Product updated
+      </div>
+    </div>
+  </div>
+</div>

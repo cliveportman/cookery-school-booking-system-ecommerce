@@ -1,0 +1,152 @@
+#getintouchbox {
+    padding: 1rem; margin-bottom: 10px;
+    background: $textColor;
+}
+    #getintouchbox h2 {
+        @include font('serif', 'big', white); text-align: center;
+    }
+    #getintouchbox p {
+        @include font('sans', 16, white); line-height: 1.5em;
+    }
+        #getintouchbox p a:focus, #getintouchbox p a:hover, #getintouchbox p a:active {
+            color: $highlightColor;
+        }
+@media (min-width: $sm) {
+    #getintouchbox h2 {
+        margin-top: 5px;
+        @include font('serif', 'big', white); text-align: left;
+    }        
+}
+@media (min-width: $md) {
+#getintouchbox {
+    padding: 1.5rem; margin-bottom: $vMargin;
+}
+    #getintouchbox h2 {
+        margin-top: 0;
+        @include font('serif', 50, white); line-height: 1em;
+    }        
+}
+@media (min-width: $lg) {
+#getintouchbox {
+    padding: 1rem;
+}
+    #getintouchbox h2 {
+        margin-top: 0;
+        @include font('serif', 80, white); line-height: 1em;
+    }        
+    #getintouchbox p {
+        margin-top: 1.5rem;
+    }
+}
+
+
+/*
+###################################
+FOOTER
+###################################
+*/
+footer.sitewide {
+    margin-top: 1rem; padding: 2rem 0 1rem;
+    border-top: 1px solid $textColor;
+    text-align: center;
+}
+@media (min-width: $md) {
+footer.sitewide {
+    margin-top: 0; padding-top: $vMargin;
+}    
+}
+
+#tripadvisorwidgets ul, #tripadvisorwidgets li {
+    list-style-type: none;
+}
+
+.TA_percentRecommended, .TA_certificateOfExcellence {
+    display: inline-block;
+    margin-bottom: 1rem;;
+}
+.TA_percentRecommended {
+    position: relative; top: -10px;
+}
+.TA_certificateOfExcellence {
+    position: relative; right: -6px;
+}
+.TA_percentRecommended .widPER {
+    border: 1px solid #599642;
+}
+.TA_certificateOfExcellence .widCOE {
+    padding-bottom: 10px;
+}
+@media (min-width: $sm) {
+
+.TA_percentRecommended, .TA_certificateOfExcellence {
+    float: left;
+    display: block;
+    margin-bottom: $vMargin;
+}
+.TA_percentRecommended {
+    top: 0;
+}
+}
+
+
+footer.sitewide p {
+    margin-bottom: 0.75rem;
+    @include font('sans', 16, 'light'); line-height: 1.5em; text-align: center;
+}
+    footer.sitewide p a {
+        padding: 0 0.5rem;
+        color: inherit;
+    }
+    footer.sitewide p a:focus, footer.sitewide p a:hover,footer.sitewide p a:active {
+        color: $highlightColor;
+    }
+@media (min-width: $sm) {
+footer.sitewide p {
+    font-size: 14px; text-align: right;
+}
+    footer.sitewide p a:last-of-type {
+        padding-right: 0;
+    }
+}
+@media (min-width: $md) {
+footer.sitewide p {
+    margin-bottom: 0.5rem;
+    font-size: 16px; text-align: center;
+}
+footer.sitewide p:first-of-type {
+    margin-top: 0.75rem;
+}
+    footer.sitewide p a:last-of-type {
+        padding-right: 0;
+    }
+}
+@media (min-width: $lg) {
+footer.sitewide p:first-of-type {
+    margin-top: 2rem;
+}
+}
+
+/*
+###################################
+FOOTER SOCIALS ICON - SEE _header.scss FOR MORE
+###################################
+*/
+#footersocial {
+    margin: $vMargin 0;
+    text-align: center;
+}
+@media (min-width: $sm) {
+#footersocial {
+    margin: 0 0 $vMargin 0;
+    text-align: center;
+}
+}
+@media (min-width: $md) {
+#footersocial {
+    margin: 6.25rem 0 $vMargin 0;
+    text-align: right;
+}
+    #footersocial a.social {
+        margin: 0 0.5rem;
+    }
+}

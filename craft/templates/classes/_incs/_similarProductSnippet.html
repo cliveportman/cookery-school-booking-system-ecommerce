@@ -1,0 +1,48 @@
+{% set parentClass = craft.entries.section('classes').relatedTo(similarProduct).first %}
+{% set parentOverview = craft.entries.section('classes').ancestorOf(parentClass).type('overview').first %}	
+{% set parentCategory = craft.entries.section('classes').ancestorOf(parentClass).type('category').first %}
+{% if parentCategory | length %}
+	{% set cats = parentOverview.children().type('category') %}
+{% endif %}
+
+{% if not (similarProduct.privateClass | length or parentOverview.id == 1988) %}
+<div class="productsnippet">
+<div class="row">
+	<div class="col-lg-3 col-md-3 col-sm-4">
+	    {% if parentClass.thumbnailImage | length %}
+	        {% set image = parentClass.thumbnailImage.first %}
+	        <img src="{{ image.getUrl(thumb) }}" alt="{{ image.altText}}">
+	    {% elseif parentClass.svgThumbnail is defined and parentClass.svgThumbnail != "" %}
+			<div class="boxlink light single" id="box-{{ parentClass.slug }}">
+				<h3>{{ parentClass.title }}</h3>
+				{% include "_svgs/_" ~ parentClass.svgThumbnail %}
+			</div>
+	    {% endif %}
+	</div>
+	<div class="col-lg-6 col-md-8">
+		<ul>
+			<li class="similaritem-date">{{ similarProduct.date | date('l j M Y') }}</li>
+			<li>{% if parentCategory | length %}<span class="cat-title">{{ parentCategory.title }}</span> / {% endif %}{{ parentClass.title }}</li>
+			{% if similarProduct.additionalDescription | length %}
+				<li class="additionaldescription">{{ similarProduct.additionalDescription }}</li>
+			{% endif %}							
+			{% if similarProduct.location | length %}
+				{% set location = similarProduct.location.first %}
+			{% else %}
+				{% set location = parentClass.location.first %}
+			{% endif %}
+			{% if location | length %}<li class="location"><span class="location">Location: {{ location.title }}</span></li>{% endif %}
+			<li><span class="time">Time: {{ similarProduct.startTime | date('G:i') }} - {{ similarProduct.finishTime | date('G:i') }}</span></li>
+			<li><span class="price">Price: {{ similarProduct.defaultVariant.price | currency(cart.currency) }}</span> <span class="stock">Availability: 
+			<span class="highlight">
+				{% include "classes/_incs/_productStock" with { 'product': similarProduct } %}
+			</span>
+			</span></li>
+		</ul>
+	</div>
+	<div class="col-lg-3 col-md-3 col-sm-4">
+		<a href="{{ class.url }}" class="button">Find Out More &amp; Book</a>
+	</div>
+</div>
+</div>
+{% endif %}

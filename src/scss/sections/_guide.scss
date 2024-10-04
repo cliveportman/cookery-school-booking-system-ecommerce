@@ -1,0 +1,103 @@
+.bookarticle {
+	margin-bottom: 1rem; 
+}
+	.bookarticle .matchheight {
+		display: table-cell;
+		vertical-align: bottom;
+	}
+	.bookarticle ul {
+		margin: 1rem 0 0; padding: 0;
+		list-style-type: none;
+	}
+		.bookarticle li {
+			margin: 0 0 0.25rem; padding: 0;
+			list-style-type: none;
+			@include font('sans', 16, $highlightColor); line-height: 1.1em;
+		}
+			.bookarticle li a {
+				display: block; width: 100%;
+				overflow: hidden;
+				white-space: nowrap; text-overflow: ellipsis;
+			}
+@media (min-width: $md) {
+}
+
+
+
+
+.blogsnippet.external {
+	border-bottom-width: 5px;
+}
+	.blogsnippet.external h3 {
+		margin-bottom: 0.5rem;
+	}
+	.blogsnippet.external h3 a {
+		margin-bottom: 0;
+			@include font('serif', 'big', $textColor);
+	}
+
+
+
+#foodterms {
+	margin: 2rem 0 2rem;
+}
+	#foodterms dt {
+		@include font('serif', 18, $textColor); font-style: italic; font-weight: bold;
+	}
+	#foodterms dd {
+		margin-bottom: 0.5rem;
+		@include font('sans', 18, $textColor);
+	}
+@media (min-width: $sm) {
+#foodterms {
+	margin: 2rem 0 0;
+}
+	#foodterms dt, #foodterms dd {
+		display: inline;
+	}
+	#foodterms dt {		
+		padding-right: 1rem;
+	}
+	#foodterms dd:after {
+		display: block;
+		content: "";
+	}
+}
+@media (min-width: $md) {
+	#foodterms dt, #foodterms dd {
+		@include font('serif', 'heading', $textColor);
+	}
+}
+
+
+#furtherreading {}
+	#furtherreading a {
+		display: block;
+		margin-bottom: 0.5rem;
+		@include font('sans', 16, $textColor);
+	}
+
+
+
+
+#glossary {
+	margin: 2rem 0 0;
+}
+	#glossary dt {
+		display: block;
+		@include font('serif', 18, $textColor); font-style: italic; font-weight: bold;
+		
+	}
+	#glossary dd {
+		display: block;
+		margin-bottom: 2rem;
+		@include font('sans', 18, $textColor);
+	}
+		#glossary dd p {
+			@include font('sans', 18, $textColor);
+		}
+@media (min-width: $md) {
+	#glossary dt, #glossary dd {
+		@include font('serif', 'heading', $textColor); line-height: 1.8em;
+	}
+}

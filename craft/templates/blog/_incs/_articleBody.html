@@ -1,0 +1,61 @@
+
+{% if entry.articleBody | length %}
+<div id="articlebody">
+{% set fullImage = { mode: 'fit', width: 800 } %}
+{% set halfImage = { mode: 'fit', width: 400 } %}
+
+{% for block in entry.articleBody %}
+{% switch block.type %}
+
+	{% case "text" %}
+		<div class="row">
+			<div class="col-md-8 col-md-push-2">
+				{{ block.text }}
+			</div>
+		</div>
+
+	{% case "pullquote" %}
+		<div class="row">
+			<div class="col-md-12">
+				<blockquote>&ldquo;{{ block.quote }}&rdquo;</blockquote>
+			</div>
+		</div>
+
+	{% case "singleImage" %}
+		<div class="row">
+			<div class="col-md-8 col-md-push-2">
+				{% set image = block.image.first %}
+				<img src="{{ image.getUrl(fullImage) }}" alt="">
+				{% if block.caption | length %}<p class="caption">{{ block.caption }}</p>{% endif %}
+			</div>
+		</div>
+
+	{% case "twoImages" %}
+		<div class="row">
+			<div class="col-md-4 col-md-push-2 col-sm-6">
+				{% set imageLeft = block.imageLeft.first %}
+				<img src="{{ imageLeft.getUrl(fullImage) }}" alt="">
+				{% if block.captionLeft | length %}<p class="caption">{{ block.captionLeft }}</p>{% endif %}
+			</div>
+			<div class="col-md-4 col-md-push-2 col-sm-6">
+				{% set imageRight = block.imageRight.first %}
+				<img src="{{ imageRight.getUrl(fullImage) }}" alt="">
+				{% if block.captionRight | length %}<p class="caption">{{ block.captionRight }}</p>{% endif %}
+			</div>
+		</div>
+
+	{% case "video" %}
+		<div class="row">
+			<div class="col-md-8 col-md-push-2">
+				<figure class="videoWrapper {% if block.caption | length %}withcaption{% endif %}">
+					<iframe width="1180" height="664" src="https://www.youtube.com/embed/{{ block.youtubeVideoHash }}?rel=0" frameborder="0" allowfullscreen></iframe>
+				</figure>
+				{% if block.caption | length %}<p class="caption">{{ block.caption }}</p>{% endif %}
+			</div>
+		</div>
+
+{% endswitch %}
+{% endfor %}
+</div>
+
+{% endif %}

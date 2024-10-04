@@ -1,0 +1,75 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set metaTitle = 'Products' %}
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+<div class="ui masthead vertical">
+<div class="ui container">
+      <h1 class="ui header">
+        <i class="line chart icon"></i>Reports
+      </h1>
+</div>
+</div>
+
+<div class="ui container">
+
+  <div class="ui column grid">
+
+    <div class="ui cards">
+
+      <div class="card">
+        <div class="content">
+          <h2 class="header">
+            <i class="tags icon"></i>Classes
+          </h2>
+          <div class="description">Occupancy, sales and cancellation data<br> - by class</div>
+        </div>
+        <div class="extra content">
+          <a class="ui pink button" href="{{ siteUrl }}reports/classes">
+            View classes
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="content">
+          <h2 class="header">
+            <i class="tags icon"></i>Instructors
+          </h2>
+          <div class="description">Occupancy, sales and cancellation data<br>- by instrutor</div>
+        </div>
+        <div class="extra content">
+          <a class="ui pink button" href="{{ siteUrl }}reports/instructors">
+            View instructors
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="content">
+          <h2 class="header">
+            <i class="tags icon"></i>Sales figures
+          </h2>
+          <div class="description">Annual and monthly sales figures</div>
+        </div>
+        <div class="extra content">
+          <a class="ui pink button" href="{{ siteUrl }}reports/sales">
+            View sales figures
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+
+
+
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,15 @@
+
+                    <form method="POST" class="">
+                        <input type="hidden" name="action" value="commerce/payments/pay"/>
+                        <input type="hidden" name="redirect" value="/orders/thank-you/order/{number}"/>
+                        <input type="hidden" name="cancelUrl" value="/checkout/payment"/>
+                        <input type="hidden" name="paymentMethodId" value="5">{# MONETICO METHOD ID IS 5 #}
+                        {{ getCsrfInput() }}
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12">
+                                    <button type="submit" class="button orange checkout">Pay with card</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>

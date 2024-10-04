@@ -1,0 +1,54 @@
+{% set breadcrumbEntries = [] %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([entry]) %}
+
+{% set masterclasses = craft.entries.section('masterclasses') %}
+
+{% set metaTitle = entry.metaTitle | length ? entry.metaTitle : entry.title %}
+{% set metaDescription = entry.metaDescription | length ? entry.metaDescription : "" %}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+<div class="container">
+
+	<header id="classheader" class="row">		
+		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+		<div class="col-lg-3 col-md-3 col-sm-4">
+			<div class="boxlink light single" id="box-{{ entry.slug }}">
+				{% include "_svgs/_star" %}
+			</div>
+		</div>
+		<div class="col-lg-7 col-md-9 col-sm-8">
+			<h2>
+				{{ entry.title }}
+			</h2>
+			{{ entry.introduction }}
+		</div>
+	</header>
+
+	{% if masterclasses | length %}
+		<div class="row">
+			<div class="col-md-12">
+				{% for class in masterclasses %}
+				<div class="classsnippet">
+					<div class="row">
+						<div class="col-lg-7 col-md-8 col-sm-8">
+							<h2><a href="{{ class.url }}">{{ class.title }}</a></h2>
+							{% if class.shortSummary | length %}
+								<p>{{ class.shortSummary }}</p>
+							{% endif %}
+						</div>
+						<div class="col-lg-3 col-lg-push-2 col-md-3 col-md-push-1 col-sm-4">
+							<a href="{{ class.url }}" class="button">Find Out More &amp; Book</a>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
+	{% endif %}
+
+</div>
+
+{% endblock %}

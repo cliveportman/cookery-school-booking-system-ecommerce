@@ -1,0 +1,105 @@
+{% if not currentUser or not currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set metaTitle = 'Products' %}
+
+{% set classes = craft.entries.section('classes').type('class').limit(NULL) %}
+{% set classes = classes | merge(craft.entries.section('classes').type('tour').limit(NULL)) %}
+
+{% set openClasses = [] %}
+{% set privateClasses = [] %}
+{% for class in classes %}
+  {% if class.getParent.id == 1988 %}
+    {% set privateClasses = privateClasses | merge([class]) %}
+  {% else %}
+    {% set openClasses = openClasses | merge([class]) %}
+  {% endif %}
+{% endfor %}
+
+{% set masterclasses = craft.entries.section('masterclasses').limit(NULL) %}
+
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+<div class="ui masthead vertical">
+<div class="ui container">
+  <h1 class="ui header">
+    <i class="tags icon"></i>Classes list
+  </h1>
+</div>
+</div>
+
+<div class="ui container">
+
+  {% if craft.request.getSegment(2) == 'edited' %}
+    {% include "bookings/incs/messages/_productEdited" %}
+  {% elseif craft.request.getSegment(2) == 'deleted' %}
+    {% include "bookings/incs/messages/_productDeleted" %}
+  {% else %}
+    {% include "bookings/incs/messages/_productAdded" %}
+  {% endif %}
+
+  <div class="ui column grid">
+    <div class="column">
+      <a href="{{ siteUrl }}products/class/add" class="ui button pink"><i class="plus icon white"></i>Add classes</a>
+      <a href="{{ siteUrl }}products/masterclass/add" class="ui button"><i class="plus icon white"></i>Add masterclass</a>
+    </div>
+  </div>
+
+  <div class="ui column grid">
+    <div class="column">
+
+
+        <div class="ui top attached tabular menu">
+          <a class="item active" data-tab="open"><i class="large eye middle aligned icon"></i> Open classes</a>
+          <a class="item" data-tab="private"><i class="large hide middle aligned icon"></i> Private classes</a>
+          <a class="item" data-tab="master"><i class="large trophy middle aligned icon"></i> Masterclasses</a>
+        </div>
+
+        <div class="ui bottom attached tab segment active" data-tab="open">
+          <div class="ui relaxed divided list">
+            {% for class in openClasses %}
+              {% set parent = class.getParent() %}
+              <div class="item">
+                  <i class="large eye middle aligned icon"></i>
+                <div class="content">
+                  <a href="{{ siteUrl }}products/class/{{ class.id }}" class="header">{{ parent.title }} / {{ class.title }}</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="ui bottom attached tab segment" data-tab="private">
+          <div class="ui relaxed divided list">
+            {% for class in privateClasses %}
+              <div class="item">
+                <i class="large hide middle aligned icon"></i>
+                <div class="content">
+                  <a href="{{ siteUrl }}products/class/{{ class.id }}" class="header">Private / {{ class.title }}</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="ui bottom attached tab segment" data-tab="master">
+          <div class="ui relaxed divided list">
+            {% for class in masterclasses %}
+              <div class="item">
+                <i class="large trophy middle aligned icon"></i>
+                <div class="content">
+                  <a href="{{ siteUrl }}products/masterclass/{{ class.id }}" class="header">Masterclass / {{ class.title }}</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

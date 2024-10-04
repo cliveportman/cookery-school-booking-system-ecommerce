@@ -1,0 +1,53 @@
+<aside id="blog-sidebar" class="{{ context == 'article' ? 'with-article' }}">
+  {% set sidebarImage = { mode: 'fit', width: 300 } %}
+  {% if entry.relatedArticles | length %}
+    <section class="blog-sidebar-section">    
+      <h3 class="header">Related articles</h3>
+      {% for article in entry.relatedArticles %}
+        <a href="{{ article.url }}" class="blog-sidebar-articlelink">
+          <h4 class="header">{{ article.title }}</h4>
+          {% if article.leadImage | length %}              
+            <img src="{{ article.leadImage.first.getUrl(halfsidebarImageImage) }}" alt="{{ image.altText }}">
+          {% endif %}
+          <p class="meta">{{ article.postDate | date('l j M Y') }}</p>
+        </a>
+      {% endfor %}
+    </section>
+  {% endif %}
+
+  <section class="blog-sidebar-section">
+    <h3 class="header">
+      {% if craft.request.getParam('q') | length %}
+        Search results for '{{ craft.request.getParam('q') }}'
+      {% else %}
+        Search
+      {% endif %}
+    </h3>
+    <form method="post" accept-charset="UTF-8" action="{{ url('blog/search') }}" id="blog-searchform">
+        <input type="search" name="q" placeholder="Enter search terms" id="blog-searchform-input" value="{{ craft.request.getParam('q') }}">
+        <button id="blog-searchform-button" type="submit"><img src="{{ siteUrl }}img/icons/search.svg" alt="Search"></button>
+        <div class="clearfix"></div>
+    </form>
+  </section>
+
+
+  <section class="blog-sidebar-section">
+    <h3 class="header">Categories</h3>
+    <ul class="sidebar-list">
+      {% for category in craft.categories.group('blogCategories') %}
+        <li class="level-{{ category.level }}"><a href="{{ category.url }}">{{ category.title }}</a></li>
+      {% endfor %}
+    </ul>
+  </section>
+
+
+  <section class="blog-sidebar-section">
+    <h3 class="header">Archive</h3>
+    <ul class="sidebar-list">
+      <li><a href="{{ siteUrl }}blog/archive/2018">2018</a></li>
+      <li><a href="{{ siteUrl }}blog/archive/2017">2017</a></li>
+      <li><a href="{{ siteUrl }}blog/archive/2016">2016</a></li>
+    </ul>
+  </section>
+
+</aside>

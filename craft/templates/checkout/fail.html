@@ -1,0 +1,16 @@
+
+
+{% extends "_layout" %}
+
+{% block content %}
+
+	{% set options = {
+		'subject': 'checkout/fail',
+		'email': 'clive@theportman.co',
+		'body': 'The URL ' ~ craft.request.getUrl() ~ '?' ~ craft.request.getQueryStringWithoutPath() ~' has been hit.'
+	} %}
+
+	{% set result = craft.quickNotifier.sendNotification(options) %}
+	{{ result }}
+
+{% endblock %}

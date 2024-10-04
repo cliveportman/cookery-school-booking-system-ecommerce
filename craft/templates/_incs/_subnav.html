@@ -1,0 +1,36 @@
+<div class="col-md-12">
+	<h2>
+		{% if entry == overview %}
+			{{ entry.pageTitle }}
+		{% else %}
+			{{ entry.title }}
+		{% endif %}
+	</h2>
+
+
+	{% set tabs = [] %}
+	{% set tabs = tabs | merge([overview]) %}
+
+	{% set children = craft.entries.section(channel) %}
+	{% for child in children %}
+		{% if child.excludeFromSectionTabs | length == 0 %}
+			{% set tabs = tabs | merge([child]) %}
+		{% endif %}
+	{% endfor %}
+
+	{% if tabs | length %}
+	<nav id="tabsnav" class="tabs nav-tabs clearfix" role="tablist">
+	{% for tab in tabs %}
+		<a href="{{ tab.url }}" class="tab {% if craft.request.url == tab.url %}active{% endif %}" role="tab" >
+			{% if tab.tabTitle | length %}
+				{{ tab.tabTitle }}
+			{% elseif tab.sectionTitle | length %}
+				{{ tab.sectionTitle }}
+			{% else %}
+				{{ tab.title }}
+			{% endif %}
+		</a>
+	{% endfor %}
+	</nav>
+	{% endif %}
+</div>

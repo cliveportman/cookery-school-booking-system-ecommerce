@@ -1,0 +1,384 @@
+{% spaceless %}
+
+{% if order is not defined %}
+    {% set order = craft.commerce.orders.number(craft.request.getSegment(3)).first %}
+    {% if not order | length %}
+        {% set order = craft.commerce.orders.id(craft.request.getSegment(3)).first %}
+    {% endif %}
+{% endif %}
+
+{% if 'voucher' in option %}
+
+    {############# LINKS FROM ORDER EMAILS CONTAINING GIFT VOUCHERS
+        CONTAIN AN OPTION FORMATTED LIKE 'voucher-XXXXX' WITH THE LATTER
+        BEING A PRODUCT ID.
+        TEST AGAINST THIS TO DISPLAY THE CORRECT CODE IN THE CERTIFICATE
+    ##############}
+    {% set template = 'voucher' %}
+    {% set certificateId = (option | split('-'))[1] %}
+
+{% elseif option == 'receipt' %}
+
+    {% set template = 'receipt' %}
+
+{% else %}
+
+    {############ USE THIS WHEN PREVIEWING ON THE WEB ###########}
+    {% set template = 'receipt' %}
+
+{% endif %}
+
+{% endspaceless %}
+<!doctype html><html lang="en"><head>
+    <meta charset="utf-8">
+    
+    
+    {% if template == 'voucher' %}
+        <title>Gift certificate</title>
+    {% else %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
+    <style>
+        {% include 'commerce/style.css' %}
+        .paidLogo{
+            font-weight:bold;
+            position: absolute;
+            left:30%;
+            font-family: 'Helvetica', serif;
+            color:rgb(211, 65, 50);
+            font-size:48px;
+            -ms-transform: rotate(-20deg); /* IE 9 */
+            -webkit-transform: rotate(-20deg); /* Safari */
+            transform: rotate(-20deg);
+        }
+        body, p, td, th, li {
+            font-size: 10pt;
+        }
+        li {
+            margin-bottom: 1mm; padding-bottom: 0;
+        }
+        ul, ol, li {
+            list-style-type: none;
+        }
+        table td, table th {
+            vertical-align: top; padding: 0.2cm;
+        }
+    </style>
+    {% endif %}
+</head><body>
+{% set orderTemplate %}
+
+<div style="width: 18cm; height: 27cm; margin: 0 auto;">
+
+    <div style="float: left; text-align: left; width: 8.5cm;">
+
+        <img src="img/la-cuisine-paris-600x240.gif" align="center" style="border-bottom: none; display: block; width: 6cm; margin-bottom: 0.25cm;">
+        <p style="font-size: 10pt;">
+            SAS LA CUISINE<br>
+            80 quai de l'Hotel de Ville, paris 75004
+        </p>
+    </div>
+
+    <div style="float: right; text-align: right; width: 8.5cm; margin-left: 1cm;">
+        <h1 style="font-size: 24pt; margin-bottom: 0.25cm; font-weight: bold;">Facture</h1>
+        <p style="font-size: 10pt;">
+            Order number: #{{ order.number[:7] }}<br>
+            Order date: {{ order.dateOrdered | date('j M Y') }}
+        </p>
+    </div>
+
+    <hr style="clear: both; margin-top: 0.25cm; margin-bottom: 0.25cm;">
+
+    <div style="float: left; text-align: left; width: 8.5cm;">
+        <p style="font-size: 10pt; margin-bottom: 0.25cm;">
+            <strong>Name:</strong> {{order.billingAddress.firstName }} {{order.billingAddress.lastName }}<br>
+            <strong>Email:</strong> {{ order.email }}<br>
+            <strong>Amount:</strong> {{ order.totalPrice | currency(order.currency) }}<br>
+            <strong>Paid:</strong> {{ order.totalPaid | currency(order.currency) }}
+        </p>
+    </div>
+
+    <hr style="clear: both; margin-top: 0.25cm; margin-bottom: 0.5cm;">
+
+
+    {% for item in order.lineItems %}
+        {% set product = item.purchasable.product %}
+        <h2 style="font-size: 11pt; font-weight: bold; margin-bottom: 0.25cm;">
+            {{ product.type == 'giftVoucher' ? item.price | currency(order.currency) }}
+            {{ item.description }}<br>
+            {% if product.type == 'class' %} 
+                SKU: {{ item.sku }} 
+            {% elseif product.type == 'giftVoucher' %} 
+                CODE: {{ product.discountCode }} 
+            {% endif %}
+        </h2>
+
+        {# THIS APPLIES TO GIFT VOUCHERS AS WELL #}
+        {% set classPrice = (item.price / 2) / 1.2 %} 
+        {% set foodPrice = (item.price / 2) / 1.1 %}   
+        <table style="width: 100%;">
+            <tr>
+                <th style="width: auto;">Items</th>
+                <th style="width: 1.5cm;">Quantite</th>
+                <th style="width: 1.5cm;">Prix HT</th>
+                <th style="width: 1.5cm;">Total HT</th>
+                <th style="width: 1.5cm;">Tx TVA</th>
+            </tr>
+            <tr>
+                <td>{{ product.title }}</td>
+                <td>x {{ item.qty }}</td>
+                <td>{{ classPrice | currency(order.currency) }}</td>
+                <td>{{ (classPrice * item.qty) | currency(order.currency) }}</td>
+                <td>20%</td>
+            </tr>
+            <tr>
+                <td>{{ product.title }} (food)</td>
+                <td>x {{ item.qty }}</td>
+                <td>{{ foodPrice | currency(order.currency) }}</td>
+                <td>{{ (foodPrice * item.qty) | currency(order.currency) }}</td>
+                <td>10%</td>
+            </tr>
+        </table>
+    {% endfor %}
+
+    <p style="font-size: 8pt;">Pénalités de retard au taux annuel de : 10,00 % - Pas d'escompte en cas de paiement anticipé<br>Indemnité forfaitaire pour frais de recouvrement en cas de retard de paiement : 40,00 €</p>
+
+    {% for adjustment in order.adjustments %}
+
+    {% set totalClassPrice = (order.totalPrice / 2) / 1.2 %}
+    {% set totalFoodPrice = (order.totalPrice / 2) / 1.1 %}
+
+    <div style="float: left; text-align: left; width: 5cm;">
+        <table style="width: 100%;">
+            <tr>
+                <th style="width: auto;">TVA</th>
+                <th style="width: 1.5cm;">Base</th>
+                <th style="width: 1.5cm;">Prix HT</th>
+            </tr>
+            <tr>
+                <td>20%</td>
+                <td>{{ totalClassPrice | currency(order.currency) }}</td>
+                <td>{{ ((order.totalPrice / 2) - totalClassPrice) | currency(order.currency) }}</td>
+            </tr>
+            <tr>
+                <td>10%</td>
+                <td>{{ totalFoodPrice | currency(order.currency) }}</td>
+                <td>{{ ((order.totalPrice / 2) - totalFoodPrice) | currency(order.currency) }}</td>
+            </tr>
+        </table>
+    </div>
+    <div style="float: left; text-align: left; width: 12cm; margin-left: 1cm;">
+        <table style="width: 100%;">
+            <tr>
+                <th style="width: auto;">Total HT</th>
+                <th style="">Total TVA</th>
+                <th style="">Total TTC</th>
+                <th style="">Déjà réglé TTC</th>
+            </tr>
+            <tr>
+                <td>{{ (totalClassPrice + totalFoodPrice) | currency(order.currency) }}</td>
+                <td>{{ (order.totalPrice - totalClassPrice - totalFoodPrice) | currency(order.currency) }}</td>
+                <td>{{ (order.totalPrice) | currency(order.currency) }}</td>
+                <td>{{ order.totalPaid | currency(order.currency) }}</td>
+            </tr>
+        </table>
+
+        <p style="text-align: right; font-size: 10pt;">
+        <strong>Net à payer</strong><br>{{ 0 | currency(order.currency) }}</p>
+    </div>
+    {% endfor %}
+
+    <hr style="clear: both; margin-top: 0.25cm; margin-bottom: 0.25cm;">
+
+    <div style="float: left; text-align: left; width: 8.5cm; page-break-inside: avoid;">
+        <h2 style="font-size: 11pt; font-weight: bold; margin-bottom: 0.25cm;">Payment address</h2>
+        <p style="font-size: 10pt; margin-bottom: 0.5cm;">
+            {% if order.billingAddress %}
+                {% include 'checkout/_incs/_address' with { address: order.billingAddress } %}
+            {% endif %}
+        </p>
+    </div>
+
+    <div style="float: left; text-align: left; width: 8.5cm; margin-left: 1cm; page-break-inside: avoid;">
+        <h2 style="font-size: 11pt; font-weight: bold; margin-bottom: 0.25cm;">Shipping address</h2>
+        <p style="font-size: 10pt; margin-bottom: 0.5cm;">
+            {% if order.shippingAddress %}
+                {% include 'checkout/_incs/_address' with { address: order.shippingAddress } %}
+            {% endif %}
+        </p>
+    </div>
+
+    <div style="text-align: center;  margin-bottom: 0.75cm; clear: both;">
+        <p style="border: 2px solid #ff3366; color: #ff3366; margin: 0 auto; width: 8cm; padding: 1mm 1mm 2mm; font-size: 8pt; page-break-inside: avoid;">
+            « LA CUISINE » Société par Actions Simplifiée au capital de 212.500 €<br>
+            Siège social : 80 Quai de l'Hôtel de Ville 75004 PARIS<br>
+            RCS PARIS : 512.914.078 SIRET : 512.914.078.00039<br>
+            Code APE : 8559 B N° intraco : FR12512914078
+        </p>
+    </div>
+    
+
+
+</div>
+{% endset %}
+
+{% set voucherTemplate %}
+    {% set voucher = "" %}
+    {% set product = "" %}
+    {% set lineitem = "" %}
+    {% set voucherPrice = 0 %}
+    {% spaceless %}
+        {% for item in order.lineItems %}
+            {% if item.purchasable | length %}
+                {% set lineitem = item %}
+                {% set product = item.purchasable.product %}
+
+                {##########
+                    FOR NEWER EMAILS WE'RE APPENDING THE CERTIFICTE OPTION
+                    WITH THE PRODUCT ID SO WE NEED TO TEST FOR THIS
+                ##########}
+                {% if certificateId | length %}
+                    {% if product.id == certificateId %}
+                        {% set voucher = product %}
+                        {% set voucherPrice = lineitem.price %}
+                    {% endif %}
+
+                {###########
+                    BUT OLDER EMAILS WON'T HAVE THE PRODUCT ID APPENDED
+                    SO DEFAULT TO THE OLD WAY OF DOING IT - THIS MEANS
+                    SUPPORT FOR MULTIPLE CERTIFICATES IN THE CART IS SKETCHY
+                ############}
+                {% else %}
+                    {% if product.type == 'giftVoucher' %}
+                        {% set voucher = product %}
+                        {% set voucherPrice = lineitem.price %}
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    {% endspaceless %}
+        <style>
+        html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, acronym, address, big, cite, code, del, dfn, em, figure, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {margin: 0; padding: 0; border: 0; outline: 0; background: transparent; font-size: 100%; font-weight: normal; vertical-align: baseline;}
+        audio, canvas, video { display: inline-block; }
+        audio:not([controls]) { display: none; height: 0; }
+        [hidden] { display: none; }
+        html {  -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); overflow-y: auto;
+            color: #673535; font-family: Georgia, serif;
+            margin: 0; padding: 0 0 0; font-size: 16px; line-height: 1.2em; background: #fff;
+        }
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        @media print {
+          html, body {
+            width: 210mm;
+            height: 297mm;
+          }
+          /* ... the rest of the rules ... */
+        }
+        .clearfix { *zoom: 1; }
+        .clearfix:before, .clearfix:after { display: table; line-height: 0; content: ""; }
+        .clearfix:after { clear: both; }
+        *, *:before, *:after {
+          -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
+        }
+          a {
+            outline: none; color: inherit; text-decoration: underline;
+          }
+
+        table {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        #logo {
+            display: block; width: 80mm;
+            margin-bottom: 5mm;
+        }
+        #title {
+            display: block; width: 40mm;
+            margin-bottom: 5mm;
+        }
+
+        #vouchercode {
+            display: block;
+            font-size: 1.25em; text-align: center;
+        }
+        .pink {
+            color: #ff3366 !important;
+        }
+        p {
+            margin-bottom: 0.25cm;
+        }
+    </style>
+    <div style="position: relative; margin: 0 auto; padding: 1.5cm 0 1.5cm; width: 160mm; margin-left: auto; margin-right: auto; font-size: 10pt;">
+    <table class="">
+        <tr>
+            <td align="center">
+                <img id="logo" src="img/pdf/la-cuisine-paris.png" alt="La Cuisine Paris">
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <img id="title" src="img/pdf/gift-certificates.png" alt="Gift Certificate">
+            </td>
+        </tr>
+        <tr>
+            <td align="left">
+                <p>Order number: <span class="pink">#{{ order.shortNumber }}</span><br>
+                    Date of purchase: <span class="pink">{{ order.dateOrdered | date('j M Y') }}</span></p>
+
+                <p>Dear <span class="pink">{{ voucher.recipientName | length ? voucher.recipientName : 'Sir or Madam' }}</span>,</p>
+
+                <p>The team at La Cuisine Paris are pleased to welcome you for a culinary experience extraordinaire!</p>
+            </td>
+        </tr>
+        <tr>
+            <td align="left">
+
+                <p>This Gift Certificate has been credited with <span class="pink">{{ voucherPrice | currency(order.currency) }}</span> which you can use towards any one of the culinary experiences here at La Cuisine Paris - your certificate is valuable one year from the date of issuance! You can find the course of your choice on the 'Class Calendar' section of our website at <a href="{{ siteUrl }}" class="pink">www.lacuisineparis.com</a>.</p>
+
+                <p>Once you have found the course of your choice, to register, simply enter the following special code at the point of checkout:<br>
+                <span class="pink" id="vouchercode">{{ voucher.discountCode }}</span></p>
+                <p>From there, you will receive a confirmation for the class, and you will be all ready to go!</p>
+            </td>
+        </tr>
+        <tr>
+            <td align="left">
+
+                <p>Please keep in mind that some of our classes fill sooner than later, so to avoid disappointment, please register for your class sooner than later!</p>
+
+                <p>We are looking forward to having you, and we are certain that you will pass the most delicious of moments with us! If you would like to keep in touch in the meantime, come on in and join our <a href="https://www.facebook.com/LaCuisineParis/" class="pink">Facebook page</a>, so you can see what we are up to, or be sure to join our <a href="{{ siteUrl }}#subscribeform" class="pink">monthly Newsletter</a> with tons of ideas for your Paris visit!</p>
+            </td>
+        </tr>
+        <tr>
+            <td align="left">
+
+                <p>A très bientôt,<br><a href="{{ siteUrl }}" class="pink">La Cuisine Paris</a></p>
+
+                <p>Gift Certificates are transferable, but are not refundable. Valuable one year from the date of issuance.</p>
+
+                <p>La Cuisine Paris, 80 Quai de l'Hotel de Ville 75004, Paris<br>
+                    Tel: <span class="pink">01 40 51 78 18</span><br>
+                    E-mail: <a href="mailto:contact@lacuisineparis.com" class="pink">contact@lacuisineparis.com</a><br>
+                    <a href="{{ siteUrl }}" class="pink">www.lacuisineparis.com</a>
+                </p>
+            </td>
+        </tr>
+    </table>
+    </div>
+{% endset %}
+
+{# SELECT THE RELEVANT TEMPLATE #}
+{% switch template %}
+{% case "receipt" %}
+    {{ orderTemplate }}
+{% case "voucher" %}
+    {{ voucherTemplate }}
+{% case "ajax" %}
+    <h1>NA</h1>
+{% default %}
+    {{ orderTable }}
+{% endswitch %}
+
+</body></html>

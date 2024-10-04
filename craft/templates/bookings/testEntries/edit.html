@@ -1,0 +1,36 @@
+{% if not currentUser and currentUser.can('accessCp') %}
+  {% redirect "bookings/login" %}
+{% endif %}
+
+{% set metaTitle = 'Edit entry' %}
+
+{% extends "bookings/_layout" %}
+
+{% block content %}
+
+<div class="ui container">
+
+    <div class="ui column grid">
+      <div class="column">
+        <h1 class="ui header">
+          <i class="tag icon"></i>Edit entry
+        </h1>
+      </div>
+    </div>
+
+    {#
+    {% if craft.request.getSegment(4) %}
+  	  {% set entry = craft.entries.products.id(craft.request.getSegment(4)).first %}
+  	{% endif %}
+    {% include "bookings/testEntries/_entryForm" %}
+    #}
+
+    {% if craft.request.getSegment(4) %}
+  	  {% set entry = craft.commerce.products.id(craft.request.getSegment(4)).first %}
+  	{% endif %}
+    {% include "bookings/testEntries/_defaultProductForm" %}
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,196 @@
+{% requireLogin %}
+
+{% set breadcrumbEntries = [] %}
+
+{% set item = {'title': 'Your account', 'url': siteUrl ~ 'account'} %}
+{% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+
+{% set metaTitle = "Your account / La Cuisine Paris" %}
+
+{% extends "_layout" %}
+
+{% block content %}
+<div class="container">
+
+    <section id="accountpage">
+
+    	<style>
+    	</style>
+
+        <div class="row">
+        
+    		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+
+            <div class="col-md-6 col-sm-6">
+            	{% if craft.request.lastSegment() == 'participants-updated' %}
+	            	<section id="participantsupdated">
+			            <p>Merci {{ currentUser.firstName }}.</p>
+			            <p>We've updated those participant names and/or notes.</p>
+			        </section>
+		        {% else %}
+	            	<section id="accountintro">
+			            <p>Bonjour {{ currentUser.firstName }}!</p>
+			            <p>Welcome to your account area. Here you can view your past orders, upcoming classes you've booked and update your details.</p>
+			            <p>If you have any classes booked, you can speed things up on arrival and help us give you the best possible experience by providing the names of everyone attending. You can also tell us about any specific requirements, such as allergies or whether you need disabled access, by leaving a note.</p>
+			            <p>If you don't have any classes booked, what are you waiting for? <a href="{{ siteUrl }}">Click here to find a class for your next visit to Paris!</a></p>
+			        </section>
+			    {% endif %}
+            </div>
+            <div class="col-md-4 col-md-push-2 col-sm-6">
+
+            	{######################
+            	LOOP THROUGH THE USER'S ORDERS, LOOKING FOR LINE ITEMS AND
+            	SORTING THEM INTO CLASSES AND GIFT VOUCHERS
+            	#######################}
+
+            	{% set classLineItems = [] %}
+            	{% set voucherLineItems = [] %}
+            	{% set orders = craft.commerce.orders.customer(craft.commerce.customer) %}
+
+            	{% if orders | length %}
+            	{% for order in orders %}
+                {% for item in order.lineItems %}
+                	{% if item.purchasable | length %}
+		            	{% set product = item.purchasable.product %}
+                		{% switch product.type %}
+                			{% case "class" %}
+			            		{% if product.date | date('U') > now | date('U') %}
+                					{% set classLineItems = classLineItems|merge([item]) %}
+                				{% endif %}
+
+                			{% case "masterclass" %}
+			            		{% if product.startDate | date('U') > now | date('U') %}
+                					{% set classLineItems = classLineItems|merge([item]) %}
+                				{% endif %}
+
+                			{% case "giftVoucher" %}
+                				{% set voucherLineItems = voucherLineItems|merge([item]) %}
+
+                		{% endswitch %}
+                	{% endif %}
+                {% endfor %}
+                {% endfor %}
+                {% endif %}
+
+
+
+
+            	<section id="yourclasses">
+
+	            	<h3>Your upcoming classes</h3>
+	            	{% if classLineItems | length %}
+	                {% for item in classLineItems %}
+
+			            {% set product = item.purchasable.product %}
+			            {% set class = product.class.first %}
+
+			            {% set parent = product.type == "class" ? class.getParent() : craft.entries.section('masterclassesOverview').first %}
+			            {% set variant = product.defaultVariant %}
+			            {% set order = item.order %}
+			            <article {% if not loop.last %}style="margin-bottom: 40px;"{% endif %}>
+
+			                <p class="nobottommargin"><strong>{{ parent.title }} / {{ product.title }}</strong></p>
+
+			                <p>
+			                {% if product.location | length %}
+			                    {% set location = product.location.first %}
+			                {% else %}
+			                    {% set location = class.location.first %}
+			                {% endif %}
+
+			                {% if location | length %}Location: {{ location.title }}<br>{% endif %}
+
+			                {% if product.type == "masterclass" %}
+			                	Date: {{ product.startDate | date('l j M Y') }} to {{ product.endDate | date('l j M Y') }}<br>
+			                {% endif %}
+
+		                	Time: {{ product.startTime | date('G:i') }} - {{ product.finishTime | date('G:i') }}
+
+		                    &nbsp;&nbsp;&nbsp;
+		                    Quantity: {{ item.qty }}
+
+			                {% if order.registers is defined and order.registers | length %}
+			                {% for register in order.registers %}
+			                    {% if register.product.first.id == product.id %}
+			                    <br>Participants: 
+			                    {% for row in register.participants %}
+			                    	<em>{{ row.name }}{% if not loop.last %}, {% endif %}</em>
+			                    {% endfor %}
+			                    {% endif %}
+			                    {% if register.notes | length %}
+			                    <br>Notes: <em>{{ register.notes }}</em>
+			                    {% endif %}
+			                {% endfor %}
+			                {% endif %}
+			                </p>
+
+						    <div class="row">
+						        <div class="col-md-12">
+						            <a class="button caps" href="{{ siteUrl }}orders/{{ order.number }}/participants/account">Update participant names / notes</a>
+						        </div>
+						    </div>                      
+			            </article>
+	                {% endfor %}
+	                {% else %}
+	                	<p>It looks like you don't have any!</p>	                
+	                {% endif %}
+	            </section>
+	            
+            	{% if voucherLineItems | length %}
+	            	<section id="yourvouchers">
+		            	<h3>Your gift vouchers</h3>
+		                {% for item in voucherLineItems %}
+					        {% set product = item.purchasable.product %}
+		                    <p class="nobottommargin"><a href="{{ siteUrl }}gifts">{{ item.price | currency(cart.currency) }} {{ product.title }}</a></p>
+		                    <p>{% if product.recipientName | length %}for {{ product.recipientName }}<br>{% endif %}
+		                        Code: {{ product.discountCode }}<br>
+		                        Price: 
+		                            {% if item.onSale %}
+		                                {% set save = item.price - item.salePrice %}
+		                                <s>{{ item.price | currency(cart.currency) }}</s> {{ item.salePrice | currency(cart.currency) }}                                
+		                            {% else %}
+		                                {{ item.price | currency(cart.currency) }}
+		                            {% endif %}
+		                        &nbsp;&nbsp;&nbsp;
+		                        Quantity: {{ item.qty }}
+		                    </p>
+		                {% endfor %}
+		            </section>
+	            {% endif %}
+            </div>
+        </div>
+        {% if orders | length %}
+        <div class="row">
+            <div class="col-md-12">
+            	<section id="yourorders">
+	            	<h2>Your orders</h2>
+	                <table class="u-full-width"  border="0" cellspacing="0" cellpadding="0">
+	                    <thead>
+	                    <tr>
+	                        <th>Order number</th>
+	                        <th>Date</th>
+	                        <th>Quantity</th>
+	                        <th>Total</th>
+	                    </tr>
+	                    </thead>
+	                    <tbody>
+	                    {% for order in craft.commerce.orders.customer(craft.commerce.customer).find() %}
+	                        <tr>
+	                            <td><a href="{{ siteUrl }}account/order/{{ order.number }}">Order #{{ order.id }}</a></td>
+	                            <td>{{ order.dateOrdered | date('j M Y') }}</td>
+	                            <td>{{ order.totalQty }} items</td>
+	                            <td>{{ order.totalPrice|currency(order.currency) }}</td>
+	                        </tr>
+	                    {% endfor %}
+	                    </tbody>
+	                </table>
+	            </section>
+            </div>
+        </div>
+        {% endif %}
+
+    </section>
+
+</div>
+
+{% endblock %}

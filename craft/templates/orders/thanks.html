@@ -1,0 +1,132 @@
+{% set order = craft.commerce.orders.number(craft.request.lastSegment).first() %}
+
+{% set breadcrumbEntries = [] %}
+
+{% if craft.request.getSegment(2) == "thank-you" %}
+    {% set cartPage = {'title': 'Cart', 'url': siteUrl ~ 'cart'} %}
+    {% set breadcrumbEntries = breadcrumbEntries | merge([cartPage]) %}
+    {% set addressesPage = {'title': 'Addresses', 'url': siteUrl ~ 'checkout/addresses'} %}
+    {% set breadcrumbEntries = breadcrumbEntries | merge([addressesPage]) %}
+    {% set item = {'title': 'Payment', 'url': siteUrl ~ 'checkout/summary'} %}
+    {% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+    {% set item = {'title': 'Receipt', 'url': siteUrl} %}
+    {% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+{% else %}
+    {% set item = {'title': 'Order #' ~ craft.request.getSegment(2), 'url': siteUrl} %}
+    {% set breadcrumbEntries = breadcrumbEntries | merge([item]) %}
+{% endif %}
+
+{#
+{% set metaTitle = "Thank you / #" ~ order.shortNumber ~ " / La Cuisine Paris" %}
+#}
+
+{##########################
+
+orders/thank-you/order/###############
+orders/thank-you/account/###############
+orders/thank-you/participants/###############
+
+##########################}
+
+{% extends "_layout" %}
+
+{% block content %}
+
+{############### CART CHECKS #############}
+{% set hasClass = false %}
+{% set hasDeliverable = false %}
+{% set hasWine = false %}
+
+{% if order.lineItems | length %}
+{% for item in order.lineItems %}
+
+    {% set product = item.purchasable.product %}
+
+    {% switch product.type %}
+
+        {% case 'wines' %}
+            {% set hasDeliverable = true %}
+            {% set hasWine = true %}
+
+        {% case 'equipment' %}
+            {% set hasDeliverable = true %}
+
+        {% case 'class' %}
+            {% set hasClass = true %}
+
+        {% case 'masterClass' %}
+            {% set hasClass = true %}
+
+        {% default %}
+
+    {% endswitch %}
+
+{% endfor %}
+{% endif %}
+{############## /END CART CHECKS ##########}
+
+<div class="container">
+
+    <section>
+
+        <div class="row">
+    		{% include "_incs/_breadcrumb" with breadcrumbEntries %}
+            <div class="col-md-5 col-sm-6">
+                {% include "orders/_incs/_" ~ craft.request.getSegment(3) ~ "ThankYouMessage" %}
+            </div>
+            <div class="col-md-7 col-sm-6">
+                {% include "checkout/_incs/_orderSummary" %}
+                {% if not currentUser %}
+                    {% include "orders/_incs/_saveDetailsSection" %}
+                {% endif %}
+                {% include "orders/_incs/_saveParticipantsSection" %}
+                
+                {% include "orders/_incs/_addressSection" %}
+            </div>
+        </div>
+
+        {% include "checkout/_incs/_checkoutSteps" %}
+
+    </section>
+
+</div>
+
+
+{#################
+ECOMMERCE TRACKING CODE
+#################}
+{#
+<script>
+ga('ecommerce:addTransaction', {
+  'id': '{{ order.shortNumber }}',
+  'affiliation': 'La Cuisine, Paris',
+  'revenue': '{{ order.totalPrice }}',
+  'shipping': '{{ order.totalShippingCost }}',
+  'tax': '{{ order.totalTax }}',
+  'currency': '{{ order.currency }}'
+});
+{% for item in order.lineItems %}
+{% spaceless %}
+{% set product = item.purchasable.product %}
+{% if product | length %}
+{% set class = product.class.first %}
+{% set variant = product.defaultVariant %}
+
+ga('ecommerce:addItem', {
+    'id': '{{ product.id }}',
+    'name': '{{ product.title }}',
+    'sku': '{{ variant.sku }}',
+    'category': '{% if product.type == 'class' %}{{ class.title }}{% else %}voucher{% endif %}',
+    'price': '{% if item.onSale %}{{ item.salePrice }}{% else %}{{ item.price }}{% endif %}',
+    'quantity': '{{ item.qty }}',
+    'currency': 'GBP'
+});
+{% endif %}
+{% endspaceless %}
+{% endfor %}
+
+ga('ecommerce:send');
+</script>
+#}
+
+{% endblock %}

@@ -1,0 +1,184 @@
+
+// SHOP SUMMARY PAGES
+	.shop-summaryimage {
+		margin-bottom: 40px;
+	}
+	hr.pink {
+		border: none; border-bottom: 10px solid #f9dddd;
+	}
+
+
+
+
+
+
+	.shop-productsummary {
+
+		display: flex;
+  		flex-wrap: wrap;
+  		justify-content: space-between;
+
+		margin-bottom: 40px; padding-bottom: 40px;
+		border: none; border-bottom: 1px solid #f9dddd;
+
+		h2 {
+			flex: 0 0 100%;
+		}
+
+		.shop-productsummary__image {
+			display: flex;
+			width: calc(50% - 20px);
+		}
+
+		.shop-productsummary__text {
+			display: flex;
+			flex-flow: column;
+			justify-content: space-between;
+			width: 50%;
+
+			.pricing {
+				p {
+					@include font('serif', 'heading', $textColor); text-align: left; line-height: 1.2em;
+				}
+			}
+		}
+
+	}
+
+
+
+.shop-productdetail {
+
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	margin-bottom: 40px; margin-top: 10px;
+
+
+
+	img.shop-productdetail__thumb {
+		display: flex;
+		width: calc(40%);
+		align-self: flex-start;
+
+	}
+
+	.shop-productdetail__description {		
+		display: flex;
+		flex-flow: column;
+		justify-content: space-between;
+		width: 60%;
+
+		padding-left: 20px;
+	}
+
+	.shop-productdetail__text {
+
+	}
+
+	.shop-productdetail__addtocartform {
+
+		display: flex;
+		justify-content: flex-end;
+		align-items: flex-end;
+
+		.important {
+			border: 1px solid #F9DEDE;
+			padding: 5px 5px 5px 20px; margin-right: 20px;
+			display: flex; flex: 1; height: 4.5rem;
+			align-items: center;
+			justify-content: flex-start;
+
+			img {
+				width: 60px;
+				margin: 0;
+			}
+			p {
+				color: $highlightColor; font-weight: bold;
+				margin-bottom: 0; padding: 0 20px; line-height: 1.2em;
+			}
+		}
+
+		.shop-productdetail__quantity {
+
+			label {
+				@include font('sans', 16);
+			}
+
+			#shop-productdetail__quantityinput {
+				display: block; width: 4.5rem; height: 4.5rem;
+				padding: 0.25rem 0 0; margin: 0 20px 0 0;
+				line-height: 4.25rem; text-align: center;
+				@include font('sans', 24, $highlightColor);
+				-webkit-appearance: none; -moz-appearance: textfield;
+				border: 1px solid #F9DEDE;
+
+				&::-webkit-outer-spin-button,
+				&::-webkit-inner-spin-button {
+				  -webkit-appearance: none;
+				  margin: 0;
+				}
+			}
+		}
+		.shop-productdetail__addtocart {
+
+			p {
+				margin-bottom: 10px;
+				@include font('serif', 'heading', $textColor); text-align: left; line-height: 1.2em;
+
+				span {
+					@include font('sans', 12, $textColor);
+				}
+			}
+
+			.button {
+				width: 15rem; height: 4.5rem;
+			}
+		}
+	}
+
+
+}
+
+
+
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 2; left: 0; top: 0;
+  width: 100%;  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.75); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; max-width: 800px;
+
+  h2 {
+  	@include font('serif', 'big', $highlightColor); text-align: left; line-height: 1.2em;
+  }
+}
+
+/* The Close Button */
+.close {
+  color: $highlightColor;
+  float: right;
+  font-size: 56px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
