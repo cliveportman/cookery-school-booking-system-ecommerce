@@ -1,3 +1,9 @@
+![craft cms](https://img.shields.io/badge/Craft_CMS-E5422B)
+![craft commerce](https://img.shields.io/badge/Craft_Commerce-E5422B)
+![semantic ui](https://img.shields.io/badge/Semantic_UI-0769ad)
+![jquery](https://img.shields.io/badge/JQuery-0769ad)
+![PHP](https://img.shields.io/badge/PHP-0769ad)
+
 # Cookery school booking system with ecommerce
 
 A client I worked with for many years, this is an ecommerce site and a booking system in one project all built using Craft CMS and Craft Commerce. The booking system, was bespoke and was used by the front desk for signing-in attendees and the back office for managing bookings. The ecommerce side of the site was used for selling cookery courses, primarily to US tourists visiting Paris for an in-person experience.
