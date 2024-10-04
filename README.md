@@ -1,14 +1,14 @@
-![craft cms](https://img.shields.io/badge/Craft_CMS-E5422B)
-![craft commerce](https://img.shields.io/badge/Craft_Commerce-E5422B)
-![semantic ui](https://img.shields.io/badge/Semantic_UI-0769ad)
-![jquery](https://img.shields.io/badge/JQuery-0769ad)
-![PHP](https://img.shields.io/badge/PHP-0769ad)
-
+![craft cms](https://img.shields.io/badge/former_client_project-slategray)
 # Cookery school booking system with ecommerce
 
 A client I worked with for many years, this is an ecommerce site and a booking system in one project all built using Craft CMS and Craft Commerce. The booking system, was bespoke and was used by the front desk for signing-in attendees and the back office for managing bookings. The ecommerce side of the site was used for selling cookery courses, primarily to US tourists visiting Paris for an in-person experience.
 
 ## What tech was used?
+![craft cms](https://img.shields.io/badge/Craft_CMS-brown)
+![craft commerce](https://img.shields.io/badge/Craft_Commerce-brown)
+![semantic ui](https://img.shields.io/badge/Semantic_UI-blue)
+![jquery](https://img.shields.io/badge/JQuery-blue)
+![PHP](https://img.shields.io/badge/PHP-blue)
 
 ### Frontend
 The public-facing ecommerce site was build using Twig templates, rendered server-side by Craft CMS. There was minor use of JQuery with a few plugins like Masonry, and Bootstrap for the grid system. The site was fully responsive and mobile-first, designed to a spec provided by https://specialdesignstudio.com/.
