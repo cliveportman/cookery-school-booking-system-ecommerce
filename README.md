@@ -21,3 +21,5 @@ Developing the payment gateway for the French bank. Craft Commerce had no integr
 
 The biggest challenge was the booking system, which was a bespoke build. Just designing the requirements was a project in itself, then the development required a lot of bespoke plugin work to get it working as required. After several years, we started experiencing performance issues, so a lot of work was done to improve caching and reduce the number of database queries. Building the same thing today, we'd use a headless CMS with a JS framework like React (more likely Svelte), but at the time, this was the best solution.
 
+## Screenshot
+![Screenshot of the cookery school's homepage'](screenshot.png)
