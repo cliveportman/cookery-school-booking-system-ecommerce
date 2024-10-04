@@ -1,7 +1,13 @@
-![craft cms](https://img.shields.io/badge/former_client_project-slategray)
 # Cookery school booking system with ecommerce
+*FORMER CLIENT PROJECT - when I joined my current employer, I handed over this client to another team.*
 
-A client I worked with for many years, this is an ecommerce site and a booking system in one project all built using Craft CMS and Craft Commerce. The booking system, was bespoke and was used by the front desk for signing-in attendees and the back office for managing bookings. The ecommerce side of the site was used for selling cookery courses, primarily to US tourists visiting Paris for an in-person experience.
+A client I worked with for many years, this is an ecommerce site and a booking system in one project all built using Craft CMS and Craft Commerce. The booking system was bespoke and was used by the front desk for signing-in attendees and the back office for managing bookings. The ecommerce side of the site was used for selling cookery courses, primarily to US tourists visiting Paris for an in-person experience.
+
+## What does it show?
+- Complete solution design to solve a client's problem, working directly with stakeholders
+- Full-stack web development (HTML, CSS, Javascript, PHP)
+- User-interface design
+- Integration with third-party APIs
 
 ## What tech was used?
 ![craft cms](https://img.shields.io/badge/Craft_CMS-brown)
