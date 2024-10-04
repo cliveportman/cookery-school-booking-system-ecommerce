@@ -12,8 +12,10 @@ A client I worked with for many years, this is an ecommerce site and a booking s
 ## What tech was used?
 ![craft cms](https://img.shields.io/badge/Craft_CMS-brown)
 ![craft commerce](https://img.shields.io/badge/Craft_Commerce-brown)
-![semantic ui](https://img.shields.io/badge/Semantic_UI-blue)
-![jquery](https://img.shields.io/badge/JQuery-blue)
+![semantic ui](https://img.shields.io/badge/Semantic_UI-brown)
+![html](https://img.shields.io/badge/HTML-blue)
+![javascript](https://img.shields.io/badge/Javascript-blue)
+![css](https://img.shields.io/badge/CSS-blue)
 ![PHP](https://img.shields.io/badge/PHP-blue)
 
 ### Frontend
@@ -27,6 +29,9 @@ Substantial plugin work was required for the booking system, including a product
 
 ## Who was the client?
 A cookery school primarily aimed at US tourists visiting Paris. They client sought us out after seeing previous work we'd done for a major cookery school in the UK, wanting to work a small team with experience of scale, developing booking systems and ecommerce.
+
+## Why?
+ Despite the business doing well, the client's existing booking system was making the day-to-day running of the business very difficult. They felt they were missing out on sales opportunities through poor search engine positioning and even worse user experience when it came to their ecommerve site.
 
 ## Technical challenges
 Developing the payment gateway for the French bank. Craft Commerce had no integration for them, and the development process wasn't exactly like you get from providers like Stripe or PayPal. The bank's API was poorly documented and required a lot of back-and-forth to get working.
